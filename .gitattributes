@@ -1,0 +1,6 @@
+# Normalise text files to LF in the repository and working tree.
+* text=auto eol=lf
+
+# Example logs and test fixtures must stay byte-exact (no EOL conversion, no diff/merge).
+Example/** -text
+tests/fixtures/** -text
