@@ -26,6 +26,8 @@ npm run test          # Vitest + Testing Library + jsdom, single run; test:watch
 ```
 
 Run `npm run check` and `npm run build` before opening a PR.
+Agent and contributor conventions (architecture, naming, testing, log and catalog facts, story workflow, skills) are in [`AGENTS.md`](AGENTS.md); `CLAUDE.md` just imports it.
+The same checks run in CI on every PR; see [docs/ci.md](docs/ci.md) (incl. the recommended branch protection).
 Tests live next to the code as `*.test.ts(x)`; shared setup is in `src/test/setup.ts`.
 
 A pre-commit hook (husky + lint-staged) lints and formats the staged files; it is installed automatically by `npm install` / `npm ci` (the `prepare` script).
@@ -42,6 +44,7 @@ Following Microsoft's side-by-side guidance, `package.json` therefore aliases:
 - `typescript7` -> `typescript@~7.0` (the native compiler used for `typecheck` and `build`).
 
 The scripts call `node ./node_modules/typescript7/bin/tsc` explicitly, because the bare `tsc` bin name is claimed by the TS 6 package and must not be used.
+`npm run typecheck` is authoritative. A bare `tsc` / `npx tsc` and the editor's TypeScript service use TS 6 (the `typescript` alias), so they can disagree with it; treat the editor's squiggles as hints and `npm run typecheck` as the verdict.
 Once typescript-eslint supports TypeScript 7, drop the `typescript7` alias and point `typescript` back at `~7.x`.
 
 ## Folder structure
@@ -62,3 +65,7 @@ bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 para
 ```
 
 Line endings: `.gitattributes` normalises text to LF but keeps `Example/**` and `tests/fixtures/**` byte-exact.
+
+## Process
+
+Issue forms, the PR template, the label taxonomy and the project board status flow are described in [docs/process/labels-and-board.md](docs/process/labels-and-board.md).

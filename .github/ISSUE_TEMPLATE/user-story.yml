@@ -1,0 +1,80 @@
+name: User story
+description: The smallest independently shippable slice, with acceptance criteria an agent can turn into tests first.
+title: '[Story] '
+labels: ['user-story']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A story must be small enough for one pull request. Write the acceptance criteria so each one becomes a test.
+        Add it as a sub-issue of its feature, then add the matching `area:*` label (and `mvp`) after creating the issue.
+  - type: input
+    id: feature
+    attributes:
+      label: Parent feature
+      description: Issue number of the feature this story belongs to.
+      placeholder: '#2'
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Becomes the `area:*` label (apply it after creating the issue).
+      options:
+        - area:foundation
+        - area:ingest
+        - area:catalog
+        - area:charts
+        - area:selection
+        - area:interaction
+        - area:scale
+        - area:nfr
+        - area:session
+    validations:
+      required: true
+  - type: dropdown
+    id: mvp
+    attributes:
+      label: Part of the MVP?
+      description: If yes, apply the `mvp` label after creating the issue.
+      options:
+        - 'Yes'
+        - 'No'
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User story
+      description: 'Format: As a <role>, I want <capability> so that <benefit>.'
+      placeholder: As a <role>, I want <capability> so that <benefit>.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Task list. Each item is observable and testable (unit and, where relevant, e2e on the `Example/` logs).
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of done
+      description: Applies to every story. Keep these three lines and add story-specific items if needed.
+      value: |
+        - [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+        - [ ] Lint, typecheck, tests and build pass in CI
+        - [ ] Docs / AGENTS.md updated if conventions changed
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Dependencies, links, design notes, out-of-scope items.
