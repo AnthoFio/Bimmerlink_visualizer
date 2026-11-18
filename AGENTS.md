@@ -80,7 +80,8 @@ Rules:
 - Heavy work (CSV parsing of 50k rows) belongs in a Web Worker so the UI stays responsive (planned, story #15).
 - Keep `src/lib/` functions worker-safe, so that move is cheap.
 - Data model: column-oriented dataset (one typed array per channel plus a shared time array) (planned, story #14).
-- Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR. `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component (planned, story #25); the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function in `src/lib/`.
+- Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
+- Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).
 - `spikes/` holds throwaway evidence projects with their own `package.json` and `node_modules`; ESLint, Prettier, `tsc -b`, Vitest and the app build ignore them, and the app never depends on them. Decisions that are expensive to reverse get an ADR in `docs/adr/`; `src/docs/adr.test.ts` asserts the ADR structure.
 
 ## Naming and code conventions
