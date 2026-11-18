@@ -1,0 +1,106 @@
+{
+  "lib": "echarts-minmax",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "logicalCores": 12,
+    "ramGB": 15.63,
+    "browser": "147.0.7727.15",
+    "mode": "headless Chromium, software raster, viewport 1280x900, DPR 1",
+    "node": "v24.11.1"
+  },
+  "dataset": {
+    "rows": 51019,
+    "series": 13,
+    "parseMs": 64.2999999821186,
+    "fetchMs": 90.10000002384186,
+    "T0": 0,
+    "T1": 1532.95,
+    "variant": "minmax"
+  },
+  "time_to_chart_ready_ms": 603,
+  "initial_render_ms": {
+    "runs": [
+      135.8,
+      165,
+      115.8,
+      149.1,
+      126,
+      125.5,
+      116.7
+    ],
+    "median": 126,
+    "first": 135.8
+  },
+  "pan_raf": {
+    "window_10pct": {
+      "frames": 240,
+      "fps_mean": 48.81,
+      "frame_ms_mean": 20.49,
+      "frame_ms_p95": 33.4,
+      "frame_ms_max": 33.6,
+      "frames_over_33ms": 18
+    },
+    "window_95pct": {
+      "frames": 240,
+      "fps_mean": 33.48,
+      "frame_ms_mean": 29.87,
+      "frame_ms_p95": 33.7,
+      "frame_ms_max": 83.3,
+      "frames_over_33ms": 51
+    }
+  },
+  "update_cost_ms": {
+    "window_10pct": {
+      "n": 200,
+      "ms_mean": 20.22,
+      "ms_p95": 31.7,
+      "ms_max": 42.7
+    },
+    "window_95pct": {
+      "n": 200,
+      "ms_mean": 29.47,
+      "ms_p95": 43.4,
+      "ms_max": 51.7
+    }
+  },
+  "hover_raf": {
+    "frames": 173,
+    "fps_mean": 57.58,
+    "frame_ms_mean": 17.37,
+    "frame_ms_p95": 17.1,
+    "frame_ms_max": 116.7,
+    "frames_over_33ms": 2
+  },
+  "zoom_pan_sync": {
+    "scales_per_panel": [
+      [
+        490.2,
+        1355.5
+      ],
+      [
+        490.2,
+        1355.5
+      ],
+      [
+        490.2,
+        1355.5
+      ]
+    ],
+    "all_equal": true,
+    "zoomed": true
+  },
+  "js_heap_mb": 98.17,
+  "export": {
+    "png_2x": {
+      "ms": 190.40000000596046,
+      "base64_chars": 804598
+    },
+    "svg": {
+      "ms": 182.90000000596046,
+      "bytes": 200987,
+      "sampling": "minmax"
+    }
+  },
+  "theme_switch_ms": 78,
+  "page_errors": []
+}

@@ -30,3 +30,8 @@ test-results
 Thumbs.db
 *.suo
 *.sw?
+
+# Spikes (throwaway, see spikes/README.md): copied example log, scratch bundle output, raw logs
+spikes/**/public/log.csv
+spikes/**/dist-bundles/
+spikes/**/*.log

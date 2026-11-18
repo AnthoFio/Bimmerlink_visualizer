@@ -17,6 +17,8 @@ export default defineConfig([
     'tests/fixtures',
     '.claude',
     '.agents',
+    // Throwaway spikes are isolated mini-projects with their own package.json (see spikes/README.md).
+    'spikes',
   ]),
   {
     files: ['**/*.{ts,tsx}'],

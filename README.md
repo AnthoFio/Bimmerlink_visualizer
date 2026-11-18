@@ -60,9 +60,14 @@ src/
                   no React imports, easy to unit test
   data/           Static data bundled with the app (e.g. the parameter catalog)
 public/           Static assets copied as-is
+docs/adr/         Architecture decision records (ADR 0001: charting library)
+spikes/           Throwaway, isolated mini-projects that back an ADR (own package.json; see spikes/README.md)
 tests/fixtures/   Byte-exact test inputs derived from Example/ (see tests/fixtures/README.md)
 bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 parameters)
 ```
+
+Spikes under `spikes/` are excluded from ESLint, Prettier, `tsc -b` and Vitest, so `npm run check` and `npm run build` never touch them.
+Decisions that are expensive to reverse are recorded as ADRs in `docs/adr/` (a Vitest test asserts the ADR structure).
 
 Line endings: `.gitattributes` normalises text to LF but keeps `Example/**` and `tests/fixtures/**` byte-exact.
 

@@ -1,0 +1,101 @@
+{
+  "lib": "uplot-raw",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "logicalCores": 12,
+    "ramGB": 15.63,
+    "browser": "147.0.7727.15",
+    "mode": "headless Chromium, software raster, viewport 1280x900, DPR 1",
+    "node": "v24.11.1"
+  },
+  "dataset": {
+    "rows": 51019,
+    "series": 13,
+    "parseMs": 58.099999994039536,
+    "fetchMs": 146,
+    "T0": 0,
+    "T1": 1532.95
+  },
+  "time_to_chart_ready_ms": 479,
+  "initial_render_ms": {
+    "runs": [
+      129.5,
+      88.5,
+      83.2,
+      88.5,
+      81.6,
+      180.2,
+      61.8
+    ],
+    "median": 88.5,
+    "first": 129.5
+  },
+  "pan_raf": {
+    "window_10pct": {
+      "frames": 240,
+      "fps_mean": 33.72,
+      "frame_ms_mean": 29.66,
+      "frame_ms_p95": 50,
+      "frame_ms_max": 98.6,
+      "frames_over_33ms": 62
+    },
+    "window_95pct": {
+      "frames": 240,
+      "fps_mean": 4.04,
+      "frame_ms_mean": 247.6,
+      "frame_ms_p95": 333.6,
+      "frame_ms_max": 466.7,
+      "frames_over_33ms": 240
+    }
+  },
+  "update_cost_ms": {
+    "window_10pct": {
+      "n": 200,
+      "ms_mean": 17.85,
+      "ms_p95": 20.4,
+      "ms_max": 37.5
+    },
+    "window_95pct": {
+      "n": 200,
+      "ms_mean": 73.65,
+      "ms_p95": 131.4,
+      "ms_max": 187.9
+    }
+  },
+  "hover_raf": {
+    "frames": 170,
+    "fps_mean": 56.39,
+    "frame_ms_mean": 17.73,
+    "frame_ms_p95": 17.6,
+    "frame_ms_max": 66.6,
+    "frames_over_33ms": 4
+  },
+  "zoom_pan_sync": {
+    "scales_per_panel": [
+      [
+        691.2933460872657,
+        964.1255116146093
+      ],
+      [
+        691.2933460872657,
+        964.1255116146093
+      ],
+      [
+        691.2933460872657,
+        964.1255116146093
+      ]
+    ],
+    "all_equal": true,
+    "zoomed": true
+  },
+  "js_heap_mb": 10.96,
+  "export": {
+    "ms": 1068.5,
+    "bytes": 293282,
+    "width": 2528,
+    "height": 1380,
+    "svg": "not supported natively"
+  },
+  "theme_switch_ms": 13.1,
+  "page_errors": []
+}
