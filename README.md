@@ -60,7 +60,7 @@ src/
                   no React imports, easy to unit test
   data/           Static data bundled with the app (e.g. the parameter catalog)
 public/           Static assets copied as-is
-tests/fixtures/   Test input files (byte-exact, created by later stories)
+tests/fixtures/   Byte-exact test inputs derived from Example/ (see tests/fixtures/README.md)
 bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 parameters)
 ```
 
