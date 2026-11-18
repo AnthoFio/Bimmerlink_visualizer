@@ -1,0 +1,47 @@
+name: Epic
+description: Top-level initiative with vision, context, scope, guardrails and the features that deliver it.
+title: '[Epic] '
+labels: ['epic']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An epic is the top-level initiative. It holds the vision, the facts every story needs and the guardrails.
+        Features are linked to it as sub-issues. Add the `mvp` label by hand if it is part of the first usable release.
+  - type: textarea
+    id: vision
+    attributes:
+      label: Vision
+      description: What this initiative delivers and for whom, in a few sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Facts, data and constraints that stories and agents need (formats, sample files, limits).
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is in and what is explicitly out (for now).
+      placeholder: |
+        In: ...
+        Out (for now): ...
+    validations:
+      required: true
+  - type: textarea
+    id: guardrails
+    attributes:
+      label: Guardrails
+      description: Non-negotiable rules for every story (stack, privacy, performance targets, spec-driven workflow).
+    validations:
+      required: true
+  - type: textarea
+    id: features
+    attributes:
+      label: Features
+      description: Task list of the features, one `- [ ] #<number> <title>` per line. Add the issues as sub-issues too.
+      placeholder: '- [ ] #2 Foundation and AIDD workflow'

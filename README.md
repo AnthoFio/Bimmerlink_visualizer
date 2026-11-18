@@ -62,3 +62,7 @@ bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 para
 ```
 
 Line endings: `.gitattributes` normalises text to LF but keeps `Example/**` and `tests/fixtures/**` byte-exact.
+
+## Process
+
+Issue forms, the PR template, the label taxonomy and the project board status flow are described in [docs/process/labels-and-board.md](docs/process/labels-and-board.md).
