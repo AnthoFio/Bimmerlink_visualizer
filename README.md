@@ -26,6 +26,7 @@ npm run test          # Vitest + Testing Library + jsdom, single run; test:watch
 ```
 
 Run `npm run check` and `npm run build` before opening a PR.
+The same checks run in CI on every PR; see [docs/ci.md](docs/ci.md) (incl. the recommended branch protection).
 Tests live next to the code as `*.test.ts(x)`; shared setup is in `src/test/setup.ts`.
 
 A pre-commit hook (husky + lint-staged) lints and formats the staged files; it is installed automatically by `npm install` / `npm ci` (the `prepare` script).
