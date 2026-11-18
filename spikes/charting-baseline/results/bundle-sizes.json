@@ -1,0 +1,50 @@
+[
+  {
+    "label": "uplot (JS only)",
+    "min_kB": 70.4,
+    "gzip_kB": 24.2,
+    "brotli_kB": 21.6
+  },
+  {
+    "label": "echarts minimal (line + grid + canvas)",
+    "min_kB": 645.9,
+    "gzip_kB": 184.7,
+    "brotli_kB": 153.1
+  },
+  {
+    "label": "echarts as prototyped (+tooltip, dataZoom, axisPointer, dataset, title, legend, SVG renderer)",
+    "min_kB": 777.6,
+    "gzip_kB": 221.9,
+    "brotli_kB": 182.9
+  },
+  {
+    "label": "echarts full (import * from echarts)",
+    "min_kB": 1483.5,
+    "gzip_kB": 420,
+    "brotli_kB": 330.3
+  },
+  {
+    "label": "plotly.js basic bundle (SVG scatter only)",
+    "min_kB": 1634.2,
+    "gzip_kB": 418.8,
+    "brotli_kB": 329
+  },
+  {
+    "label": "plotly.js cartesian bundle (SVG scatter/bar/heatmap...)",
+    "min_kB": 2038.3,
+    "gzip_kB": 523.6,
+    "brotli_kB": 406.6
+  },
+  {
+    "label": "plotly.js gl2d bundle (adds scattergl, needed for 51k x 13)",
+    "min_kB": 2020.2,
+    "gzip_kB": 518.4,
+    "brotli_kB": 408.6
+  },
+  {
+    "label": "recharts (LineChart, Line, axes, tooltip, legend, grid, ResponsiveContainer)",
+    "min_kB": 575.5,
+    "gzip_kB": 140.4,
+    "brotli_kB": 112.7
+  }
+]

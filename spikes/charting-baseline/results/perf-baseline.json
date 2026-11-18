@@ -1,0 +1,148 @@
+[
+  {
+    "config": "plotly scattergl (gl2d bundle), 51k pts",
+    "machine": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "browser": "147.0.7727.15",
+    "page_load_to_first_render_ms": 2547,
+    "initial_render_ms": {
+      "runs": [
+        889.6,
+        798.8,
+        900.7
+      ],
+      "median": 889.6
+    },
+    "pan_raf": {
+      "window_10pct": {
+        "frames": 60,
+        "fps_mean": 44.42,
+        "frame_ms_p95": 33.7,
+        "frame_ms_max": 50.2
+      },
+      "window_95pct": {
+        "frames": 60,
+        "fps_mean": 48.64,
+        "frame_ms_p95": 33.3,
+        "frame_ms_max": 216.6
+      }
+    },
+    "update_cost_ms": {
+      "window_10pct": {
+        "n": 30,
+        "ms_mean": 11.08,
+        "ms_p95": 14.6,
+        "ms_max": 15
+      },
+      "window_95pct": {
+        "n": 30,
+        "ms_mean": 5.87,
+        "ms_p95": 7.8,
+        "ms_max": 8.2
+      }
+    },
+    "js_heap_mb": 63.73
+  },
+  {
+    "config": "plotly scatter SVG (cartesian bundle), 51k pts",
+    "machine": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "browser": "147.0.7727.15",
+    "page_load_to_first_render_ms": 1639,
+    "initial_render_ms": {
+      "runs": [
+        387.1,
+        409.5,
+        442.1
+      ],
+      "median": 409.5
+    },
+    "pan_raf": {
+      "window_10pct": {
+        "frames": 60,
+        "fps_mean": 1.18,
+        "frame_ms_p95": 1216.8,
+        "frame_ms_max": 1616.8
+      },
+      "window_95pct": {
+        "frames": 60,
+        "fps_mean": 2.07,
+        "frame_ms_p95": 983.6,
+        "frame_ms_max": 1316.5
+      }
+    },
+    "update_cost_ms": {
+      "window_10pct": {
+        "n": 30,
+        "ms_mean": 773.77,
+        "ms_p95": 1268.1,
+        "ms_max": 1560.7
+      },
+      "window_95pct": {
+        "n": 30,
+        "ms_mean": 277.48,
+        "ms_p95": 375.8,
+        "ms_max": 392.2
+      }
+    },
+    "js_heap_mb": 362.77
+  },
+  {
+    "config": "recharts, 51k pts",
+    "machine": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "browser": "147.0.7727.15",
+    "page_load_to_first_render_ms": 5856,
+    "initial_render_ms": {
+      "runs": [
+        7091.3,
+        5809.7,
+        5192.8
+      ],
+      "median": 5809.7
+    },
+    "pan_raf": {},
+    "update_cost_ms": {},
+    "error": "timeout: pan"
+  },
+  {
+    "config": "recharts, pre-decimated to 2000 pts",
+    "machine": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "browser": "147.0.7727.15",
+    "page_load_to_first_render_ms": 798,
+    "initial_render_ms": {
+      "runs": [
+        223.7,
+        207.2,
+        204.5
+      ],
+      "median": 207.2
+    },
+    "pan_raf": {
+      "window_10pct": {
+        "frames": 60,
+        "fps_mean": 3.1,
+        "frame_ms_p95": 533.4,
+        "frame_ms_max": 566.8
+      },
+      "window_95pct": {
+        "frames": 60,
+        "fps_mean": 7.04,
+        "frame_ms_p95": 167,
+        "frame_ms_max": 183.1
+      }
+    },
+    "update_cost_ms": {
+      "window_10pct": {
+        "n": 30,
+        "ms_mean": 140.64,
+        "ms_p95": 188.9,
+        "ms_max": 205.7
+      },
+      "window_95pct": {
+        "n": 30,
+        "ms_mean": 157.82,
+        "ms_p95": 186,
+        "ms_max": 192.6
+      }
+    },
+    "js_heap_mb": 125.73
+  }
+]

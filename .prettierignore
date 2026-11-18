@@ -16,3 +16,6 @@ node_modules/
 .agents/
 .claude/
 skills-lock.json
+
+# Throwaway spikes: isolated mini-projects with their own tooling (see spikes/README.md)
+spikes/

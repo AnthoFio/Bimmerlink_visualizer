@@ -66,6 +66,8 @@ public/                    Static assets copied as-is
 docs/                      Process docs (ci.md, process/labels-and-board.md)
 scripts/                   Small helper scripts (set-project-status.ps1)
 .github/                   CI workflow, issue forms and the pull request template
+docs/adr/                  Architecture decision records (0001: charting library)
+spikes/                    Throwaway, isolated mini-projects that back an ADR (own package.json)
 bimmerlink_n55_parameter_catalog.csv   Source parameter catalog (CSV)
 bimmerlink_n55_parameter_catalog.json  Same catalog as JSON (prefer this one in code)
 tests/fixtures/            Small, committed, byte-exact test inputs (README inside)
@@ -78,7 +80,9 @@ Rules:
 - Heavy work (CSV parsing of 50k rows) belongs in a Web Worker so the UI stays responsive (planned, story #15).
 - Keep `src/lib/` functions worker-safe, so that move is cheap.
 - Data model: column-oriented dataset (one typed array per channel plus a shared time array) (planned, story #14).
-- Charting library: not chosen yet; the ADR decides it (planned, story #4). Do not add one without that decision.
+- Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
+- Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).
+- `spikes/` holds throwaway evidence projects with their own `package.json` and `node_modules`; ESLint, Prettier, `tsc -b`, Vitest and the app build ignore them, and the app never depends on them. Decisions that are expensive to reverse get an ADR in `docs/adr/`; `src/docs/adr.test.ts` asserts the ADR structure.
 
 ## Naming and code conventions
 

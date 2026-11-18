@@ -1,0 +1,28 @@
+{
+  "name": "spike-charting-baseline",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "THROWAWAY spike for ADR 0001: bundle-size measurement of all 4 candidates + smoke render benchmark for Plotly.js and Recharts",
+  "scripts": {
+    "prepare-data": "node ../scripts/copy-log.mjs public/log.csv",
+    "build": "npm run prepare-data && vite build",
+    "sizes": "node measure-bundles.mjs",
+    "bench": "node perf-bench.mjs"
+  },
+  "dependencies": {
+    "echarts": "6.1.0",
+    "plotly.js-basic-dist-min": "4.3.0",
+    "plotly.js-cartesian-dist-min": "4.3.0",
+    "plotly.js-gl2d-dist-min": "4.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "3.11.0",
+    "uplot": "1.6.32"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "playwright-core": "1.65.1",
+    "vite": "^8.3.6"
+  }
+}

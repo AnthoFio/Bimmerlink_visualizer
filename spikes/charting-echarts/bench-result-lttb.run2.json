@@ -1,0 +1,106 @@
+{
+  "lib": "echarts-lttb",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "logicalCores": 12,
+    "ramGB": 15.63,
+    "browser": "147.0.7727.15",
+    "mode": "headless Chromium, software raster, viewport 1280x900, DPR 1",
+    "node": "v24.11.1"
+  },
+  "dataset": {
+    "rows": 51019,
+    "series": 13,
+    "parseMs": 59.30000001192093,
+    "fetchMs": 98.7999999821186,
+    "T0": 0,
+    "T1": 1532.95,
+    "variant": "lttb"
+  },
+  "time_to_chart_ready_ms": 586,
+  "initial_render_ms": {
+    "runs": [
+      140.6,
+      142.8,
+      193.8,
+      160.2,
+      131.2,
+      162,
+      123.5
+    ],
+    "median": 142.8,
+    "first": 140.6
+  },
+  "pan_raf": {
+    "window_10pct": {
+      "frames": 240,
+      "fps_mean": 29.63,
+      "frame_ms_mean": 33.75,
+      "frame_ms_p95": 66.8,
+      "frame_ms_max": 150,
+      "frames_over_33ms": 95
+    },
+    "window_95pct": {
+      "frames": 240,
+      "fps_mean": 11.3,
+      "frame_ms_mean": 88.48,
+      "frame_ms_p95": 143.6,
+      "frame_ms_max": 233.5,
+      "frames_over_33ms": 220
+    }
+  },
+  "update_cost_ms": {
+    "window_10pct": {
+      "n": 200,
+      "ms_mean": 18.8,
+      "ms_p95": 32.4,
+      "ms_max": 63.5
+    },
+    "window_95pct": {
+      "n": 200,
+      "ms_mean": 76.68,
+      "ms_p95": 137,
+      "ms_max": 185.2
+    }
+  },
+  "hover_raf": {
+    "frames": 141,
+    "fps_mean": 46.87,
+    "frame_ms_mean": 21.34,
+    "frame_ms_p95": 33.5,
+    "frame_ms_max": 216.8,
+    "frames_over_33ms": 11
+  },
+  "zoom_pan_sync": {
+    "scales_per_panel": [
+      [
+        490.2,
+        1355.5
+      ],
+      [
+        490.2,
+        1355.5
+      ],
+      [
+        490.2,
+        1355.5
+      ]
+    ],
+    "all_equal": true,
+    "zoomed": true
+  },
+  "js_heap_mb": 113.7,
+  "export": {
+    "png_2x": {
+      "ms": 166.2999999821186,
+      "base64_chars": 801574
+    },
+    "svg": {
+      "ms": 154,
+      "bytes": 176992,
+      "sampling": "lttb"
+    }
+  },
+  "theme_switch_ms": 43.4,
+  "page_errors": []
+}

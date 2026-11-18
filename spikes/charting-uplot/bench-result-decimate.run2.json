@@ -1,0 +1,101 @@
+{
+  "lib": "uplot-decimate",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1250U",
+    "logicalCores": 12,
+    "ramGB": 15.63,
+    "browser": "147.0.7727.15",
+    "mode": "headless Chromium, software raster, viewport 1280x900, DPR 1",
+    "node": "v24.11.1"
+  },
+  "dataset": {
+    "rows": 51019,
+    "series": 13,
+    "parseMs": 59.70000001788139,
+    "fetchMs": 91.19999998807907,
+    "T0": 0,
+    "T1": 1532.95
+  },
+  "time_to_chart_ready_ms": 376,
+  "initial_render_ms": {
+    "runs": [
+      45.3,
+      29.8,
+      30.9,
+      30.7,
+      29.9,
+      29.1,
+      30
+    ],
+    "median": 30,
+    "first": 45.3
+  },
+  "pan_raf": {
+    "window_10pct": {
+      "frames": 240,
+      "fps_mean": 59.99,
+      "frame_ms_mean": 16.67,
+      "frame_ms_p95": 17.1,
+      "frame_ms_max": 17.7,
+      "frames_over_33ms": 0
+    },
+    "window_95pct": {
+      "frames": 240,
+      "fps_mean": 59.99,
+      "frame_ms_mean": 16.67,
+      "frame_ms_p95": 16.9,
+      "frame_ms_max": 17.2,
+      "frames_over_33ms": 0
+    }
+  },
+  "update_cost_ms": {
+    "window_10pct": {
+      "n": 200,
+      "ms_mean": 5.07,
+      "ms_p95": 7.3,
+      "ms_max": 15.5
+    },
+    "window_95pct": {
+      "n": 200,
+      "ms_mean": 6.34,
+      "ms_p95": 8.5,
+      "ms_max": 12.6
+    }
+  },
+  "hover_raf": {
+    "frames": 182,
+    "fps_mean": 60.6,
+    "frame_ms_mean": 16.5,
+    "frame_ms_p95": 16.9,
+    "frame_ms_max": 17,
+    "frames_over_33ms": 0
+  },
+  "zoom_pan_sync": {
+    "scales_per_panel": [
+      [
+        691.2933460872657,
+        964.1255116146093
+      ],
+      [
+        691.2933460872657,
+        964.1255116146093
+      ],
+      [
+        691.2933460872657,
+        964.1255116146093
+      ]
+    ],
+    "all_equal": true,
+    "zoomed": true
+  },
+  "js_heap_mb": 12.91,
+  "export": {
+    "ms": 1072.0999999940395,
+    "bytes": 404909,
+    "width": 2528,
+    "height": 1380,
+    "svg": "not supported natively"
+  },
+  "theme_switch_ms": 5.5,
+  "page_errors": []
+}
