@@ -1,0 +1,211 @@
+﻿index,label,key,category,description,unit,role,confidence,presets,note
+1,ADC voltage Lambda probe behind catalytic converter,adc_voltage_lambda_probe_behind_catalytic_converter,Exhaust / catalyst,"Signal voltage of the downstream (post-cat) narrowband O2 sensor. ~0.1 V lean, ~0.8 V rich; a steady value means the cat is storing oxygen.",V,core,high,1,Preferred downstream channel (refresh ~1.3/s).
+2,Accepted generator torque,accepted_generator_torque,Electrical / charging,Alternator drag torque accepted by the DME into its torque model.,Nm,standard,medium,,
+3,Actual gear,actual_gear,Drivetrain,"Gear currently engaged, as known by the DME.",-,core,high,3,
+4,Actual gear information from the gear sensor,actual_gear_information_from_the_gear_sensor,Drivetrain,Gear information straight from the transmission gear/selector sensor.,-,redundant,medium,,Duplicate of Actual gear for most uses.
+5,Actual ignition angle,actual_ignition_angle,Ignition / knock,Actual spark advance (degrees before TDC). Drops when the DME retards for knock or torque reduction.,°CRK,core,high,4,
+6,Actual inlet spread,actual_inlet_spread,VANOS,Measured intake camshaft position (VANOS spread) relative to the crankshaft.,°CRK,standard,high,,
+7,Actual oil pressure value (absolute pressure),actual_oil_pressure_value_absolute_pressure,Oil,"Measured engine oil pressure, absolute (includes ~1 bar atmospheric).",bar,standard,high,,
+8,Actual operating mode,actual_operating_mode,Engine status,"Current DME combustion/operating mode (e.g. normal homogeneous, catalyst heating).",enum,standard,medium,,Enum codes not documented; useful to split cold-start phases.
+9,"Actual operating mode, oil pressure control",actual_operating_mode_oil_pressure_control,Oil,Current stage of the map-controlled oil pump (low / high pressure stage).,enum,standard,medium,,
+10,Actual speed electr. water pump,actual_speed_electr_water_pump,Cooling,Measured speed of the electric coolant pump.,rpm,standard,high,,
+11,Actual value exhaust spread BMW,actual_value_exhaust_spread_bmw,VANOS,Measured exhaust camshaft position (BMW spread definition).,°CRK,core,high,5,Compare with Target angle camshaft exhaust closes.
+12,Actual value intake spread BMW,actual_value_intake_spread_bmw,VANOS,Measured intake camshaft position (BMW spread definition).,°CRK,core,high,5,Compare with Target angle (inlet VANOS).
+13,Actual value of the eccentric angle VVT,actual_value_of_the_eccentric_angle_vvt,Valvetronic,"Measured Valvetronic eccentric-shaft angle, which sets intake valve lift.",°,core,high,5,Compare with Setpoint eccentric angle VVT (135808).
+14,Actual value of the outlet spread,actual_value_of_the_outlet_spread,VANOS,Measured exhaust camshaft spread (alternative definition).,°CRK,redundant,medium,,
+15,Adjustment of throttle valve model (factor),adjustment_of_throttle_valve_model_factor,Air / throttle,Learned multiplicative correction of the throttle air-flow model (≈1.0 when nominal).,-,static,medium,,Drifts with throttle carbon build-up or air leaks.
+16,Adjustment of throttle valve model (offset),adjustment_of_throttle_valve_model_offset,Air / throttle,Learned additive offset correction of the throttle air-flow model.,kg/h,static,medium,,A large offset can point to an unmetered air leak.
+17,Adjustment range of the eccentric angle,adjustment_range_of_the_eccentric_angle,Valvetronic,Learned Valvetronic eccentric-shaft travel between its end stops.,°,static,medium,,
+18,Air damper - actual position in degrees,air_damper_actual_position_in_degrees,Cooling,"Active grille shutter, actual position (degrees).",°,redundant,medium,,
+19,Air damper - actual position in steps,air_damper_actual_position_in_steps,Cooling,"Active grille shutter, actual position (motor steps).",steps,redundant,medium,,
+20,Air damper - target position in degrees,air_damper_target_position_in_degrees,Cooling,"Active grille shutter, target position (degrees).",°,redundant,medium,,
+21,Air damper - target position in steps,air_damper_target_position_in_steps,Cooling,"Active grille shutter, target position (motor steps).",steps,redundant,medium,,
+22,Air flap - lower air flap status,air_flap_lower_air_flap_status,Cooling,Status of the lower active grille flap.,enum,redundant,medium,,
+23,Air flap - upper air flap status,air_flap_upper_air_flap_status,Cooling,Status of the upper active grille flap.,enum,redundant,medium,,
+24,Air mass flow,air_mass_flow,Air / throttle,Engine air mass flow as calculated by the DME (main load signal).,kg/h,core,high,,
+25,"Air mass flow HFM, corrected and filtered (for calculation of control difference mass flow controller)",air_mass_flow_hfm_corrected_and_filtered_for_calculation_of_control_difference_mass_flow_controller,Air / throttle,Corrected and filtered MAF (HFM) value used by the mass-flow controller diagnosis.,kg/h,static,low,,The N55 normally has no physical MAF; may be modelled or static. Check in a log.
+26,Air mass flow filtered,air_mass_flow_filtered,Air / throttle,Filtered version of Air mass flow.,kg/h,redundant,high,,
+27,Ambient pressure,ambient_pressure,Ambient,Barometric pressure used by the DME.,hPa,standard,high,,Baseline for boost/vacuum calculations.
+28,Ambient pressure from sensor,ambient_pressure_from_sensor,Ambient,Barometric pressure read from the sensor inside the DME.,hPa,redundant,high,,
+29,Ambient pressure sensor voltage (10-bit from ADC),ambient_pressure_sensor_voltage_10_bit_from_adc,Ambient,Raw ADC reading of the barometric sensor.,ADC counts,raw,high,,
+30,Ambient temperature,ambient_temperature,Ambient,Outside air temperature.,°C,standard,high,,Good context tag for each log.
+31,Angle inlet valve opens based on LWOT,angle_inlet_valve_opens_based_on_lwot,VANOS,Intake-valve opening angle relative to gas-exchange TDC (LWOT).,°CRK,standard,medium,,Results from VANOS position.
+32,Average angle of rotation of the camshaft,average_angle_of_rotation_of_the_camshaft,VANOS,Averaged camshaft angle measurement (cam/crank correlation).,°CRK,standard,low,,
+33,Average of the measured values for mass flow diagnosis HFM in the LL,average_of_the_measured_values_for_mass_flow_diagnosis_hfm_in_the_ll,Air / throttle,Idle (LL) average from the MAF plausibility diagnosis.,kg/h,static,low,,Probably only updates during the diagnostic run.
+34,Boost pressure,boost_pressure,Boost,Measured charge pressure upstream of the throttle (absolute).,hPa,core,high,3;4;6,Subtract ambient pressure for gauge boost.
+35,Boost pressure from the sensor as an average,boost_pressure_from_the_sensor_as_an_average,Boost,Averaged boost sensor reading.,hPa,redundant,medium,,
+36,Boost pressure raw value,boost_pressure_raw_value,Boost,Unfiltered boost sensor value.,hPa,raw,medium,,Faster than the filtered value for lift-off analysis.
+37,Boost pressure setpoint,boost_pressure_setpoint,Boost,Boost pressure target requested by the DME.,hPa,core,high,3;6,
+38,Clutch motor torque actual value,clutch_motor_torque_actual_value,Torque,Actual engine torque at the crankshaft/clutch after losses.,Nm,standard,medium,,
+39,Condition Level measurement error from the oil condition sensor,condition_level_measurement_error_from_the_oil_condition_sensor,Oil,Flag: the oil condition/level sensor reports a measurement error.,flag,flag,medium,,
+40,Condition Vanos entrance at the ready,condition_vanos_entrance_at_the_ready,VANOS,Flag: intake VANOS released and ready to control (after oil pressure builds).,flag,flag,medium,,
+41,Condition The probe behind the catalyst is sufficiently heated,condition_the_probe_behind_the_catalyst_is_sufficiently_heated,Exhaust / catalyst,Flag: downstream O2 sensor has reached operating temperature.,flag,flag,high,,Filter downstream-sensor analysis on this.
+42,Condition for detected knockers,condition_for_detected_knockers,Ignition / knock,Flag: knock detected (any cylinder).,flag,flag,high,4,
+43,Condition exhaust flap with resonator,condition_exhaust_flap_with_resonator,Exhaust / catalyst,Exhaust flap state (open/closed).,enum,standard,medium,,
+44,Condition oil sensor failure,condition_oil_sensor_failure,Oil,Flag: oil condition sensor fault.,flag,flag,medium,,
+45,Condition probe ready for operation before cat,condition_probe_ready_for_operation_before_cat,Exhaust / catalyst,"Flag: upstream wideband sensor ready, so closed-loop lambda control is possible.",flag,flag,high,,Use to split open loop from closed loop.
+46,Condition probe ready for operation behind cat,condition_probe_ready_for_operation_behind_cat,Exhaust / catalyst,Flag: downstream sensor ready for operation.,flag,flag,high,,
+47,Condition start request,condition_start_request,Engine status,Flag: engine start requested (start button or auto start-stop restart).,flag,flag,medium,,
+48,Condition super knocker,condition_super_knocker,Ignition / knock,Flag: pre-ignition (super knock / LSPI) detected.,flag,flag,medium,,
+49,Confirmed target speed electr. water pump,confirmed_target_speed_electr_water_pump,Cooling,Speed command acknowledged by the electric coolant pump.,rpm,redundant,medium,,
+50,Control unit temperature,control_unit_temperature,Engine status,Internal temperature of the DME.,°C,standard,high,,
+51,Control difference boost pressure - bank-specific bank 1,control_difference_boost_pressure_bank_specific_bank_1,Boost,Boost control error (setpoint minus actual).,hPa,core,high,,Persistent positive value = underboost.
+52,Coolant temperature,coolant_temperature,Cooling,Engine coolant temperature.,°C,core,high,,
+53,Coolant temperature (sensor value) after low-pass filtering,coolant_temperature_sensor_value_after_low_pass_filtering,Cooling,Low-pass filtered coolant temperature.,°C,redundant,high,,
+54,Coordinated moment for filling,coordinated_moment_for_filling,Torque,"Torque request handed to the air path (slow, charge-based torque path).",Nm,standard,medium,,Gap vs. actual torque shows when the air path lags.
+55,Correction factor for the amount of fuel,correction_factor_for_the_amount_of_fuel,Fuel / lambda,Overall multiplicative correction applied to injected fuel quantity.,-,standard,medium,,
+56,Correction factor height,correction_factor_height,Ambient,Altitude correction factor.,-,static,medium,,
+57,Correction value of the LSU voltage before CAT,correction_value_of_the_lsu_voltage_before_cat,Fuel / lambda,Learned offset correction of the upstream wideband (Bosch LSU) sensor voltage.,V,static,medium,,Large values suggest an ageing upstream sensor.
+58,Correction value shutdown,correction_value_shutdown,Engine status,Correction value learned at engine shutdown (purpose unclear).,-,static,low,,
+59,Crankshaft adaptation exhaust takes place,crankshaft_adaptation_exhaust_takes_place,VANOS,Flag: exhaust cam/crank reference adaptation in progress.,flag,flag,medium,,
+60,Crankshaft adaptation intake takes place,crankshaft_adaptation_intake_takes_place,VANOS,Flag: intake cam/crank reference adaptation in progress.,flag,flag,medium,,
+61,Cross slope (estimated) in degrees,cross_slope_estimated_in_degrees,Ambient,Estimated lateral (side) slope of the car.,°,standard,low,,Affects oil level readings.
+62,Degree of utilization generator 1,degree_of_utilization_generator_1,Electrical / charging,Alternator load (field duty).,%,standard,high,,
+63,Delta probe offset master control,delta_probe_offset_master_control,Fuel / lambda,Trim correction from the downstream sensor applied to upstream lambda control.,V,standard,medium,,Drifting value points to upstream sensor or cat ageing.
+64,Difference between ambient pressure and brake booster pressure from pressure sensor (raw value),difference_between_ambient_pressure_and_brake_booster_pressure_from_pressure_sensor_raw_value,Air / throttle,"Brake booster vacuum (ambient minus booster pressure), raw.",hPa,standard,medium,,Booster/vacuum-pump health.
+65,Differential pressure in front of the throttle valve between the start and the end of the dynamic test SSP,differential_pressure_in_front_of_the_throttle_valve_between_the_start_and_the_end_of_the_dynamic_test_ssp,Boost,Result of a dynamic plausibility test on the pre-throttle pressure sensor.,hPa,static,low,,Only changes when the test runs.
+66,Engine oil level,engine_oil_level,Oil,Oil level from the oil condition sensor.,mm,standard,medium,,Unit/scale to confirm against the dipstick.
+67,Engine speed,engine_speed,Engine status,Engine speed.,rpm,core,high,1;2;3;4;5;6,Master time-base parameter for almost every preset.
+68,Electric Fuel Pump,electric_fuel_pump,Fuel / injection,Command/state of the in-tank low-pressure fuel pump (EKP).,%,standard,medium,,
+69,Effective engine power,effective_engine_power,Torque,Calculated current engine power output.,kW,standard,medium,,
+70,Engine starting temperature,engine_starting_temperature,Engine status,Coolant temperature at engine start.,°C,core,high,,Key tag for sorting cold-start logs.
+71,Exhaust camshaft position,exhaust_camshaft_position,VANOS,Measured exhaust camshaft position.,°CRK,redundant,medium,,
+72,Exhaust gas temperature according to KAT from model,exhaust_gas_temperature_according_to_kat_from_model,Exhaust / catalyst,Modelled exhaust gas temperature at the catalyst.,°C,standard,low,,"Model value, not a sensor."
+73,Exhaust gas temperature behind main catalyst from model,exhaust_gas_temperature_behind_main_catalyst_from_model,Exhaust / catalyst,Modelled exhaust gas temperature downstream of the main catalyst.,°C,standard,medium,,"Model value, not a sensor."
+74,Exhaust valve angle closes based on LWOT,exhaust_valve_angle_closes_based_on_lwot,VANOS,Exhaust-valve closing angle relative to gas-exchange TDC.,°CRK,standard,medium,,Results from exhaust VANOS position.
+75,Factor from lambda control adaptation for bank 1,factor_from_lambda_control_adaptation_for_bank_1,Fuel / lambda,"Long-term mixture adaptation (LTFT equivalent). ≈1.000 healthy; >1 adds fuel, <1 removes.",-,core,high,1;3,
+76,Fast mean value of the lambda control factor,fast_mean_value_of_the_lambda_control_factor,Fuel / lambda,Short-window average of the lambda controller output (smoothed STFT).,-,standard,medium,,
+77,Filtered rail pressure actual value (absolute pressure),filtered_rail_pressure_actual_value_absolute_pressure,Fuel / injection,Filtered high-pressure fuel rail pressure (absolute).,bar,core,high,2,
+78,Filtered spark burning time cylinder 1,filtered_spark_burning_time_cylinder_1,Ignition / knock,"Measured spark burn duration, cylinder 1 (coil diagnosis).",ms,standard,medium,,Compare cylinders: an outlier points to a plug or coil.
+79,Filtered spark burning time cylinder 2,filtered_spark_burning_time_cylinder_2,Ignition / knock,"Measured spark burn duration, cylinder 2.",ms,standard,medium,,
+80,Filtered spark burning time cylinder 3,filtered_spark_burning_time_cylinder_3,Ignition / knock,"Measured spark burn duration, cylinder 3.",ms,standard,medium,,
+81,Filtered spark burning time cylinder 4,filtered_spark_burning_time_cylinder_4,Ignition / knock,"Measured spark burn duration, cylinder 4.",ms,standard,medium,,
+82,Filtered spark burning time cylinder 5,filtered_spark_burning_time_cylinder_5,Ignition / knock,"Measured spark burn duration, cylinder 5.",ms,standard,medium,,Worth tracking after the cylinder 5 coil replacement.
+83,Filtered spark burning time cylinder 6,filtered_spark_burning_time_cylinder_6,Ignition / knock,"Measured spark burn duration, cylinder 6.",ms,standard,medium,,
+84,Filtering pressure difference ambient pressure - intake manifold pressure,filtering_pressure_difference_ambient_pressure_intake_manifold_pressure,Air / throttle,Filtered manifold vacuum (ambient minus manifold pressure).,hPa,standard,medium,,
+85,Firing angle cylinder 1,firing_angle_cylinder_1,Ignition / knock,Ignition angle applied to cylinder 1.,°CRK,redundant,medium,,
+86,Fuel mass flow,fuel_mass_flow,Fuel / injection,Injected fuel mass flow.,kg/h,core,medium,3,Unit to confirm (kg/h or mg/stroke).
+87,Fuel mass homogeneous as setpoint 0,fuel_mass_homogeneous_as_setpoint_0,Fuel / injection,Fuel mass setpoint for injection pulse 0 (homogeneous mode).,mg,redundant,medium,,
+88,Fuel mass homogeneous as setpoint 1,fuel_mass_homogeneous_as_setpoint_1,Fuel / injection,Fuel mass setpoint for injection pulse 1.,mg,redundant,medium,,
+89,Fuel mass homogeneous as setpoint 4,fuel_mass_homogeneous_as_setpoint_4,Fuel / injection,Fuel mass setpoint for injection pulse 4.,mg,redundant,medium,,
+90,Fuel mass homogeneous as target value 2,fuel_mass_homogeneous_as_target_value_2,Fuel / injection,Fuel mass target for injection pulse 2.,mg,redundant,medium,,
+91,Fuel mass homogeneous as target value 3,fuel_mass_homogeneous_as_target_value_3,Fuel / injection,Fuel mass target for injection pulse 3.,mg,redundant,medium,,
+92,Fuel mass homogeneous as target value 5,fuel_mass_homogeneous_as_target_value_5,Fuel / injection,Fuel mass target for injection pulse 5.,mg,redundant,medium,,
+93,Gear sensor error message,gear_sensor_error_message,Drivetrain,Error status of the gear sensor.,flag,flag,medium,,
+94,Generator speed,generator_speed,Electrical / charging,Alternator speed (proportional to engine speed).,rpm,redundant,high,,
+95,Idle control condition,idle_control_condition,Engine status,Idle speed controller state (active / inactive).,enum,flag,medium,,Use to isolate idle segments.
+96,Idle speed learned,idle_speed_learned,Engine status,Learned idle adaptation value.,-,static,low,,
+97,Ignition angle output,ignition_angle_output,Ignition / knock,Ignition angle sent to the coils (global).,°CRK,redundant,medium,,Close to Actual ignition angle.
+98,Injection mode 0,injection_mode_0,Fuel / injection,"Mode of injection pulse 0 (e.g. intake or compression stroke, off).",enum,redundant,medium,,
+99,Injection mode 1,injection_mode_1,Fuel / injection,Mode of injection pulse 1.,enum,redundant,medium,,
+100,Injection mode 2,injection_mode_2,Fuel / injection,Mode of injection pulse 2.,enum,redundant,medium,,
+101,Injection mode 3,injection_mode_3,Fuel / injection,Mode of injection pulse 3.,enum,redundant,medium,,
+102,Injection mode 4,injection_mode_4,Fuel / injection,Mode of injection pulse 4.,enum,redundant,medium,,
+103,Injection mode 5,injection_mode_5,Fuel / injection,Mode of injection pulse 5.,enum,redundant,medium,,
+104,Inlet camshaft position,inlet_camshaft_position,VANOS,Measured intake camshaft position.,°CRK,redundant,medium,,
+105,Inlet valve lift setpoint filtered,inlet_valve_lift_setpoint_filtered,Valvetronic,"Target intake valve lift (Valvetronic), filtered.",mm,core,high,5,
+106,Intake air temperature,intake_air_temperature,Air / throttle,Charge-air temperature downstream of the intercooler.,°C,core,high,4;6,Heat-soak indicator.
+107,Intake manifold absolute pressure,intake_manifold_absolute_pressure,Air / throttle,Intake manifold absolute pressure as used by the DME.,hPa,core,high,6,
+108,Intake manifold absolute pressure measured,intake_manifold_absolute_pressure_measured,Air / throttle,Measured intake manifold pressure (sensor).,hPa,redundant,high,,
+109,Intake manifold pressure measured with pressure sensor on the intake manifold (DS-S),intake_manifold_pressure_measured_with_pressure_sensor_on_the_intake_manifold_ds_s,Air / throttle,Manifold pressure straight from the manifold sensor (DS-S).,hPa,redundant,medium,,
+110,Intake manifold pressure sensor voltage,intake_manifold_pressure_sensor_voltage,Air / throttle,Raw voltage of the manifold pressure sensor.,V,raw,high,,
+111,Interval counter for emissions-related misfires,interval_counter_for_emissions_related_misfires,Misfire,Counter of evaluation intervals for emissions-related misfire monitoring.,count,counter,medium,,Context for the misfire counters.
+112,Is position electrical wastegate,is_position_electrical_wastegate,Boost,Actual position of the electric wastegate actuator ('Is' = actual).,%,core,high,6,
+113,KW angular offset when starting the engine,kw_angular_offset_when_starting_the_engine,Engine status,Crankshaft (KW) angle offset learned at engine start/sync.,°CRK,static,low,,
+114,Lambda actual value,lambda_actual_value,Fuel / lambda,"Measured upstream lambda (wideband). 1.00 = stoichiometric, <1 rich, >1 lean.",λ,core,high,1;3,
+115,Lambda probe actual value,lambda_probe_actual_value,Fuel / lambda,Upstream sensor lambda (possibly less processed than Lambda actual value).,λ,redundant,medium,,
+116,Lambda controller output,lambda_controller_output,Fuel / lambda,Closed-loop lambda controller correction (STFT equivalent). ≈1.00 neutral.,-,core,high,1,
+117,Lambda probe voltage (4.88mV / LSB) behind the catalytic converter,lambda_probe_voltage_4_88mv_lsb_behind_the_catalytic_converter,Exhaust / catalyst,"Downstream O2 sensor voltage (alternative channel, 4.88 mV resolution).",V,redundant,high,,Equivalent to the ADC voltage channel.
+118,Lambda setpoint based on the installation location of the lambda sensor,lambda_setpoint_based_on_the_installation_location_of_the_lambda_sensor,Fuel / lambda,Target lambda at the upstream sensor location.,λ,core,high,1;3,
+119,Level of the left half of the tank,level_of_the_left_half_of_the_tank,Fuel / injection,"Fuel level, left half of the saddle tank.",l,redundant,high,,
+120,Lambda target limitation,lambda_target_limitation,Fuel / lambda,Limit applied to the lambda target (e.g. component-protection enrichment).,λ,standard,low,,
+121,Level of the right half of the tank,level_of_the_right_half_of_the_tank,Fuel / injection,"Fuel level, right half of the saddle tank.",l,redundant,high,,
+122,Low pass filtered intake manifold pressure,low_pass_filtered_intake_manifold_pressure,Air / throttle,Low-pass filtered manifold pressure.,hPa,redundant,high,,
+123,Mass flow HFM,mass_flow_hfm,Air / throttle,MAF (HFM) mass flow.,kg/h,static,low,,Same N55 caveat: probably no physical MAF.
+124,Mass flow of tank ventilation into the intake manifold,mass_flow_of_tank_ventilation_into_the_intake_manifold,EVAP / tank,Purge flow from the EVAP canister into the intake.,kg/h,standard,medium,,Can bias lambda at idle.
+125,Mass flow through throttle valve bank 1,mass_flow_through_throttle_valve_bank_1,Air / throttle,Modelled air mass flow through the throttle.,kg/h,core,high,6,
+126,Medium voltage rail pressure sensor,medium_voltage_rail_pressure_sensor,Fuel / injection,Average signal voltage of the rail pressure sensor ('Mittel' translated as 'medium').,V,raw,medium,,
+127,Min. Pump current for gross leak measurement,min_pump_current_for_gross_leak_measurement,EVAP / tank,Reference pump current from the EVAP leak test (DMTL).,mA,static,medium,,
+128,Misfire detection counter cylinder 1,misfire_detection_counter_cylinder_1,Misfire,"Emissions misfire counter, cylinder 1.",count,core,high,1;2,
+129,Misfire detection counter cylinder 2,misfire_detection_counter_cylinder_2,Misfire,"Emissions misfire counter, cylinder 2.",count,core,high,1;2,
+130,Misfire detection counter cylinder 3,misfire_detection_counter_cylinder_3,Misfire,"Emissions misfire counter, cylinder 3.",count,core,high,1;2,
+131,Misfire detection counter cylinder 4,misfire_detection_counter_cylinder_4,Misfire,"Emissions misfire counter, cylinder 4.",count,core,high,1;2,
+132,Misfire detection counter cylinder 5,misfire_detection_counter_cylinder_5,Misfire,"Emissions misfire counter, cylinder 5.",count,core,high,1;2,
+133,Misfire detection counter cylinder 6,misfire_detection_counter_cylinder_6,Misfire,"Emissions misfire counter, cylinder 6.",count,core,high,1;2,
+134,"Motor speed, high resolution",motor_speed_high_resolution,Engine status,High-resolution engine speed.,rpm,redundant,high,,
+135,Motor temperature reference value from model,motor_temperature_reference_value_from_model,Engine status,Modelled engine (component) temperature reference.,°C,standard,low,,
+136,Normalized accelerator pedal angle,normalized_accelerator_pedal_angle,Engine status,"Accelerator pedal position, 0-100 %.",%,core,high,1;2;3;4;5;6,Main driver-input channel.
+137,Nominal voltage regulator generator 1,nominal_voltage_regulator_generator_1,Electrical / charging,Alternator target voltage commanded by the DME.,V,standard,high,,Compare with the multimeter check.
+138,Normalized reference level knock control cylinder 1,normalized_reference_level_knock_control_cylinder_1,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 1.",-,standard,medium,4,
+139,Normalized heating output of the lambda probe behind cat,normalized_heating_output_of_the_lambda_probe_behind_cat,Exhaust / catalyst,Heater output for the downstream O2 sensor.,%,standard,medium,,
+140,Normalized reference level knock control cylinder 2,normalized_reference_level_knock_control_cylinder_2,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 2.",-,standard,medium,4,
+141,Normalized reference level knock control cylinder 3,normalized_reference_level_knock_control_cylinder_3,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 3.",-,standard,medium,4,
+142,Normalized reference level knock control cylinder 4,normalized_reference_level_knock_control_cylinder_4,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 4.",-,standard,medium,4,
+143,Normalized reference level of knock control cylinder 5,normalized_reference_level_of_knock_control_cylinder_5,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 5.",-,standard,medium,4,
+144,Normalized reference level of knock control cylinder 6,normalized_reference_level_of_knock_control_cylinder_6,Ignition / knock,"Normalised knock-sensor background noise level, cylinder 6.",-,standard,medium,4,
+145,Number of VVT emergency runs,number_of_vvt_emergency_runs,Valvetronic,Count of Valvetronic emergency (limp-home) runs.,count,static,medium,,
+146,Number of VVT emergency runs until replacement,number_of_vvt_emergency_runs_until_replacement,Valvetronic,Remaining/threshold count of emergency runs before replacement is flagged.,count,static,low,,
+147,Number of dense EVAP systems recognized by diagnosis,number_of_dense_evap_systems_recognized_by_diagnosis,EVAP / tank,Count of passed (leak-tight) EVAP tests.,count,static,medium,,Appears twice in the CSV.
+148,Number of dense EVAP systems recognized by diagnosis,number_of_dense_evap_systems_recognized_by_diagnosis_2,EVAP / tank,Count of passed (leak-tight) EVAP tests (second instance).,count,static,medium,,Duplicate label: disambiguate by column index.
+149,Number of detected VVT position control error warnings reversible,number_of_detected_vvt_position_control_error_warnings_reversible,Valvetronic,Count of reversible Valvetronic position-control warnings.,count,static,medium,,
+150,Number of detected VVT position control errors,number_of_detected_vvt_position_control_errors,Valvetronic,Count of Valvetronic position-control errors.,count,static,medium,,
+151,Number of recognized VVT position control error warnings irreversible,number_of_recognized_vvt_position_control_error_warnings_irreversible,Valvetronic,Count of irreversible Valvetronic position-control warnings.,count,static,medium,,
+152,Offset corrected probe voltage in front of the catalyst of a broadband lambda probe,offset_corrected_probe_voltage_in_front_of_the_catalyst_of_a_broadband_lambda_probe,Fuel / lambda,Upstream wideband sensor voltage after offset correction.,V,raw,medium,,
+153,Oil pressure,oil_pressure,Oil,Engine oil pressure.,bar,core,medium,,Absolute or gauge to confirm against the absolute channel.
+154,Oil condition sensor status,oil_condition_sensor_status,Oil,Status of the oil condition sensor.,enum,flag,medium,,
+155,Oil temperature,oil_temperature,Oil,Engine oil temperature.,°C,core,high,1;2,Best warm-up indicator.
+156,Output duty cycle for the tank ventilation valve,output_duty_cycle_for_the_tank_ventilation_valve,EVAP / tank,Duty cycle of the purge valve.,%,standard,high,,
+157,Output ignition angle 0,output_ignition_angle_0,Ignition / knock,"Ignition angle output, index 0 (per cylinder, firing-order index).",°CRK,redundant,medium,,
+158,Output ignition angle 1,output_ignition_angle_1,Ignition / knock,"Ignition angle output, index 1.",°CRK,redundant,medium,,
+159,Output ignition angle 2,output_ignition_angle_2,Ignition / knock,"Ignition angle output, index 2.",°CRK,redundant,medium,,
+160,Output ignition angle 3,output_ignition_angle_3,Ignition / knock,"Ignition angle output, index 3.",°CRK,redundant,medium,,
+161,Output ignition angle 4,output_ignition_angle_4,Ignition / knock,"Ignition angle output, index 4.",°CRK,redundant,medium,,
+162,Output ignition angle 5,output_ignition_angle_5,Ignition / knock,"Ignition angle output, index 5.",°CRK,redundant,medium,,
+163,Oxygen storage capacity CAT,oxygen_storage_capacity_cat,Exhaust / catalyst,Catalyst oxygen storage capacity from the cat-efficiency diagnosis.,-,static,low,1,"Floor at 50, jumps to 90-95 after fuel cut-off; scale unknown."
+164,Raw value position sensor electrical wastegate,raw_value_position_sensor_electrical_wastegate,Boost,Raw signal from the electric wastegate position sensor.,raw,raw,high,,
+165,Setpoint eccentric angle VVT,setpoint_eccentric_angle_vvt,Valvetronic,Target Valvetronic eccentric-shaft angle.,°,core,high,5,
+166,Set current supply to VVT motor,set_current_supply_to_vvt_motor,Valvetronic,Current commanded to the Valvetronic motor.,A,core,medium,5,High sustained current = sticky shaft or motor.
+167,Spreading inlet VANOS,spreading_inlet_vanos,VANOS,Intake VANOS spread (another representation).,°CRK,redundant,low,,
+168,Signal voltage of the coolant temperature sensor,signal_voltage_of_the_coolant_temperature_sensor,Cooling,Raw voltage of the coolant temperature sensor.,V,raw,high,,
+169,Shutdown time from relative minute counter until engine start,shutdown_time_from_relative_minute_counter_until_engine_start,Engine status,How long the engine was off before this start (soak time).,min,core,high,,Key tag for sorting cold-start logs.
+170,Super knock,super_knock,Ignition / knock,Super-knock (pre-ignition) event count/indicator.,count,counter,medium,,
+171,Target air mass flow,target_air_mass_flow,Air / throttle,Target air mass flow.,kg/h,standard,high,,
+172,Target angle (inlet VANOS),target_angle_inlet_vanos,VANOS,Intake VANOS target position.,°CRK,core,high,5,
+173,Target angle camshaft exhaust closes,target_angle_camshaft_exhaust_closes,VANOS,Exhaust VANOS target (exhaust closing angle).,°CRK,core,high,5,
+174,Target angle camshaft inlet opens,target_angle_camshaft_inlet_opens,VANOS,Intake VANOS target (intake opening angle).,°CRK,standard,high,,
+175,Target differential pressure intake manifold,target_differential_pressure_intake_manifold,Air / throttle,Target pressure difference across the throttle/manifold.,hPa,standard,medium,,
+176,Target idle speed,target_idle_speed,Engine status,Idle speed target.,rpm,standard,high,,
+177,Target ignition angle from torque intervention,target_ignition_angle_from_torque_intervention,Ignition / knock,"Ignition angle requested by torque reduction (shifts, traction control, lift-off).",°CRK,core,high,4,
+178,Target intake manifold pressure,target_intake_manifold_pressure,Air / throttle,Target manifold pressure.,hPa,core,high,6,
+179,Target speed water pump,target_speed_water_pump,Cooling,Requested electric coolant pump speed.,rpm,standard,high,,
+180,Target temperature coolant,target_temperature_coolant,Cooling,Coolant temperature setpoint from heat management (map thermostat).,°C,standard,high,,
+181,"Target value for throttle valve angle, based on (lower) stop",target_value_for_throttle_valve_angle_based_on_lower_stop,Air / throttle,Target throttle opening relative to the lower stop.,%,redundant,high,,Duplicate of the next label.
+182,"Target value for throttle valve angle, based on lower stop",target_value_for_throttle_valve_angle_based_on_lower_stop_2,Air / throttle,Target throttle opening relative to the lower stop.,%,standard,high,,
+183,Throttle valve angle related to the lower stop,throttle_valve_angle_related_to_the_lower_stop,Air / throttle,Actual throttle opening relative to the lower stop.,%,core,high,6,
+184,Throttle valve angle from potentiometer 1,throttle_valve_angle_from_potentiometer_1,Air / throttle,Throttle angle from potentiometer 1 only.,%,redundant,high,,
+185,Throttle angle of the emergency air position,throttle_angle_of_the_emergency_air_position,Air / throttle,Learned limp-home (spring rest) throttle position.,%,static,medium,,
+186,Torque loss monitoring,torque_loss_monitoring,Torque,Torque losses (friction/pumping) in the torque monitoring path.,Nm,standard,low,,
+187,Transmission temperature,transmission_temperature,Drivetrain,Gearbox oil temperature.,°C,standard,high,,
+188,Uneven running cylinder 2,uneven_running_cylinder_2,Misfire,"Crank-speed roughness value, cylinder 2 (fast misfire indicator).",-,core,high,1b,
+189,Uneven running cylinder 3,uneven_running_cylinder_3,Misfire,"Crank-speed roughness value, cylinder 3.",-,core,high,1b,
+190,Uneven running cylinder 4,uneven_running_cylinder_4,Misfire,"Crank-speed roughness value, cylinder 4.",-,core,high,1b,
+191,Uneven running cylinder 5,uneven_running_cylinder_5,Misfire,"Crank-speed roughness value, cylinder 5.",-,core,high,1b,
+192,Uneven running cylinder 6,uneven_running_cylinder_6,Misfire,"Crank-speed roughness value, cylinder 6.",-,core,high,1b,
+193,Uneven running of cylinder 1,uneven_running_of_cylinder_1,Misfire,"Crank-speed roughness value, cylinder 1 (fast misfire indicator).",-,core,high,1b,
+194,Unfiltered low pressure raw value,unfiltered_low_pressure_raw_value,Fuel / injection,"Low-pressure fuel feed (before the HPFP), unfiltered.",bar,core,medium,3,Unit/scale to confirm (raw).
+195,Unfiltered rail pressure actual value (abs.),unfiltered_rail_pressure_actual_value_abs,Fuel / injection,Unfiltered high-pressure rail pressure (absolute). Best for transients.,bar,core,high,2;3,
+196,VVT motor rotor position,vvt_motor_rotor_position,Valvetronic,Valvetronic motor rotor position sensor value.,°,standard,medium,5,
+197,"VVT overload, stuck actuator",vvt_overload_stuck_actuator,Valvetronic,Flag/counter: Valvetronic actuator overloaded or stuck.,flag,flag,medium,,
+198,VVT electricity,vvt_electricity,Valvetronic,Actual Valvetronic motor current.,A,standard,medium,,
+199,VVT overloaded,vvt_overloaded,Valvetronic,Flag: Valvetronic motor thermal overload.,flag,flag,medium,,
+200,"VVT position control, vibration detected",vvt_position_control_vibration_detected,Valvetronic,Flag: oscillation detected in Valvetronic position control.,flag,flag,medium,,
+201,VVT stop learning status,vvt_stop_learning_status,Valvetronic,Status of the Valvetronic end-stop learning.,enum,static,medium,,Check after a Valvetronic intervention.
+202,Voltage throttle valve potentiometer 2,voltage_throttle_valve_potentiometer_2,Air / throttle,"Raw voltage, throttle potentiometer 2.",V,raw,high,,
+203,Voltage throttle valve potentiometer 1,voltage_throttle_valve_potentiometer_1,Air / throttle,"Raw voltage, throttle potentiometer 1.",V,raw,high,,
+204,Voltage pressure sensor in front of throttle valve,voltage_pressure_sensor_in_front_of_throttle_valve,Boost,Raw voltage of the boost (pre-throttle) pressure sensor.,V,raw,high,,
+205,Voltage of rear cat sensor Lambda HEGO,voltage_of_rear_cat_sensor_lambda_hego,Exhaust / catalyst,Downstream O2 sensor voltage (HEGO channel).,V,broken,high,,Reads 0 constantly on this car (tested 2026-11-07). Do not use.
+206,Voltage knock values cylinder 5,voltage_knock_values_cylinder_5,Ignition / knock,Knock-sensor signal level attributed to cylinder 5.,V,standard,low,,
+207,Voltage knock values cylinder 2,voltage_knock_values_cylinder_2,Ignition / knock,Knock-sensor signal level attributed to cylinder 2.,V,standard,low,,
+208,Voltage PWG potentiometer 1,voltage_pwg_potentiometer_1,Engine status,"Raw voltage, accelerator pedal sensor 1 (PWG).",V,raw,high,,
+209,Voltage PWG potentiometer 2,voltage_pwg_potentiometer_2,Engine status,"Raw voltage, accelerator pedal sensor 2 (PWG).",V,raw,high,,
+210,Voltage behind VVT / motor relay,voltage_behind_vvt_motor_relay,Electrical / charging,Supply voltage after the Valvetronic/engine relay. Good proxy for system voltage.,V,standard,high,5,

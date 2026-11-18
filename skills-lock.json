@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "skills": {
+    "code-documenter": {
+      "source": "Jeffallan/claude-skills",
+      "commit": "67c1961b180dc92cf08983344627109e983e8f51",
+      "sourceType": "github",
+      "skillPath": "skills/code-documenter/SKILL.md",
+      "computedHash": "754d31e0ca085d66112ba9e22e649044018fabb74e8a48fdec0d3c00ecd5e684"
+    },
+    "code-reviewer": {
+      "source": "Jeffallan/claude-skills",
+      "commit": "67c1961b180dc92cf08983344627109e983e8f51",
+      "sourceType": "github",
+      "skillPath": "skills/code-reviewer/SKILL.md",
+      "computedHash": "022b0f910d898f56f85a4f18dfbd80283e1bf2f874129f06a6680ccc59427652"
+    },
+    "fastapi-expert": {
+      "source": "Jeffallan/claude-skills",
+      "commit": "67c1961b180dc92cf08983344627109e983e8f51",
+      "sourceType": "github",
+      "skillPath": "skills/fastapi-expert/SKILL.md",
+      "computedHash": "279f48f13807bd301f2f9c97efd1a9ae1bc5074ea9ccfb4fced3e22f44ae8e37"
+    },
+    "react-expert": {
+      "source": "Jeffallan/claude-skills",
+      "commit": "67c1961b180dc92cf08983344627109e983e8f51",
+      "sourceType": "github",
+      "skillPath": "skills/react-expert/SKILL.md",
+      "computedHash": "8b20778946db532ad7f72f2158f45424016ef4aff14ead1eec276384cfb8add7"
+    }
+  }
+}
