@@ -1,0 +1,71 @@
+name: Bug
+description: Something does not work as specified.
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never attach a full personal datalog. If a log is needed to reproduce, name the file from `Example/`
+        or describe its header (columns, row count) instead.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: What you saw, in one or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps, including which log file you used.
+      placeholder: |
+        1. Open the app
+        2. Drop `Example/<file>.csv`
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should have happened, ideally referring to the acceptance criterion of the story.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead. Paste console errors if any.
+    validations:
+      required: true
+  - type: input
+    id: story
+    attributes:
+      label: Related story
+      description: Issue number of the story this regresses, if known.
+      placeholder: '#12'
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Becomes the `area:*` label (apply it after creating the issue).
+      options:
+        - area:foundation
+        - area:ingest
+        - area:catalog
+        - area:charts
+        - area:selection
+        - area:interaction
+        - area:scale
+        - area:nfr
+        - area:session
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser and version, operating system, app version or commit.
+      placeholder: Chrome 140, Windows 11, commit 7d98560
+    validations:
+      required: true
