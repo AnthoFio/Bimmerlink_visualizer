@@ -13,7 +13,7 @@ Load them from tests with the helpers in `src/test/fixtures.ts`
 
 - First column `Time` (seconds, 3 decimals), then quoted parameter labels; plain LF line endings, no BOM.
 - Label casing differs between logs (`Engine speed` vs `Engine Speed`).
-- Channels start at `0` and ramp up as their first sample arrives, then sample-and-hold.
+- Most channels start at `0` and ramp up as their first sample arrives, then sample-and-hold. A few start non-zero in row 0: the lambda adaptation factor `1.03` in `trimmed_2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in `trimmed_2026-10-24_12-29-08.csv`.
 
 ## Trimmed logs (one per distinct example log)
 

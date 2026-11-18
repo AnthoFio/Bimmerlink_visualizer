@@ -142,7 +142,7 @@ describe('AGENTS.md facts', () => {
     }
   })
 
-  it('does not claim that every channel starts at 0 (some Example logs start non-zero)', () => {
+  it('docs do not claim that every channel starts at 0 (some Example logs start non-zero)', () => {
     const exampleDir = `${root}Example`
     const initialValues = new Set<string>()
     for (const file of readdirSync(exampleDir).filter((name) => name.endsWith('.csv'))) {
@@ -153,9 +153,18 @@ describe('AGENTS.md facts', () => {
     }
 
     expect(initialValues.size, 'the Example logs have non-zero first samples').toBeGreaterThan(0)
-    expect(agents).not.toMatch(/every channel starts at/i)
-    for (const value of initialValues) {
-      expect(agents, `non-zero initial value ${value}`).toContain(value)
+    // Same facts must hold in every doc that talks about the ramp-up, not just AGENTS.md.
+    for (const doc of ['AGENTS.md', 'tests/fixtures/README.md']) {
+      const text = read(doc)
+      expect(text, `${doc} must not say every channel starts at 0`).not.toMatch(
+        /every channel starts at/i,
+      )
+      expect(text, `${doc} must not say channels start at 0 without "most"`).not.toMatch(
+        /(?<!most )channels start at `?0/i,
+      )
+      for (const value of initialValues) {
+        expect(text, `${doc}: non-zero initial value ${value}`).toContain(value)
+      }
     }
   })
 

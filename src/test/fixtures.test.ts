@@ -89,17 +89,20 @@ describe('trimmed fixtures from the example logs', () => {
     },
   )
 
-  it.each(trimmed)('%s -> %s keeps the ramp-up (channels start at 0)', (_ex, fixture) => {
-    const rows = linesOf(loadFixtureText(fixture))
-      .slice(1)
-      .map((l) => l.split(',').map(Number))
-    const nonZero = (row: number[]) => row.slice(1).filter((v) => v !== 0).length
-    const first = rows[0] ?? []
-    const last = rows.at(-1) ?? []
-    expect(first[0]).toBe(0) // Time starts at 0.000
-    expect(first.slice(1).some((v) => v === 0)).toBe(true)
-    expect(nonZero(last)).toBeGreaterThan(nonZero(first))
-  })
+  it.each(trimmed)(
+    '%s -> %s keeps the ramp-up (time starts at 0, some channels start at 0, more are active at the end)',
+    (_ex, fixture) => {
+      const rows = linesOf(loadFixtureText(fixture))
+        .slice(1)
+        .map((l) => l.split(',').map(Number))
+      const nonZero = (row: number[]) => row.slice(1).filter((v) => v !== 0).length
+      const first = rows[0] ?? []
+      const last = rows.at(-1) ?? []
+      expect(first[0]).toBe(0) // Time starts at 0.000
+      expect(first.slice(1).some((v) => v === 0)).toBe(true)
+      expect(nonZero(last)).toBeGreaterThan(nonZero(first))
+    },
+  )
 
   it('preserves the label casing difference between logs', () => {
     const labels = (f: string) => columnsOf(loadFixtureText(f)).map(unquote)
