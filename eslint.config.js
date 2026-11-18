@@ -7,7 +7,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig([
-  // Never lint build output, coverage, example logs, fixtures or the catalog.
+  // Never lint build output, coverage, example logs, fixtures or third-party agent skills.
   globalIgnores([
     'dist',
     'coverage',
@@ -15,6 +15,8 @@ export default defineConfig([
     'test-results',
     'Example',
     'tests/fixtures',
+    '.claude',
+    '.agents',
   ]),
   {
     files: ['**/*.{ts,tsx}'],
