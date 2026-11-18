@@ -45,9 +45,12 @@ type Form = {
 }
 
 const byFile = (name: string) => name.split('/').pop() ?? name
+// GitHub parses issue forms as YAML 1.1, where an unquoted Yes/No/On/Off is a boolean.
+// The default parser (YAML 1.2) would hide that, so parse the way GitHub does.
+const parseLikeGitHub = (raw: string) => parse(raw, { version: '1.1' })
 const forms = Object.entries(rawFiles)
   .filter(([path]) => byFile(path) !== 'config.yml')
-  .map(([path, raw]) => ({ file: byFile(path), form: parse(raw) as Form }))
+  .map(([path, raw]) => ({ file: byFile(path), form: parseLikeGitHub(raw) as Form }))
 
 // Type label each form must apply (taxonomy in docs/process/labels-and-board.md).
 const TYPE_LABEL: Record<string, string> = {
@@ -65,7 +68,7 @@ describe('issue forms', () => {
   it('disables blank issues so every issue starts from a form', () => {
     const configPath = Object.keys(rawFiles).find((p) => byFile(p) === 'config.yml')
     expect(configPath).toBeDefined()
-    const config = parse(rawFiles[configPath as string] as string) as {
+    const config = parseLikeGitHub(rawFiles[configPath as string] as string) as {
       blank_issues_enabled?: boolean
     }
     expect(config.blank_issues_enabled).toBe(false)
@@ -115,12 +118,29 @@ describe('issue forms', () => {
       for (const item of (form.body ?? []).filter((i) => i.type === 'dropdown')) {
         const options = item.attributes?.options ?? []
         expect(options.length, `options of ${item.id}`).toBeGreaterThan(0)
+        for (const option of options) {
+          expect(typeof option, `option ${String(option)} of ${item.id} must be a string`).toBe(
+            'string',
+          )
+        }
         expect(new Set(options).size).toBe(options.length)
         if (item.attributes?.default !== undefined) {
           expect(item.attributes.default).toBeLessThan(options.length)
         }
       }
     })
+  })
+
+  it('asks for a required area on features, stories and bugs, and not on epics', () => {
+    for (const { file, form } of forms) {
+      const area = (form.body ?? []).find((i) => i.id === 'area')
+      if (file === 'epic.yml') {
+        expect(area, 'epic has no area').toBeUndefined()
+      } else {
+        expect(area?.type, `${file} area`).toBe('dropdown')
+        expect(area?.validations?.required, `${file} area required`).toBe(true)
+      }
+    }
   })
 
   it('user story form encodes story, acceptance criteria and definition of done', () => {
@@ -146,6 +166,14 @@ describe('pull request template', () => {
 })
 
 describe('labels and board documentation', () => {
+  it('states the area rule: one per feature, story and bug, none on epics', () => {
+    expect(labelsDoc).not.toMatch(/exactly one type label and one `area:\*` label/)
+    expect(labelsDoc).toMatch(
+      /Every feature, story and bug also carries exactly one `area:\*` label/,
+    )
+    expect(labelsDoc).toMatch(/epics have none/)
+  })
+
   it('documents every label the issue forms apply', () => {
     for (const { form } of forms) {
       for (const label of form.labels ?? []) {

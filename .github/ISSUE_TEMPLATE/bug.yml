@@ -61,6 +61,8 @@ body:
         - area:scale
         - area:nfr
         - area:session
+    validations:
+      required: true
   - type: input
     id: environment
     attributes:
