@@ -1,0 +1,18 @@
+# Byte-exact data: never reformat.
+Example/
+tests/fixtures/
+bimmerlink_n55_parameter_catalog.csv
+bimmerlink_n55_parameter_catalog.json
+
+# Generated / vendored / lock files
+package-lock.json
+dist/
+coverage/
+playwright-report/
+test-results/
+node_modules/
+
+# Agent skill bundles are third-party content
+.agents/
+.claude/
+skills-lock.json

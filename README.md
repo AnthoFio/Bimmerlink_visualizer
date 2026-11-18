@@ -15,6 +15,35 @@ npm run build     # type-check (tsc -b) and production build into dist/
 npm run preview   # serve the production build (http://localhost:4173)
 ```
 
+## Quality gates
+
+```sh
+npm run check         # everything below in one go: lint + format:check + typecheck + test
+npm run lint          # ESLint (typescript-eslint, react-hooks, react-refresh); lint:fix applies fixes
+npm run format        # Prettier, write; format:check only verifies (used by check)
+npm run typecheck     # tsc -b (TypeScript 7)
+npm run test          # Vitest + Testing Library + jsdom, single run; test:watch for watch mode
+```
+
+Run `npm run check` and `npm run build` before opening a PR.
+Tests live next to the code as `*.test.ts(x)`; shared setup is in `src/test/setup.ts`.
+
+A pre-commit hook (husky + lint-staged) lints and formats the staged files; it is installed automatically by `npm install` / `npm ci` (the `prepare` script).
+Never bypass it with `--no-verify`; set `HUSKY=0` only for tooling that must skip hook installation.
+`Example/`, `tests/fixtures/`, the parameter catalog and lock files are excluded from ESLint and Prettier, so they are never reformatted.
+
+### TypeScript 7 and typescript-eslint
+
+`typescript-eslint` still needs the TypeScript 6 JavaScript API and refuses to run on TypeScript 7
+(see [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
+Following Microsoft's side-by-side guidance, `package.json` therefore aliases:
+
+- `typescript` -> `@typescript/typescript6` (the TS 6 API that typescript-eslint imports),
+- `typescript7` -> `typescript@~7.0` (the native compiler used for `typecheck` and `build`).
+
+The scripts call `node ./node_modules/typescript7/bin/tsc` explicitly, because the bare `tsc` bin name is claimed by the TS 6 package and must not be used.
+Once typescript-eslint supports TypeScript 7, drop the `typescript7` alias and point `typescript` back at `~7.x`.
+
 ## Folder structure
 
 ```text
