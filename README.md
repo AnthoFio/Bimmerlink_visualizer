@@ -27,6 +27,7 @@ npm run test          # Vitest + Testing Library + jsdom, single run; test:watch
 
 Run `npm run check` and `npm run build` before opening a PR.
 Agent and contributor conventions (architecture, naming, testing, log and catalog facts, story workflow, skills) are in [`AGENTS.md`](AGENTS.md); `CLAUDE.md` just imports it.
+The same checks run in CI on every PR; see [docs/ci.md](docs/ci.md) (incl. the recommended branch protection).
 Tests live next to the code as `*.test.ts(x)`; shared setup is in `src/test/setup.ts`.
 
 A pre-commit hook (husky + lint-staged) lints and formats the staged files; it is installed automatically by `npm install` / `npm ci` (the `prepare` script).
@@ -64,3 +65,7 @@ bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 para
 ```
 
 Line endings: `.gitattributes` normalises text to LF but keeps `Example/**` and `tests/fixtures/**` byte-exact.
+
+## Process
+
+Issue forms, the PR template, the label taxonomy and the project board status flow are described in [docs/process/labels-and-board.md](docs/process/labels-and-board.md).

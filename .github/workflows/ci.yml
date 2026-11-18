@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least privilege: the jobs only need to read the repository.
+permissions:
+  contents: read
+
+# A newer run for the same PR / branch supersedes the older one.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: 'true'
+  NO_COLOR: '1' # plain, grep-able output for humans and agents
+  HUSKY: '0' # no git hooks in CI (the `prepare` script would install them)
+
+jobs:
+  # The job name is what branch protection matches on: require the check named `CI`.
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node (version from .nvmrc, npm cache)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Quality gate (lint, format check, typecheck, unit tests)
+        run: npm run check
+
+      - name: Build
+        run: npm run build

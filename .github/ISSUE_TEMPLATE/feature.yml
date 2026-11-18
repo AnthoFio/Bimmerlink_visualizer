@@ -1,0 +1,66 @@
+name: Feature
+description: A coherent group of user stories that delivers one outcome.
+title: '[Feature] '
+labels: ['feature']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A feature groups user stories under an epic. Add it as a sub-issue of its epic, then add the matching
+        `area:*` label (and `mvp` if it belongs to the first usable release) after creating the issue.
+  - type: input
+    id: epic
+    attributes:
+      label: Parent epic
+      description: Issue number of the epic this feature belongs to.
+      placeholder: '#1'
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Becomes the `area:*` label (apply it after creating the issue).
+      options:
+        - area:foundation
+        - area:ingest
+        - area:catalog
+        - area:charts
+        - area:selection
+        - area:interaction
+        - area:scale
+        - area:nfr
+        - area:session
+    validations:
+      required: true
+  - type: dropdown
+    id: mvp
+    attributes:
+      label: Part of the MVP?
+      description: If yes, apply the `mvp` label after creating the issue.
+      options:
+        - 'Yes'
+        - 'No'
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What the feature does, in a few sentences. Keep it user-visible and testable.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: One observable result that proves the feature is done.
+      placeholder: 'Dropping any file from `Example/` produces a Dataset or a clear, actionable error.'
+    validations:
+      required: true
+  - type: textarea
+    id: stories
+    attributes:
+      label: User stories
+      description: Task list of the stories, one `- [ ] #<number> <title>` per line. Add them as sub-issues too.
