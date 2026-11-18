@@ -99,6 +99,29 @@ describe('ADR 0001: charting library', () => {
     }
   })
 
+  it('does not overstate the uPlot result: reports its observed fps range and the missing run 1', () => {
+    const evidence = section(adr ?? '', 'Evidence') ?? ''
+    expect(evidence).toMatch(/33 to 60 fps/)
+    expect(evidence).toMatch(/decimate.run1/)
+    expect(evidence).toMatch(/uPlot[^.]*variance|variance[^.]*uPlot/i)
+  })
+
+  it('flags that the heap, hover and update numbers are not like-for-like', () => {
+    const evidence = section(adr ?? '', 'Evidence') ?? ''
+    expect(evidence).toMatch(/like-for-like/i)
+    expect(evidence).toMatch(/Float64Array/)
+    expect(evidence).toMatch(/minimap/i)
+    const decision = section(adr ?? '', 'Decision') ?? ''
+    expect(decision).not.toMatch(/5 to 9 times/)
+  })
+
+  it('lists touch / pinch (#43) as not prototyped in the risks', () => {
+    const risks = section(adr ?? '', 'Risks and fallback') ?? ''
+    expect(risks).toMatch(/touch/i)
+    expect(risks).toMatch(/pinch/i)
+    expect(risks).toMatch(/not prototyped|unprototyped/i)
+  })
+
   it('keeps the raw measurements (machine, browser, dataset) in the ADR', () => {
     const evidence = section(adr ?? '', 'Evidence') ?? ''
     expect(evidence).toMatch(/i7-1250U|CPU/)
