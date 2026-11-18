@@ -19,7 +19,7 @@ Issue forms render each field as a `###` heading; the content is the same as in 
 
 ## Labels
 
-Every issue carries exactly one type label and one `area:*` label. The `mvp` label is optional.
+Every issue carries exactly one type label. Every feature, story and bug also carries exactly one `area:*` label; epics have none. The `mvp` label is optional.
 The form applies the type label automatically; add the `area:*` label (and `mvp`) after creating the issue, as GitHub issue forms cannot set labels from a dropdown.
 
 ### Type (one per issue)
@@ -90,5 +90,5 @@ Rules:
 ## Keeping the templates healthy
 
 GitHub silently drops an invalid issue form instead of reporting an error.
-`src/test/github-templates.test.ts` (run by `npm run check`) parses every `.github/ISSUE_TEMPLATE/*.yml` and asserts the required keys, ids, dropdown options and that the labels and status flow documented here match the forms.
+`src/test/github-templates.test.ts` (run by `npm run check`) parses every `.github/ISSUE_TEMPLATE/*.yml` the way GitHub does (YAML 1.1, so an unquoted `Yes` or `No` option becomes a boolean and fails) and asserts the required keys, ids, dropdown options and that the labels and status flow documented here match the forms.
 Change a form, this document or the test together.
