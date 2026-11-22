@@ -23,23 +23,22 @@
   line-height: 1.45;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: #0f1113;
-    --surface: #17191c;
-    --ink: #eceef0;
-    --muted: #aeb5bd;
-    --line: #30353b;
-    --control-line: #737b85;
-    --accent: #8dbbff;
-    --accent-ink: #0b1a2e;
-    --accent-soft: #1b2b40;
-    --error: #ffaaa5;
-    --error-soft: #3a1c1c;
-    --warn: #f3cd75;
-    --warn-soft: #332910;
-  }
+/* Set before the first paint by the theme script of index.html (src/lib/theme.ts). */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1113;
+  --surface: #17191c;
+  --ink: #eceef0;
+  --muted: #aeb5bd;
+  --line: #30353b;
+  --control-line: #737b85;
+  --accent: #8dbbff;
+  --accent-ink: #0b1a2e;
+  --accent-soft: #1b2b40;
+  --error: #ffaaa5;
+  --error-soft: #3a1c1c;
+  --warn: #f3cd75;
+  --warn-soft: #332910;
 }
 
 * {
@@ -724,4 +723,11 @@ button.legend-name {
   gap: 0.4rem;
   align-items: center;
   margin: 0.4rem 0;
+}
+
+.theme-picker {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  font-size: 0.85rem;
 }

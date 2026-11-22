@@ -52,24 +52,39 @@ export function slotColour(slot: number, theme: Theme): string {
 }
 
 /**
- * A palette slot per channel id. Each id prefers the slot of its hash and takes the least used
- * slot from there, in sorted order: the same channels always get the same colours, whatever
- * order the log has them in, and no slot is used twice before all are used once.
+ * Gives a palette slot to each id that has none yet, and keeps the slots that exist: a series
+ * never changes colour while it is shown. A new id prefers the slot of its hash, then the least
+ * used one among the ids that are shown. Ids are taken in sorted order, so the same selection
+ * gets the same colours on every load.
  */
-export function assignSlots(ids: readonly string[], slots = 8): Map<string, number> {
-  const used = new Array<number>(slots).fill(0)
-  const assigned = new Map<string, number>()
-  for (const id of [...new Set(ids)].sort()) {
-    const preferred = hash(id) % slots
+export function extendSlots(
+  slots: ReadonlyMap<string, number>,
+  shown: readonly string[],
+  count = 8,
+): Map<string, number> {
+  const next = new Map(slots)
+  const used = new Array<number>(count).fill(0)
+  for (const id of shown) {
+    const slot = next.get(id)
+    if (slot !== undefined) used[slot]!++
+  }
+  for (const id of [...new Set(shown)].sort()) {
+    if (next.has(id)) continue
+    const preferred = hash(id) % count
     let best = preferred
-    for (let step = 1; step < slots; step++) {
-      const slot = (preferred + step) % slots
+    for (let step = 1; step < count; step++) {
+      const slot = (preferred + step) % count
       if (used[slot]! < used[best]!) best = slot
     }
     used[best]!++
-    assigned.set(id, best)
+    next.set(id, best)
   }
-  return assigned
+  return next
+}
+
+/** The slot a channel would take on its own, for the swatch of a channel that is not shown. */
+export function preferredSlot(id: string, count = 8): number {
+  return hash(id) % count
 }
 
 /** A colour faded back, for the series that are not highlighted. */

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { ThemePicker } from './components/ThemePicker.tsx'
 import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
 import { ChartPanels } from './features/charts/ChartPanels.tsx'
@@ -16,7 +17,7 @@ import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
 import { describeChannels } from './lib/channels.ts'
 import { defaultSelection } from './lib/defaults.ts'
-import { assignSlots, slotColour } from './lib/palette.ts'
+import { extendSlots, preferredSlot, slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { clampWindow, logExtent, resolveWindow } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
@@ -67,15 +68,6 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   const summary = useMemo(() => summarise(dataset), [dataset])
   const extent = useMemo(() => logExtent(dataset.time), [dataset])
   const selected = useMemo(() => new Set(view.selected), [view.selected])
-  const slots = useMemo(() => assignSlots(channels.map((channel) => channel.id)), [channels])
-  const series = view.series
-  const colours = useMemo(() => {
-    const picked = (id: string) => (Object.hasOwn(series, id) ? series[id]!.colour : undefined)
-    return new Map(
-      channels.map(({ id }) => [id, picked(id) ?? slotColour(slots.get(id)!, theme)] as const),
-    )
-  }, [channels, slots, series, theme])
-  const unmatched = channels.filter((channel) => !channel.matched).length
   const visible = useMemo(
     () =>
       channels.filter(
@@ -83,6 +75,25 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       ),
     [channels, selected, view],
   )
+  // Colours stick to a series while it is shown; a newly shown one takes a free colour.
+  const [slots, setSlots] = useState<ReadonlyMap<string, number>>(() => new Map())
+  const shownIds = visible.map((channel) => channel.id)
+  let currentSlots = slots
+  if (shownIds.some((id) => !slots.has(id))) {
+    currentSlots = extendSlots(slots, shownIds)
+    setSlots(currentSlots)
+  }
+  const series = view.series
+  const colours = useMemo(() => {
+    const picked = (id: string) => (Object.hasOwn(series, id) ? series[id]!.colour : undefined)
+    return new Map(
+      channels.map(({ id }) => {
+        const slot = currentSlots.get(id) ?? preferredSlot(id)
+        return [id, picked(id) ?? slotColour(slot, theme)] as const
+      }),
+    )
+  }, [channels, currentSlots, series, theme])
+  const unmatched = channels.filter((channel) => !channel.matched).length
 
   // The selection before the last preset, while the selection is still the one it set.
   const [beforePreset, setBeforePreset] = useState<{ before: string[]; after: string[] }>()
@@ -128,12 +139,9 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
         onFiles(Array.from(event.dataTransfer.files))
       }}
     >
-      <FileHeader
-        fileName={log.fileName}
-        summary={summary}
-        unmatched={unmatched}
-        onFiles={onFiles}
-      />
+      <FileHeader fileName={log.fileName} summary={summary} unmatched={unmatched} onFiles={onFiles}>
+        <ThemePicker />
+      </FileHeader>
       <div className="workspace-body">
         <aside className="sidebar" aria-label="Parameters">
           <PresetPicker
