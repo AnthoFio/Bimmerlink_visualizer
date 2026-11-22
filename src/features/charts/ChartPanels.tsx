@@ -6,12 +6,14 @@ import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { addPanel, panelOf } from '../../lib/view.ts'
 import type { View } from '../../lib/view.ts'
+import type { ViewportStore } from '../../lib/viewport.ts'
 import { PanelCard } from './PanelCard.tsx'
 
 interface Props {
   dataset: LogDataset
   channels: readonly Channel[]
   view: View
+  viewport: ViewportStore
   onChange: (update: (view: View) => View) => void
   colours: ReadonlyMap<string, string>
   theme: Theme

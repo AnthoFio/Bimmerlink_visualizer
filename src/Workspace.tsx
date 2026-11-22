@@ -12,6 +12,7 @@ import { defaultSelection } from './lib/defaults.ts'
 import { slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
+import { createViewport } from './lib/viewport.ts'
 import { assignPanel, defaultView, panelOf, setSelected, viewsEqual } from './lib/view.ts'
 
 interface Props {
@@ -36,6 +37,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   )
   const [initial] = useState(() => defaultView(defaultSelection(channels)))
   const [view, setView] = useState(initial)
+  const [viewport] = useState(createViewport)
 
   const dataset = useMemo(
     () => (view.trim ? trimLeadingRows(log.dataset, log.rampUp.rows) : log.dataset),
@@ -110,6 +112,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             dataset={dataset}
             channels={channels}
             view={view}
+            viewport={viewport}
             onChange={setView}
             colours={colours}
             theme={theme}

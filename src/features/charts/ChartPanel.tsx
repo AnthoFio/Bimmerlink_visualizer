@@ -12,7 +12,10 @@ import { formatAxisTime } from '../../lib/format.ts'
 import { withGaps } from '../../lib/gaps.ts'
 import { CHART_COLOURS } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
+import type { TimeWindow } from '../../lib/timeWindow.ts'
 import type { Range } from '../../lib/yRange.ts'
+import { attachGestures } from './gestures.ts'
+import type { GestureTarget } from './gestures.ts'
 
 export interface PlotSeries {
   id: string
@@ -25,6 +28,8 @@ export interface PlotSeries {
 
 interface Props {
   time: Float64Array
+  window: TimeWindow
+  gestures: GestureTarget
   series: readonly PlotSeries[]
   axes: readonly Axis[]
   /** One per axis. */
@@ -88,7 +93,12 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
     height,
     padding: [EDGE, padding('right'), 0, padding('left')],
     legend: { show: false },
-    cursor: { show: false },
+    cursor: {
+      show: false,
+      drag: { x: false, y: false },
+      // gestures.ts owns the mouse.
+      bind: { mousedown: () => null, mouseup: () => null, dblclick: () => null },
+    },
     scales,
     series: [{}],
     axes: [
@@ -105,7 +115,7 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
 }
 
 export function ChartPanel(props: Props) {
-  const { time, series, axes, ranges, gutters, capacity, theme, height } = props
+  const { time, window: shown, series, axes, ranges, gutters, capacity, theme, height } = props
   const host = useRef<HTMLDivElement>(null)
   const plot = useRef<uPlot>(null)
   const drawn = useRef('')
@@ -114,7 +124,7 @@ export function ChartPanel(props: Props) {
 
   // First, so that the callbacks uPlot calls while it is being updated see the new props.
   useLayoutEffect(() => {
-    latest.current = { time, series, axes, ranges, gutters, capacity, theme, height, duration }
+    latest.current = { ...props, duration }
   })
 
   useLayoutEffect(() => {
@@ -133,8 +143,15 @@ export function ChartPanel(props: Props) {
       if (target.clientWidth) chart.setSize({ width: target.clientWidth, height: model().height })
     })
     observer.observe(target)
+    const detach = attachGestures(chart.over, {
+      window: () => model().gestures.window(),
+      extent: () => model().gestures.extent(),
+      setWindow: (next) => model().gestures.setWindow(next),
+      reset: () => model().gestures.reset(),
+    })
 
     return () => {
+      detach()
       observer.disconnect()
       chart.destroy()
       plot.current = null
@@ -165,12 +182,13 @@ export function ChartPanel(props: Props) {
         })
       }
       chart.setData([time, ...series.map((line) => withGaps(line.values))], false)
-      if (time.length) {
-        const min = time[0]!
-        chart.setScale('x', { min, max: Math.max(min + 0.001, time[time.length - 1]!) })
-      }
+      chart.setScale('x', { min: latest.current.window.min, max: latest.current.window.max })
     })
   }, [time, series, axes, ranges, capacity])
+
+  useLayoutEffect(() => {
+    plot.current?.setScale('x', { min: shown.min, max: shown.max })
+  }, [shown])
 
   // A new size makes uPlot measure the padding again, hence the gutters.
   useLayoutEffect(() => {
