@@ -20,6 +20,8 @@ export interface Viewport {
   /** The windows of the panels that are not synchronised. */
   ownWindows: ReadonlyMap<string, TimeWindow | null>
   cursor: Cursor | null
+  /** The range being measured, shared by all panels. */
+  selection: TimeWindow | null
 }
 
 export type ViewportStore = Store<Viewport>
@@ -30,7 +32,12 @@ interface PanelSync {
 }
 
 export function createViewport(): ViewportStore {
-  return createStore<Viewport>({ window: null, ownWindows: new Map(), cursor: null })
+  return createStore<Viewport>({
+    window: null,
+    ownWindows: new Map(),
+    cursor: null,
+    selection: null,
+  })
 }
 
 export function windowOf(state: Viewport, panel: PanelSync): TimeWindow | null {

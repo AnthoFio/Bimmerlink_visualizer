@@ -38,6 +38,7 @@ interface Props {
   window: TimeWindow
   gestures: GestureTarget
   cursor: CursorSource
+  selection: TimeWindow | null
   series: readonly PlotSeries[]
   axes: readonly Axis[]
   /** One per axis. */
@@ -135,10 +136,12 @@ export function ChartPanel(props: Props) {
     theme,
     height,
   } = props
+  const { selection } = props
   const host = useRef<HTMLDivElement>(null)
   const plot = useRef<uPlot>(null)
   const drawn = useRef('')
   const cursorLine = useRef<HTMLDivElement>(null)
+  const band = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const duration = time.length ? time[time.length - 1]! - time[0]! : 0
   const latest = useRef<Model>({ ...props, duration })
@@ -161,7 +164,11 @@ export function ChartPanel(props: Props) {
     const line = document.createElement('div')
     line.className = 'cursor-line'
     line.hidden = true
-    chart.over.append(line)
+    const highlight = document.createElement('div')
+    highlight.className = 'selection-band'
+    highlight.hidden = true
+    chart.over.append(highlight, line)
+    band.current = highlight
     cursorLine.current = line
     drawn.current = ''
 
@@ -177,6 +184,7 @@ export function ChartPanel(props: Props) {
       setWindow: (next) => model().gestures.setWindow(next),
       reset: () => model().gestures.reset(),
       hover: (at) => model().gestures.hover(at),
+      select: (range) => model().gestures.select(range),
     })
 
     return () => {
@@ -238,6 +246,16 @@ export function ChartPanel(props: Props) {
     follow()
     return cursor.subscribe(follow)
   }, [cursor, shown, capacity])
+
+  useLayoutEffect(() => {
+    const highlight = band.current!
+    const span = shown.max - shown.min
+    const from = selection ? Math.max(0, (selection.min - shown.min) / span) : 0
+    const to = selection ? Math.min(1, (selection.max - shown.min) / span) : 0
+    highlight.hidden = to <= from
+    highlight.style.left = `${from * 100}%`
+    highlight.style.width = `${(to - from) * 100}%`
+  }, [selection, shown, capacity])
 
   // A new size makes uPlot measure the padding again, hence the gutters.
   useLayoutEffect(() => {

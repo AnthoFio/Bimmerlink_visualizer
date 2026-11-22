@@ -23,6 +23,7 @@ beforeEach(() => {
     },
     reset,
     hover: vi.fn(),
+    select: vi.fn(),
   })
 })
 

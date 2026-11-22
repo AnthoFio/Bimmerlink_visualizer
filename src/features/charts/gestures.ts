@@ -9,6 +9,7 @@ export interface GestureTarget {
   reset: () => void
   /** The time under the pointer; null when it left. */
   hover: (time: number | null) => void
+  select: (range: TimeWindow) => void
 }
 
 const WHEEL_SPEED = 0.0015
@@ -41,8 +42,8 @@ export function attachGestures(area: HTMLElement, target: GestureTarget): () => 
   }
 
   const onMouseDown = (event: MouseEvent) => {
-    if (event.button !== 0 || event.shiftKey) return
-    const { width } = area.getBoundingClientRect()
+    if (event.button !== 0) return
+    const { left, width } = area.getBoundingClientRect()
     if (!width) return
     event.preventDefault()
     // preventDefault also stops the focus, which the keyboard shortcuts need.
@@ -52,8 +53,15 @@ export function attachGestures(area: HTMLElement, target: GestureTarget): () => 
     const from = event.clientX
     const start = target.window()
     const perPixel = (start.max - start.min) / width
-    const move = (moved: MouseEvent) =>
+    const pan = (moved: MouseEvent) =>
       target.setWindow(panBy(start, (from - moved.clientX) * perPixel, target.extent()))
+    const timeAt = (clientX: number) =>
+      start.min + Math.min(width, Math.max(0, clientX - left)) * perPixel
+    const select = (moved: MouseEvent) => {
+      const [a, b] = [timeAt(from), timeAt(moved.clientX)]
+      if (a !== b) target.select({ min: Math.min(a, b), max: Math.max(a, b) })
+    }
+    const move = event.shiftKey ? select : pan
     const up = () => endDrag?.()
     window.addEventListener('mousemove', move)
     window.addEventListener('mouseup', up)

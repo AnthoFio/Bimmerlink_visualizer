@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
 import { ChartPanels } from './features/charts/ChartPanels.tsx'
+import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
@@ -50,6 +51,10 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [channels, theme],
   )
   const unmatched = channels.filter((channel) => !channel.matched).length
+  const visible = useMemo(
+    () => channels.filter((channel) => selected.has(channel.id)),
+    [channels, selected],
+  )
 
   const select = useCallback(
     (ids: string[], on: boolean) => setView((current) => setSelected(current, ids, on)),
@@ -117,6 +122,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             colours={colours}
             theme={theme}
           />
+          <RangeStatistics dataset={dataset} channels={visible} viewport={viewport} />
         </main>
       </div>
     </div>

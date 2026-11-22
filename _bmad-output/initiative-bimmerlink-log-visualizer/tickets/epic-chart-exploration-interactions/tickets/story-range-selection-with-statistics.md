@@ -17,15 +17,15 @@ As a BimmerLink user, I want to select a time range and see min, max, mean and d
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Shift-drag selects a range; selection stays highlighted
-- [ ] Stats table lists min / max / mean / delta / sample count per visible series
-- [ ] 'Zoom to selection' and clear actions
+- [x] Shift-drag selects a range; selection stays highlighted
+- [x] Stats table lists min / max / mean / delta / sample count per visible series
+- [x] 'Zoom to selection' and clear actions
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

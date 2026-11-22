@@ -53,6 +53,7 @@ export function TimeSeriesChart(props: Props) {
   const sync = useMemo(() => ({ id: panel.id, synced: panel.synced }), [panel.id, panel.synced])
   const stored = useStore(viewport, (state) => windowOf(state, sync))
   const shown = useMemo(() => resolveWindow(stored, bounds), [stored, bounds])
+  const selection = useStore(viewport, (state) => state.selection)
   // Reads the store, not the last render: several events can arrive within one frame.
   const gestures = useMemo<GestureTarget>(
     () => ({
@@ -60,6 +61,7 @@ export function TimeSeriesChart(props: Props) {
       extent: () => bounds,
       setWindow: (window) => setWindowOf(viewport, sync, window),
       reset: () => setWindowOf(viewport, sync, null),
+      select: (selection) => viewport.set({ selection }),
       hover: (time) => {
         if (time === null) {
           const last = viewport.get().cursor
@@ -131,6 +133,7 @@ export function TimeSeriesChart(props: Props) {
           window={shown}
           gestures={gestures}
           cursor={cursor}
+          selection={selection}
           series={series}
           axes={axes}
           ranges={ranges}

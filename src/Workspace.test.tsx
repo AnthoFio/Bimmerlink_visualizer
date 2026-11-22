@@ -216,3 +216,68 @@ describe('cursor readout', () => {
     expect(readout.querySelectorAll('.value:not(:empty)')).toHaveLength(11)
   })
 })
+
+describe('range selection', () => {
+  function shiftDrag(from = 200, to = 600) {
+    const plot = FakeUplot.last
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    const window0 = { ...plot.x! }
+    act(() => {
+      fireEvent.mouseDown(plot.over, { clientX: from, shiftKey: true })
+      fireEvent.mouseMove(window, { clientX: to })
+      fireEvent.mouseUp(window)
+    })
+    return { plot, window0, band: plot.over.querySelector<HTMLElement>('.selection-band')! }
+  }
+
+  it('selects with Shift-drag, without panning, and stays highlighted', () => {
+    setup()
+    const { plot, window0, band } = shiftDrag()
+
+    expect(plot.x).toEqual(window0)
+    expect(band).toBeVisible()
+    expect(parseFloat(band.style.left)).toBeCloseTo(20)
+    expect(parseFloat(band.style.width)).toBeCloseTo(40)
+
+    act(() => void fireEvent.mouseLeave(plot.over))
+    expect(band).toBeVisible()
+  })
+
+  it('lists min, max, mean, delta and sample count per visible series', () => {
+    setup()
+    shiftDrag()
+
+    const table = screen.getByRole('table', { name: /Statistics from/ })
+    const heads = within(table).getAllByRole('columnheader')
+    expect(heads.map((head) => head.textContent)).toEqual([
+      'Series',
+      'Min',
+      'Max',
+      'Mean',
+      'Delta',
+      'Samples',
+    ])
+    expect(within(table).getAllByRole('rowheader')).toHaveLength(6)
+  })
+
+  it('zooms to the selection and clears it', () => {
+    setup()
+    const { plot, window0, band } = shiftDrag()
+    const span = window0.max - window0.min
+
+    click(screen.getByRole('button', { name: 'Zoom to selection' }))
+    expect(plot.x!.min).toBeCloseTo(window0.min + 0.2 * span)
+    expect(plot.x!.max).toBeCloseTo(window0.min + 0.6 * span)
+
+    click(screen.getByRole('button', { name: 'Clear selection' }))
+    expect(screen.queryByRole('table', { name: /Statistics from/ })).toBeNull()
+    expect(band).not.toBeVisible()
+  })
+
+  it('can select without a mouse', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Select visible range' }))
+
+    expect(screen.getByRole('table', { name: /Statistics from/ })).toBeVisible()
+  })
+})
