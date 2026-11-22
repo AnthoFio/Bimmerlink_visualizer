@@ -1,5 +1,9 @@
 # BimmerLink Log Visualizer
 
+[![Deploy](https://github.com/AnthoFio/Bimmerlink_visualizer/actions/workflows/deploy.yml/badge.svg)](https://github.com/AnthoFio/Bimmerlink_visualizer/actions/workflows/deploy.yml)
+
+Live: https://anthofio.github.io/Bimmerlink_visualizer/ (setup and previews: `docs/deploy.md`)
+
 Drop a BimmerLink datalog (CSV) onto the page and it turns into dynamic, explorable charts: pick the parameters to show, group them, change scales and zoom into events.
 Everything runs in the browser, so your logs never leave your machine.
 Stack: React 19, TypeScript (strict) and Vite.

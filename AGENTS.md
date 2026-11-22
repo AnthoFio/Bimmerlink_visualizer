@@ -63,7 +63,7 @@ src/
   data/                    Static data bundled with the app (e.g. the parameter catalog)
   test/                    Shared test setup (setup.ts) and repo-level tests
 public/                    Static assets copied as-is
-docs/                      Process docs (ci.md, process/labels-and-board.md)
+docs/                      Process docs (ci.md, deploy.md, process/labels-and-board.md)
 _bmad/                     BMad setup: scripts and config (the render cache and the personal user config are git-ignored)
 _bmad-output/              The ticket tree (initiative, epics, stories) and other BMad artifacts
 scripts/                   Small helper scripts (set-project-status.ps1)

@@ -3,14 +3,14 @@ title: 'Static deployment (GitHub Pages) with PR previews'
 type: chore
 ticket: 9
 created: '2026-11-22'
-status: ready-for-dev
+status: built
 baseline_revision: '49599ffa1c30d566b32485775370fd18d4946e02'
 route: full
 route_source: auto
 risk: low
-review: ''
-review_source: ''
-lenses_ran: []
+review: quick
+review_source: pinned
+lenses_ran: [quick]
 review_loop_iteration: 0
 context: []
 ---
@@ -71,6 +71,18 @@ context: []
 ## Plan Change Log
 
 ## Review Triage Log
+
+Pass 1 (quick, lens: quick): 0 high, 0 medium, 4 low, 3 false, 0 maybe-false. No unmet acceptance criteria reported.
+
+| #   | Finding                                                                                   | Verdict | Route    | Evidence                                                                                                                                                                  |
+| --- | ----------------------------------------------------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | vite.config.ts: `??` keeps an empty BASE_PATH as base '' (a relative base) instead of `/` | low     | patch    | Real: an exported-but-blank BASE_PATH yields base ''; the workflow never sets it blank, the fix is one operator (`                                                        |     | `) plus a test case. |
+| 2   | deploy.yml concurrency group is `pages-<pr number or ref>`, plan text says group `pages`  | false   | rejected | The group still contains `pages`; separating PR runs from `main` keeps PR runs from cancelling or queueing a deploy, so "one deployment at a time" holds. No bad outcome. |
+| 3   | deploy.test.ts: `vi.stubEnv(name, undefined)` may not be supported                        | false   | rejected | Vitest 5.1.1 is installed and the test ran and passed (9 of 9).                                                                                                           |
+| 4   | deploy.test.ts imports vite.config.ts from src without declaring node types               | false   | rejected | `npm run typecheck` passes with the file as is.                                                                                                                           |
+| 5   | deploy.test.ts: regex over raw YAML would also match a `uses:` inside a comment           | low     | rejected | No such comment exists and a future one fails the test loudly, not silently; a fix means rewriting the check to walk parsed steps, more than a direct correction.         |
+| 6   | docs/deploy.md hard-codes the repository name in the preview commands                     | low     | patch    | Real: the commands go stale on a rename or fork; fix is a direct edit to placeholders.                                                                                    |
+| 7   | Plan: task checkboxes unticked, `context` empty                                           | low     | rejected | Its fix is to edit this build's plan.                                                                                                                                     |
 
 ## Design Notes
 
