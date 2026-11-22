@@ -141,3 +141,11 @@ describe('opening another file', () => {
     expect(header.getByRole('button', { name: 'Open another file' })).toBeEnabled()
   })
 })
+
+describe('catalog matching in the summary', () => {
+  it('reports the number of unmatched columns', async () => {
+    const header = await openLog()
+
+    expect(header.getByText('Not in catalog').nextElementSibling).toHaveTextContent('1')
+  })
+})

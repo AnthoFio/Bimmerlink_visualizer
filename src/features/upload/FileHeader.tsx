@@ -7,18 +7,21 @@ import type { LogSummary } from '../../lib/summary.ts'
 interface Props {
   fileName: string
   summary: LogSummary
+  /** Columns without a catalog entry. */
+  unmatched: number
   onFiles: (files: File[]) => void
   /** Further facts and actions. */
   children?: ReactNode
 }
 
-export function FileHeader({ fileName, summary, onFiles, children }: Props) {
+export function FileHeader({ fileName, summary, unmatched, onFiles, children }: Props) {
   const input = useRef<HTMLInputElement>(null)
   const facts = [
     ['Duration', formatDuration(summary.duration)],
     ['Rows', formatCount(summary.rows)],
     ['Median sample', formatInterval(summary.interval)],
     ['Channels', formatCount(summary.channels)],
+    ['Not in catalog', formatCount(unmatched)],
   ]
 
   return (

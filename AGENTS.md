@@ -125,6 +125,7 @@ Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV;
 - 210 parameters for a BMW X4 M40i F26 (N55), in 17 categories (for example `Boost`, `Fuel / lambda`, `Ignition / knock`).
 - Fields: `index`, `label`, `key` (snake_case, duplicates suffixed `_2`), `category`, `description`, `unit`, `role`, `confidence` (`high`/`medium`/`low`), `presets` (`1`..`6`, `1b`), `note`. The JSON has a `meta` block that documents the fields and a `parameters` array.
 - `role` is one of `core`, `standard`, `flag`, `counter`, `raw`, `redundant`, `static`, `broken`. `core` are the primary analysis channels, `redundant`/`static`/`broken` are usually hidden by default.
+- `src/lib/channels.ts` does the matching; the rules and the expected split per example log are in `docs/catalog-matching.md`.
 - Match log columns to catalog entries by label, case-insensitively, not by `index` (log columns are a subset in another order). One label occurs twice in the catalog, so matching must tolerate duplicates.
 
 Code imports the catalog from `src/data/catalog.ts`. Its JSON is a generated copy: edit the root files, run `npm run catalog:sync`, and `src/data/catalog.test.ts` fails while they differ.

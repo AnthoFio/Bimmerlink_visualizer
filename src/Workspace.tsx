@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
+import { parameters } from './data/catalog.ts'
+import { describeChannels } from './lib/channels.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
 
@@ -23,6 +25,15 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [log, trim],
   )
   const summary = useMemo(() => summarise(dataset), [dataset])
+  const channels = useMemo(
+    () =>
+      describeChannels(
+        log.dataset.columns.map((column) => column.name),
+        parameters,
+      ),
+    [log],
+  )
+  const unmatched = channels.filter((channel) => !channel.matched).length
 
   const unsaved = !trim
   useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
@@ -39,7 +50,12 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
         onFiles(Array.from(event.dataTransfer.files))
       }}
     >
-      <FileHeader fileName={log.fileName} summary={summary} onFiles={onFiles} />
+      <FileHeader
+        fileName={log.fileName}
+        summary={summary}
+        unmatched={unmatched}
+        onFiles={onFiles}
+      />
       <main className="workspace-main">
         {children}
         {log.warnings.map((warning) => (
