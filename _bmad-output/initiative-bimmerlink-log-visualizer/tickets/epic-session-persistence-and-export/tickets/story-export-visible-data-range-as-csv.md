@@ -17,14 +17,14 @@ As a BimmerLink user, I want to download the selected parameters over the curren
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Same format as BimmerLink (Time + labels), only selected columns and visible window
-- [ ] Large exports do not freeze the UI
+- [x] Same format as BimmerLink (Time + labels), only selected columns and visible window
+- [x] Large exports do not freeze the UI
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

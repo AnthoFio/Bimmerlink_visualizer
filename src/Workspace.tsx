@@ -7,6 +7,7 @@ import { Minimap } from './features/charts/Minimap.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
 import { PresetPicker } from './features/selection/PresetPicker.tsx'
+import { CsvExportButton } from './features/session/CsvExportButton.tsx'
 import { ViewFileActions } from './features/session/ViewFileActions.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
@@ -16,7 +17,7 @@ import { describeChannels } from './lib/channels.ts'
 import { defaultSelection } from './lib/defaults.ts'
 import { assignSlots, slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
-import { clampWindow, logExtent } from './lib/timeWindow.ts'
+import { clampWindow, logExtent, resolveWindow } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
 import { plural } from './lib/format.ts'
 import { usePersistedView } from './usePersistedView.ts'
@@ -171,6 +172,12 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             <button type="button" onClick={reset}>
               Reset view
             </button>
+            <CsvExportButton
+              fileName={log.fileName}
+              dataset={dataset}
+              channels={visible}
+              window={() => resolveWindow(viewport.get().window, extent)}
+            />
             <ViewFileActions
               fileName={log.fileName}
               ids={ids}

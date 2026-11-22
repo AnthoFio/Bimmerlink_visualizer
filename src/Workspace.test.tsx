@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PARAMETER_DRAG_TYPE } from './lib/dragParameter.ts'
 import { formatValue } from './lib/format.ts'
@@ -672,5 +672,27 @@ describe('view files', () => {
       target: { files: [new File(['nope'], 'view.json')] },
     })
     expect(await screen.findByRole('alert')).toHaveTextContent('not a view file')
+  })
+})
+
+describe('CSV export', () => {
+  it('downloads the visible series over the window', async () => {
+    let saved: Blob | undefined
+    const create = vi.spyOn(URL, 'createObjectURL').mockImplementation((blob) => {
+      saved = blob as Blob
+      return 'blob:csv'
+    })
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    setup()
+    click(screen.getByRole('button', { name: 'Clear' }))
+    click(screen.getByRole('checkbox', { name: /Engine Speed/ }))
+
+    click(screen.getByRole('button', { name: 'Export CSV' }))
+    await waitFor(() => expect(anchorClick).toHaveBeenCalledOnce())
+    const text = await saved!.text()
+    expect(text.split('\n')[0]).toBe('Time,"Engine Speed"')
+    expect(text.trimEnd().split('\n')).toHaveLength(141)
+    create.mockRestore()
+    anchorClick.mockRestore()
   })
 })
