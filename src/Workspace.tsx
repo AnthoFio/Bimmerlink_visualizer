@@ -8,6 +8,7 @@ import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
 import { PresetPicker } from './features/selection/PresetPicker.tsx'
 import { CsvExportButton } from './features/session/CsvExportButton.tsx'
+import { ImageExport } from './features/session/ImageExport.tsx'
 import { ViewFileActions } from './features/session/ViewFileActions.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
@@ -21,7 +22,8 @@ import { clampWindow, logExtent, resolveWindow } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
 import { plural } from './lib/format.ts'
 import { usePersistedView } from './usePersistedView.ts'
-import { createViewport } from './lib/viewport.ts'
+import { createViewport, windowOf } from './lib/viewport.ts'
+import { chartSvg, exportModel, logTitle } from './lib/chartSvg.ts'
 import {
   assignPanel,
   defaultView,
@@ -30,6 +32,8 @@ import {
   setSelected,
   settingsOf,
 } from './lib/view.ts'
+
+const EXPORT_WIDTH = 1200
 
 interface Props {
   log: LoadedLog
@@ -177,6 +181,24 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
               dataset={dataset}
               channels={visible}
               window={() => resolveWindow(viewport.get().window, extent)}
+            />
+            <ImageExport
+              fileName={log.fileName}
+              svg={() => {
+                const width = Math.round(
+                  document.querySelector('.workspace-main')?.clientWidth ?? EXPORT_WIDTH,
+                )
+                const model = exportModel({
+                  dataset,
+                  channels,
+                  colours,
+                  view,
+                  windowOf: (panel) => resolveWindow(windowOf(viewport.get(), panel), extent),
+                })
+                const text = chartSvg(model, { title: logTitle(log.fileName), theme, width })
+                const height = Number(/height="(\d+)"/.exec(text)?.[1] ?? 0)
+                return { text, width, height }
+              }}
             />
             <ViewFileActions
               fileName={log.fileName}
