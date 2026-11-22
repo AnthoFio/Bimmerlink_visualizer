@@ -3,11 +3,13 @@ import { useStore } from '../../components/useStore.ts'
 import { axisGutters } from '../../lib/axes.ts'
 import type { Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
+import { isStepped } from '../../lib/lineStyle.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { logExtent, resolveWindow } from '../../lib/timeWindow.ts'
-import { PANEL_HEIGHT } from '../../lib/view.ts'
+import { createPanel, PANEL_HEIGHT } from '../../lib/view.ts'
+import type { Panel } from '../../lib/view.ts'
 import { createViewport } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { autoRange, extent } from '../../lib/yRange.ts'
@@ -24,16 +26,19 @@ interface Props {
   selected: ReadonlySet<string>
   colours: ReadonlyMap<string, string>
   theme: Theme
-  height?: number
+  /** The settings of the panel. */
+  panel?: Panel
   /** Shared by all panels; left out, the chart only makes room for its own axes. */
   gutters?: Gutters
   /** Shared by all panels; left out, the chart has a window of its own. */
   viewport?: ViewportStore
 }
 
+const DEFAULT_PANEL = createPanel('p1', PANEL_HEIGHT.initial)
+
 export function TimeSeriesChart(props: Props) {
   const { dataset, channels, selected, colours, theme, gutters } = props
-  const { height = PANEL_HEIGHT.initial } = props
+  const { panel = DEFAULT_PANEL } = props
   const [ownViewport] = useState(createViewport)
   const viewport = props.viewport ?? ownViewport
 
@@ -63,8 +68,9 @@ export function TimeSeriesChart(props: Props) {
         values: dataset.columns[channel.column]!.values,
         colour,
         axis,
+        stepped: isStepped(channel, panel.lines),
       })),
-    [dataset, items],
+    [dataset, items, panel.lines],
   )
   const ranges = useMemo(() => {
     const extents = series.map((line) => extent(line.values))
@@ -101,7 +107,7 @@ export function TimeSeriesChart(props: Props) {
           gutters={gutters ?? own}
           capacity={channels.length}
           theme={theme}
-          height={height}
+          height={panel.height}
         />
         {series.length === 0 && (
           <p className="plot-empty">

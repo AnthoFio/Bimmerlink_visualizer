@@ -90,3 +90,16 @@ describe('chart panels', () => {
     expect(FakeUplot.last.height).toBe(560)
   })
 })
+
+describe('line style', () => {
+  it('is a toggle per chart', () => {
+    setup()
+    const stepped = () => FakeUplot.last.series.slice(1).map((series) => series.paths !== undefined)
+    expect(stepped()).not.toContain(true)
+
+    fireEvent.change(within(panel(1)).getByRole('combobox', { name: 'Lines in panel 1' }), {
+      target: { value: 'step' },
+    })
+    expect(stepped()).not.toContain(false)
+  })
+})

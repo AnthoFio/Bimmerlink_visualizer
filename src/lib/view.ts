@@ -3,10 +3,15 @@
 
 export const PANEL_HEIGHT = { min: 160, max: 900, step: 20, initial: 420, added: 260 }
 
+export const LINE_STYLES = ['auto', 'linear', 'step'] as const
+/** `auto` steps flags, counters and the gear. */
+export type LineStyle = (typeof LINE_STYLES)[number]
+
 export interface Panel {
   id: string
   /** Pixels. */
   height: number
+  lines: LineStyle
 }
 
 /** What the user set for one series; whatever is absent is automatic. */
@@ -25,11 +30,15 @@ export interface View {
   series: Record<string, SeriesSettings>
 }
 
+export function createPanel(id: string, height: number): Panel {
+  return { id, height, lines: 'auto' }
+}
+
 export function defaultView(selected: readonly string[]): View {
   return {
     trim: true,
     selected: [...selected],
-    panels: [{ id: 'p1', height: PANEL_HEIGHT.initial }],
+    panels: [createPanel('p1', PANEL_HEIGHT.initial)],
     series: {},
   }
 }
@@ -73,7 +82,7 @@ export function addPanel(view: View): View {
   const used = new Set(view.panels.map((panel) => panel.id))
   let n = 1
   while (used.has(`p${n}`)) n++
-  return { ...view, panels: [...view.panels, { id: `p${n}`, height: PANEL_HEIGHT.added }] }
+  return { ...view, panels: [...view.panels, createPanel(`p${n}`, PANEL_HEIGHT.added)] }
 }
 
 export function removePanel(view: View, panelId: string): View {

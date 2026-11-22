@@ -17,15 +17,15 @@ As a BimmerLink user, I want channels to be drawn as sample-and-hold steps or li
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Toggle per chart: linear / step
-- [ ] Default: step for `flag`/`counter` roles and gear, linear otherwise
-- [ ] Choice is part of view state
+- [x] Toggle per chart: linear / step
+- [x] Default: step for `flag`/`counter` roles and gear, linear otherwise
+- [x] Choice is part of view state
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

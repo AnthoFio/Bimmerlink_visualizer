@@ -24,6 +24,7 @@ export interface PlotSeries {
   colour: string
   /** Index into `axes`. */
   axis: number
+  stepped: boolean
 }
 
 interface Props {
@@ -163,7 +164,9 @@ export function ChartPanel(props: Props) {
 
   useLayoutEffect(() => {
     const chart = plot.current!
-    const structure = JSON.stringify(series.map((line) => [line.id, line.name, line.axis]))
+    const structure = JSON.stringify(
+      series.map((line) => [line.id, line.name, line.axis, line.stepped]),
+    )
     // uPlot reads the titles each time it draws.
     for (let i = 0; i < VISIBLE_AXES; i++) chart.axes[i + 1]!.label = axes[i]?.title ?? ''
 
@@ -179,6 +182,8 @@ export function ChartPanel(props: Props) {
               // One pixel is a hairline, which software rasterisers stroke several times faster.
               width: 1,
               points: { show: false },
+              // align 1 holds each sample until the next one.
+              paths: line.stepped ? uPlot.paths.stepped?.({ align: 1 }) : undefined,
               stroke: () => latest.current.series[i]?.colour ?? line.colour,
             },
             i + 1,

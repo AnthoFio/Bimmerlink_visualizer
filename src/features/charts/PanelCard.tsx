@@ -64,7 +64,7 @@ export function PanelCard(props: Props) {
         selected={selected}
         colours={colours}
         theme={theme}
-        height={panel.height}
+        panel={panel}
         gutters={gutters}
         viewport={viewport}
       />

@@ -1,5 +1,11 @@
-import { PANEL_HEIGHT } from '../../lib/view.ts'
-import type { Panel } from '../../lib/view.ts'
+import { LINE_STYLES, PANEL_HEIGHT } from '../../lib/view.ts'
+import type { LineStyle, Panel } from '../../lib/view.ts'
+
+const LINE_STYLE_NAMES: Record<LineStyle, string> = {
+  auto: 'Automatic',
+  linear: 'Linear',
+  step: 'Step',
+}
 
 interface Props {
   panel: Panel
@@ -15,6 +21,20 @@ export function PanelToolbar({ panel, number, count, onUpdate, onMove, onRemove 
   return (
     <div className="panel-toolbar">
       <h3>Panel {number}</h3>
+      <label>
+        Lines{' '}
+        <select
+          aria-label={`Lines in panel ${number}`}
+          value={panel.lines}
+          onChange={(event) => onUpdate({ lines: event.target.value as LineStyle })}
+        >
+          {LINE_STYLES.map((style) => (
+            <option key={style} value={style}>
+              {LINE_STYLE_NAMES[style]}
+            </option>
+          ))}
+        </select>
+      </label>
       <div className="panel-actions">
         <label>
           Height{' '}
