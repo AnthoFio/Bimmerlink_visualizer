@@ -69,7 +69,11 @@ describe('loadLogInWorker (page side)', () => {
     send({ type: 'progress', value: 0.5 })
     expect(onProgress).toHaveBeenCalledWith(0.5)
 
-    const result = { dataset: { time: new Float64Array(1), columns: [] }, warnings: [] }
+    const result = {
+      dataset: { time: new Float64Array(1), columns: [] },
+      warnings: [],
+      rampUp: { channelRows: [], rows: 0 },
+    }
     send({ type: 'done', result })
     await expect(loading).resolves.toBe(result)
     expect(worker.terminate).toHaveBeenCalledOnce()

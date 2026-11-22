@@ -55,3 +55,17 @@ function never(signal?: AbortSignal) {
     signal?.addEventListener('abort', () => reject(new DOMException('Cancelled', 'AbortError')))
   })
 }
+
+describe('ramp-up trim', () => {
+  it('is on by default and can be switched off', async () => {
+    render(<App loadLog={directLoader} />)
+
+    pick('log.csv', loadFixtureText('trimmed_2026-10-25_09-33-22.csv'))
+    const trim = await screen.findByRole('checkbox', { name: 'Trim to first complete row' })
+    expect(trim).toBeChecked()
+    expect(screen.getByText(/140 rows/)).toBeVisible()
+
+    fireEvent.click(trim)
+    expect(screen.getByText(/150 rows/)).toBeVisible()
+  })
+})

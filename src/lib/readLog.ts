@@ -4,6 +4,8 @@
 import { LogParseError, parseLogText } from './parseLog.ts'
 import type { LogDataset } from './parseLog.ts'
 import { plural } from './format.ts'
+import { detectRampUp, NO_RAMP_UP } from './rampUp.ts'
+import type { RampUp } from './rampUp.ts'
 
 const ERROR_MESSAGES = {
   'not-csv':
@@ -47,6 +49,7 @@ export interface ReadResult {
   /** `time` is finite and never decreases. */
   dataset: LogDataset
   warnings: LogWarning[]
+  rampUp: RampUp
 }
 
 function looksLikeCsv(text: string): boolean {
@@ -130,7 +133,10 @@ export function readLog(text: string, onProgress?: (share: number) => void): Rea
       message: `Time goes backwards ${plural(backwards, 'time', 'times')}. The rows were sorted by time.`,
     })
   }
-  if (untimed || backwards) dataset = takeRows(dataset, timedRows)
+  const rearranged = untimed > 0 || backwards > 0
+  if (rearranged) dataset = takeRows(dataset, timedRows)
+  // The ramp-up is found by row number in the text, which only holds while the rows are in place.
+  const rampUp = rearranged ? NO_RAMP_UP : detectRampUp(text, dataset.columns.length)
 
   let bad = 0
   for (const { values } of dataset.columns) {
@@ -147,5 +153,5 @@ export function readLog(text: string, onProgress?: (share: number) => void): Rea
     })
   }
 
-  return { dataset, warnings }
+  return { dataset, warnings, rampUp }
 }

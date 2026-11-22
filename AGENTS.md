@@ -117,7 +117,7 @@ BimmerLink log (CSV):
 - Comma separated, `.` decimal point, LF line endings, no BOM, trailing newline, values unquoted. Be tolerant anyway (CRLF, BOM, empty/short files) and fail with friendly errors; those edge cases get fixtures in story #9.
 - Sampling is irregular, about 30 ms between rows. Do not assume a fixed step.
 - Label casing differs between logs (`Engine speed` vs `Engine Speed`), so label matching must be case-insensitive. Some labels are not in the catalog at all (for example `Target Rail Pressure`): unmatched columns must still work as plain series.
-- Most channels start at `0` until their first sample arrives (staggered ramp-up) and are sample-and-hold afterwards, so leading zeros are mostly artefacts, not data (handling: story #18). A few channels already start with a non-zero value in row 0: the lambda adaptation factor `1.03` in `Example/2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in both `2026-10-24_12-29-08` logs. Never assume the first sample is zero.
+- Most channels start at `0` until their first sample arrives (staggered ramp-up) and are sample-and-hold afterwards, so leading zeros are mostly artefacts, not data (handling: `docs/ramp-up.md`; a placeholder is the text `0`, a sampled zero is `0.00`). A few channels already start with a non-zero value in row 0: the lambda adaptation factor `1.03` in `Example/2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in both `2026-10-24_12-29-08` logs. Never assume the first sample is zero.
 - Units are heterogeneous (rpm, bar, deg, lambda, degC, counters...), so multi-axis and normalisation are first-class needs.
 
 Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV; the CSV starts with a UTF-8 BOM):
