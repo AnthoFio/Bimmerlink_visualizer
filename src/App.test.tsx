@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import App from './App.tsx'
 import { directLoader } from './test/directLoader.ts'
 import { loadFixtureText } from './test/fixtures.ts'
@@ -112,7 +112,11 @@ describe('opening another file', () => {
     await loaded('log.csv')
   })
 
-  it('asks first when the view has unsaved changes', async () => {
+  it('asks first when the view has changes that could not be saved', async () => {
+    // With storage working the view is saved, so nothing would be lost: see the next test.
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError')
+    })
     await openLog()
     fireEvent.click(screen.getByRole('checkbox', { name: 'Trim to first complete row' }))
 
@@ -125,6 +129,7 @@ describe('opening another file', () => {
     pick('other.csv', loadFixtureText('trimmed_2026-10-24_12-29-08.csv'))
     fireEvent.click(screen.getByRole('button', { name: 'Discard changes and open' }))
     await loaded('other.csv')
+    setItem.mockRestore()
   })
 
   it('keeps the current log when the new file cannot be used', async () => {
@@ -147,5 +152,16 @@ describe('catalog matching in the summary', () => {
     const header = await openLog()
 
     expect(header.getByText('Not in catalog').nextElementSibling).toHaveTextContent('1')
+  })
+})
+
+describe('a saved view', () => {
+  it('lets another file open without asking', async () => {
+    await openLog()
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Trim to first complete row' }))
+
+    pick('other.csv', loadFixtureText('trimmed_2026-10-24_12-29-08.csv'))
+    expect(screen.queryByRole('alertdialog')).toBeNull()
+    await loaded('other.csv')
   })
 })

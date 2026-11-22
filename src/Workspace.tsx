@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
@@ -17,6 +17,8 @@ import { assignSlots, slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { logExtent } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
+import { plural } from './lib/format.ts'
+import { usePersistedView } from './usePersistedView.ts'
 import { createViewport } from './lib/viewport.ts'
 import {
   assignPanel,
@@ -25,7 +27,6 @@ import {
   selectOnly,
   setSelected,
   settingsOf,
-  viewsEqual,
 } from './lib/view.ts'
 
 interface Props {
@@ -49,7 +50,8 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [log],
   )
   const [initial] = useState(() => defaultView(defaultSelection(channels)))
-  const [view, setView] = useState(initial)
+  const [ids] = useState(() => channels.map((channel) => channel.id))
+  const { view, setView, reset, restored } = usePersistedView(ids, initial, onUnsavedChange)
   const [viewport] = useState(createViewport)
 
   const dataset = useMemo(
@@ -88,12 +90,12 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
 
   const select = useCallback(
     (ids: string[], on: boolean) => setView((current) => setSelected(current, ids, on)),
-    [],
+    [setView],
   )
 
   const assign = useCallback(
     (id: string, panel: string) => setView((current) => assignPanel(current, id, panel)),
-    [],
+    [setView],
   )
   const panelIds = useMemo(() => view.panels.map((panel) => panel.id), [view.panels])
 
@@ -107,9 +109,6 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       }
     )
   }, [visible, dataset, colours])
-
-  const unsaved = !viewsEqual(view, initial)
-  useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
 
   return (
     <div
@@ -159,6 +158,17 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
               {warning.message}
             </p>
           ))}
+          {restored && (
+            <div role="status" className="message restored">
+              Restored the saved view of this column layout
+              {restored.skipped.length > 0 &&
+                `; ${plural(restored.skipped.length, 'parameter', 'parameters')} skipped (not in this log)`}
+              .
+            </div>
+          )}
+          <button type="button" onClick={reset}>
+            Reset view
+          </button>
           <RampUpToggle
             rows={log.dataset.time.length - dataset.time.length}
             seconds={dataset.time[0]! - log.dataset.time[0]!}

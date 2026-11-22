@@ -1,3 +1,5 @@
+import { hash } from './hash.ts'
+
 // Chart colours for both themes. The series palettes are eight hues in a fixed order, tuned so
 // that neighbours stay apart for protan and deutan vision and every slot has at least 3:1
 // contrast against the chart surface of its theme.
@@ -47,16 +49,6 @@ export const CHART_COLOURS: Record<Theme, ChartColours> = {
 export function slotColour(slot: number, theme: Theme): string {
   const { series } = CHART_COLOURS[theme]
   return series[slot % series.length]!
-}
-
-/** FNV-1a: a small, stable hash, the same in every browser. */
-function hash(text: string): number {
-  let value = 0x811c9dc5
-  for (let i = 0; i < text.length; i++) {
-    value ^= text.charCodeAt(i)
-    value = Math.imul(value, 0x01000193)
-  }
-  return value >>> 0
 }
 
 /**

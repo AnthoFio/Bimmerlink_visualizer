@@ -16,3 +16,11 @@ class NoResizeObserver {
   disconnect() {}
 }
 globalThis.ResizeObserver ??= NoResizeObserver as unknown as typeof ResizeObserver
+
+// Saved views and session settings must not leak from one test into the next.
+afterEach(() => {
+  // Files that run in the node environment have no storage.
+  if (typeof localStorage === 'undefined') return
+  localStorage.clear()
+  sessionStorage.clear()
+})

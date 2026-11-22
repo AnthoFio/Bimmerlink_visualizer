@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PARAMETER_DRAG_TYPE } from './lib/dragParameter.ts'
 import { formatValue } from './lib/format.ts'
 import { readLog } from './lib/readLog.ts'
+import { defaultView } from './lib/view.ts'
+import { layoutKey } from './lib/viewSchema.ts'
 import { loadFixtureText } from './test/fixtures.ts'
 import { FakeUplot } from './test/fakeUplot.ts'
 import { Workspace } from './Workspace.tsx'
@@ -24,7 +26,11 @@ const legendOf = (n: number) =>
   within(within(panel(n)).getByRole('list', { name: 'Legend' })).queryAllByRole('listitem')
 const click = (element: HTMLElement) => act(() => void fireEvent.click(element))
 
-beforeEach(() => FakeUplot.reset())
+beforeEach(() => {
+  FakeUplot.reset()
+  localStorage.clear()
+  sessionStorage.clear()
+})
 
 describe('chart panels', () => {
   it('adds and removes panels, keeping at least one', () => {
@@ -557,5 +563,67 @@ describe('presets', () => {
     expect(screen.getByRole('status', { name: 'Preset result' })).toHaveTextContent(
       'None of the 27 parameters of Knock is in this log',
     )
+  })
+})
+
+describe('saved view', () => {
+  const key = () => Object.keys(localStorage).find((name) => name.startsWith('blv:view:'))
+  const legendCount = () =>
+    within(screen.getByRole('list', { name: 'Legend' })).queryAllByRole('listitem').length
+
+  beforeEach(() => localStorage.clear())
+
+  it('is restored when the same layout is opened again, and reset clears it', () => {
+    const { unmount } = render(
+      <Workspace
+        log={{ ...result, id: 1, fileName: 'a.csv' }}
+        onFiles={vi.fn()}
+        onUnsavedChange={vi.fn()}
+      />,
+    )
+    click(screen.getByRole('button', { name: 'Clear' }))
+    click(screen.getByRole('checkbox', { name: /Oil Temperature/ }))
+    expect(key()).toBeDefined()
+    unmount()
+
+    setup()
+    expect(legendCount()).toBe(1)
+    expect(screen.getByText(/Restored the saved view/)).toBeVisible()
+
+    click(screen.getByRole('button', { name: 'Reset view' }))
+    expect(key()).toBeUndefined()
+    expect(legendCount()).toBe(6)
+  })
+
+  it('reports parameters it could not restore', () => {
+    const ids = result.dataset.columns.map((column) => column.name.toLowerCase())
+    localStorage.setItem(
+      layoutKey(ids),
+      JSON.stringify({ ...defaultView(['oil temperature', 'no such channel']) }),
+    )
+
+    setup()
+    expect(screen.getByText(/1 parameter skipped/)).toBeVisible()
+    expect(legendCount()).toBe(1)
+  })
+
+  it('carries on silently when storage fails', () => {
+    const onUnsavedChange = vi.fn()
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError')
+    })
+    render(
+      <Workspace
+        log={{ ...result, id: 1, fileName: 'a.csv' }}
+        onFiles={vi.fn()}
+        onUnsavedChange={onUnsavedChange}
+      />,
+    )
+
+    click(screen.getByRole('button', { name: 'Clear' }))
+    expect(screen.queryByRole('alert')).toBeNull()
+    // Without storage the changes are unsaved, so replacing the log asks first.
+    expect(onUnsavedChange).toHaveBeenLastCalledWith(true)
+    setItem.mockRestore()
   })
 })
