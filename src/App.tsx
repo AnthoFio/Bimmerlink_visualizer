@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { LoadStatus } from './features/upload/LoadStatus.tsx'
 import { loadLogInWorker } from './features/upload/loadLog.ts'
 import type { LoadLog } from './features/upload/loadLog.ts'
-import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
+import { ReplaceConfirm } from './features/upload/ReplaceConfirm.tsx'
 import { UploadPanel } from './features/upload/UploadPanel.tsx'
 import { useLogLoader } from './features/upload/useLogLoader.ts'
-import { trimLeadingRows } from './lib/rampUp.ts'
+import { fileSelectionProblem } from './lib/fileType.ts'
+import { Workspace } from './Workspace.tsx'
 
 interface Props {
   /** Replaced in tests, as jsdom has no Worker. */
@@ -15,42 +16,57 @@ interface Props {
 
 export default function App({ loadLog = loadLogInWorker }: Props) {
   const { log, error, pending, open, cancel } = useLogLoader(loadLog)
-  const [trim, setTrim] = useState(true)
-  const shown = useMemo(
-    () => log && (trim ? trimLeadingRows(log.dataset, log.rampUp.rows) : log.dataset),
-    [log, trim],
+  const [unsaved, setUnsaved] = useState(false)
+  const [waiting, setWaiting] = useState<File>()
+  const [rejected, setRejected] = useState<string>()
+
+  const replace = (files: File[]) => {
+    const problem = fileSelectionProblem(files)
+    setRejected(problem)
+    const file = files[0]
+    if (problem || !file) return
+    if (unsaved) setWaiting(file)
+    else void open(file)
+  }
+
+  const problem = rejected ?? error
+  const status = (
+    <>
+      {waiting && (
+        <ReplaceConfirm
+          fileName={waiting.name}
+          onKeep={() => setWaiting(undefined)}
+          onReplace={() => {
+            setWaiting(undefined)
+            void open(waiting)
+          }}
+        />
+      )}
+      {pending && <LoadStatus {...pending} onCancel={cancel} />}
+      {problem && (
+        <p role="alert" className="message message-error">
+          {problem}
+        </p>
+      )}
+    </>
   )
 
-  return (
+  const upload = (
     <main className="app">
-      <UploadPanel onFile={open}>
-        {pending && <LoadStatus {...pending} onCancel={cancel} />}
-        {error && (
-          <p role="alert" className="message message-error">
-            {error}
-          </p>
-        )}
-        {log && shown && (
-          <ErrorBoundary resetKey={log}>
-            <div role="status">
-              <p>
-                Loaded {log.fileName}: {shown.time.length} rows, {shown.columns.length} channels.
-              </p>
-              {log.warnings.map((warning) => (
-                <p key={warning.code} className="message message-warning">
-                  {warning.message}
-                </p>
-              ))}
-            </div>
-            <RampUpToggle
-              rows={log.dataset.time.length - shown.time.length}
-              seconds={shown.time[0]! - log.dataset.time[0]!}
-              checked={trim}
-              onChange={setTrim}
-            />
-          </ErrorBoundary>
-        )}
-      </UploadPanel>
+      <UploadPanel onFile={open}>{status}</UploadPanel>
     </main>
+  )
+  if (!log) return upload
+
+  return (
+    <ErrorBoundary
+      resetKey={log}
+      // A log that cannot be displayed must still leave a way to open another one.
+      fallback={upload}
+    >
+      <Workspace key={log.id} log={log} onFiles={replace} onUnsavedChange={setUnsaved}>
+        {status}
+      </Workspace>
+    </ErrorBoundary>
   )
 }

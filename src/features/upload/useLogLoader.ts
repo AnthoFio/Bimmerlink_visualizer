@@ -4,6 +4,8 @@ import type { ReadResult } from '../../lib/readLog.ts'
 import type { LoadLog } from './loadLog.ts'
 
 export interface LoadedLog extends ReadResult {
+  /** Different for every load, also for the same file. */
+  id: number
   fileName: string
 }
 
@@ -19,6 +21,7 @@ export function useLogLoader(load: LoadLog) {
   const [error, setError] = useState<string>()
   const [pending, setPending] = useState<Pending>()
   const current = useRef<AbortController>(null)
+  const loads = useRef(0)
 
   useEffect(() => () => current.current?.abort(), [])
 
@@ -37,7 +40,7 @@ export function useLogLoader(load: LoadLog) {
             if (!signal.aborted) setPending({ name: file.name, size: file.size, progress })
           },
         })
-        if (!signal.aborted) setLog({ ...result, fileName: file.name })
+        if (!signal.aborted) setLog({ ...result, id: ++loads.current, fileName: file.name })
       } catch (cause) {
         if (!signal.aborted) {
           setError(cause instanceof Error ? cause.message : describeLoadFailure(cause))

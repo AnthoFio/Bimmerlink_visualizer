@@ -17,15 +17,15 @@ As a BimmerLink user, I want a summary of the loaded log and a way to load a dif
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Header shows file name, duration (mm:ss), row count, median sample interval / rate, number of channels
-- [ ] 'Open another file' replaces the current dataset (with confirm if the view has unsaved customisations)
-- [ ] Re-uploading the same file works
+- [x] Header shows file name, duration (mm:ss), row count, median sample interval / rate, number of channels
+- [x] 'Open another file' replaces the current dataset (with confirm if the view has unsaved customisations)
+- [x] Re-uploading the same file works
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

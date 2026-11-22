@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
+  /** Shown under the message, so the user can carry on. */
+  fallback?: ReactNode
   /** Changing it clears the error, for example when another log is opened. */
   resetKey?: unknown
 }
@@ -26,9 +28,12 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (!this.state.failed) return this.props.children
     return (
-      <p role="alert" className="message message-error">
-        This log could not be displayed. Open another file, or reload the page.
-      </p>
+      <>
+        <p role="alert" className="message message-error">
+          This log could not be displayed. Open another file, or reload the page.
+        </p>
+        {this.props.fallback}
+      </>
     )
   }
 }
