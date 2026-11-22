@@ -620,3 +620,50 @@ button.menu-button {
   gap: 0.4rem;
   padding: 0.25rem 0;
 }
+
+.filters,
+.filter-menus {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.filter-menus {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.filter-menus select {
+  min-width: 0;
+  padding-inline: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.filter-state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.selected {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.selected h3 {
+  margin: 0.2rem 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.selected .parameter-list {
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.selected .parameter-row {
+  gap: 0.45rem;
+}

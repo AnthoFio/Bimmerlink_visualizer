@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { parameters } from '../../data/catalog.ts'
@@ -36,12 +36,15 @@ function setup(initial: string[] = []) {
   return { changed, boxes: () => screen.getAllByRole('checkbox') }
 }
 
+const listed = () =>
+  within(screen.getByRole('list', { name: 'Parameters' })).getAllByRole('listitem')
+
 describe('ParameterList', () => {
   it('lists every column with a checkbox, a colour swatch and the unit', () => {
     const { boxes } = setup()
 
     expect(boxes()).toHaveLength(3)
-    const items = screen.getAllByRole('listitem')
+    const items = listed()
     expect(items[0]).toHaveTextContent('Engine Speedrpm')
     expect(items[1]).toHaveTextContent('°C')
     expect(items[2]).toHaveTextContent('unit unknown')
@@ -106,12 +109,12 @@ describe('roles that are hidden by default', () => {
       <ParameterList channels={mixed} selected={new Set()} colours={colours} onSelect={onSelect} />,
     )
 
-    expect(screen.getAllByRole('listitem')).toHaveLength(1)
+    expect(listed()).toHaveLength(1)
     fireEvent.click(screen.getByRole('button', { name: 'Select all' }))
     expect(onSelect).toHaveBeenLastCalledWith([mixed[0]!.id], true)
 
     fireEvent.click(screen.getByRole('button', { name: 'Show all (3 hidden)' }))
-    expect(screen.getAllByRole('listitem')).toHaveLength(4)
+    expect(listed()).toHaveLength(4)
   })
 
   it('still lists one that is selected', () => {
@@ -124,6 +127,57 @@ describe('roles that are hidden by default', () => {
       />,
     )
 
-    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(listed()).toHaveLength(2)
+  })
+})
+
+describe('search and filters', () => {
+  const type = (value: string) =>
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search parameters' }), {
+      target: { value },
+    })
+  const rows = () => screen.getAllByRole('checkbox')
+
+  it('narrows the list, and select all applies to what is listed', () => {
+    const { changed } = setup()
+
+    type('OIL')
+    expect(rows()).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Select all' }))
+    expect(changed).toHaveBeenLastCalledWith([channels[1]!.id], true)
+  })
+
+  it('always shows the selected parameters in a section of their own', () => {
+    setup([channels[0]!.id])
+
+    type('oil')
+    const section = screen.getByRole('region', { name: 'Selected' })
+    expect(section).toHaveTextContent('Engine Speed')
+
+    fireEvent.click(within(section).getByRole('button', { name: 'Unselect Engine Speed' }))
+    expect(section).not.toHaveTextContent('Engine Speed')
+  })
+
+  it('filters by category, unit and role', () => {
+    setup()
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Category' }), {
+      target: { value: 'Oil' },
+    })
+    expect(rows()).toHaveLength(1)
+    fireEvent.change(screen.getByRole('combobox', { name: 'Unit' }), { target: { value: 'rpm' } })
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    expect(screen.getByText('No parameter matches.')).toBeVisible()
+    expect(screen.getByRole('combobox', { name: 'Role' })).toBeEnabled()
+  })
+
+  it('shows that a filter is on, with a reset', () => {
+    setup()
+    expect(screen.queryByRole('button', { name: 'Reset filters' })).toBeNull()
+
+    type('oil')
+    expect(screen.getByText('Showing 1 of 3')).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'Reset filters' }))
+    expect(rows()).toHaveLength(3)
   })
 })
