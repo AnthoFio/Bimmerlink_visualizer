@@ -8,6 +8,8 @@ export interface PanelItem {
   colour: string
   /** Index into the axes of the panel. */
   axis: number
+  /** Line style, when series are told apart by more than colour. */
+  dash?: readonly number[]
 }
 
 export interface PanelContent {

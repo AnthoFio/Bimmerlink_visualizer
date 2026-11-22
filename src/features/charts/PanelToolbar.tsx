@@ -80,6 +80,15 @@ export function PanelToolbar({ panel, number, count, onUpdate, onMove, onRemove 
           ))}
         </select>
       </label>
+      <label>
+        <input
+          type="checkbox"
+          aria-label={`Line styles in panel ${number}`}
+          checked={panel.patterns}
+          onChange={(event) => onUpdate({ patterns: event.target.checked })}
+        />{' '}
+        Line styles
+      </label>
       <div className="panel-actions">
         <label>
           Height{' '}

@@ -25,6 +25,7 @@ function readPanel(value: unknown): Panel | undefined {
     fit: oneOf(FIT_MODES, value.fit) ?? 'visible',
     normalise: oneOf(NORMALISE_MODES, value.normalise) ?? 'off',
     synced: value.synced !== false,
+    patterns: value.patterns === true,
   }
 }
 

@@ -191,7 +191,7 @@ describe('cursor readout', () => {
     const value = result.dataset.columns.find((c) => c.name === 'Engine Speed')!.values[last]!
     expect(within(speed).getByText(formatValue(value))).toBeVisible()
     expect(speed).toHaveTextContent('rpm')
-    expect(speed.querySelector('.swatch')).toHaveAttribute('style')
+    expect(speed.querySelector('.line-sample line')).toHaveAttribute('stroke')
   })
 
   it('snaps to the nearest sample', () => {
@@ -694,5 +694,27 @@ describe('CSV export', () => {
     expect(text.trimEnd().split('\n')).toHaveLength(141)
     create.mockRestore()
     anchorClick.mockRestore()
+  })
+})
+
+describe('accessibility', () => {
+  it('has a data table as text alternative of the charts', () => {
+    setup()
+    click(screen.getByText('Data table'))
+
+    const table = screen.getByRole('table', {
+      name: /samples, evenly spread over the visible window/,
+    })
+    expect(within(table).getAllByRole('row').length).toBeGreaterThan(10)
+    expect(screen.getByText(/6 series over the visible window/)).toBeVisible()
+  })
+
+  it('can tell series apart by line style, not only by colour', () => {
+    setup()
+    const dashes = () => FakeUplot.last.series.slice(1).map((series) => JSON.stringify(series.dash))
+    expect(new Set(dashes()).size).toBe(1)
+
+    click(within(panel(1)).getByRole('checkbox', { name: 'Line styles in panel 1' }))
+    expect(new Set(dashes()).size).toBe(6)
   })
 })

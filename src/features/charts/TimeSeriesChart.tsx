@@ -4,7 +4,7 @@ import { useStore } from '../../components/useStore.ts'
 import { axisGutters } from '../../lib/axes.ts'
 import type { AxisChoice, Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
-import { isStepped } from '../../lib/lineStyle.ts'
+import { dashOf, isStepped } from '../../lib/lineStyle.ts'
 import type { Range } from '../../lib/yRange.ts'
 import { dimmed } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
@@ -111,8 +111,13 @@ export function TimeSeriesChart(props: Props) {
     () =>
       channels
         .filter((channel) => selected.has(channel.id))
-        .map((channel) => ({ channel, colour: colours.get(channel.id) ?? '#808080', axis: 0 })),
-    [channels, selected, colours],
+        .map((channel, i) => ({
+          channel,
+          colour: colours.get(channel.id) ?? '#808080',
+          axis: 0,
+          dash: dashOf(i, panel.patterns),
+        })),
+    [channels, selected, colours, panel.patterns],
   )
   const plotted = useMemo(
     () => new Set([...selected].filter((id) => !hiddenOf(id))),
@@ -138,9 +143,11 @@ export function TimeSeriesChart(props: Props) {
         colour: focus && focus !== channel.id ? dimmed(colour) : colour,
         axis,
         stepped: isStepped(channel, panel.lines),
+        // The dash of the legend entry, which also lists the hidden series.
+        dash: legendItems.find((item) => item.channel.id === channel.id)?.dash ?? [],
         span: spans?.[i],
       })),
-    [dataset, items, panel.lines, spans, focus],
+    [dataset, items, panel.lines, spans, focus, legendItems],
   )
   // Fitting all data does not depend on the window, so panning need not compute it again.
   const fitted = panel.fit === 'visible' ? shown : bounds

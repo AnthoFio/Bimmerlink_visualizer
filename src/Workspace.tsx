@@ -5,6 +5,7 @@ import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
 import { ChartPanels } from './features/charts/ChartPanels.tsx'
 import { Minimap } from './features/charts/Minimap.tsx'
+import { DataTable } from './features/charts/DataTable.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
 import { PresetPicker } from './features/selection/PresetPicker.tsx'
@@ -236,6 +237,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             theme={theme}
           />
           <RangeStatistics dataset={dataset} channels={visible} viewport={viewport} />
+          <DataTable dataset={dataset} channels={visible} viewport={viewport} />
         </main>
       </div>
     </div>

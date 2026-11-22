@@ -6,7 +6,7 @@ import type { Channel } from './channels.ts'
 import { downsample } from './downsample.ts'
 import { formatAxisTime } from './format.ts'
 import { linePath } from './linePath.ts'
-import { isStepped } from './lineStyle.ts'
+import { dashOf, isStepped } from './lineStyle.ts'
 import { normalisationSpans, PERCENT_RANGE, toPercent } from './normalise.ts'
 import { CHART_COLOURS } from './palette.ts'
 import type { Theme } from './palette.ts'
@@ -26,6 +26,7 @@ interface ExportSeries {
   y: ArrayLike<number | null>
   stepped: boolean
   axis: number
+  dash: readonly number[]
 }
 
 interface ExportPanel {
@@ -106,6 +107,7 @@ export function exportModel({
           y: spans ? toPercent(ys[i]!, spans[i]!) : ys[i]!,
           stepped: isStepped(channel, panel.lines),
           axis,
+          dash: dashOf(i, panel.patterns),
         })),
         legend: items.map(({ channel, colour }) => ({
           name: `${channel.name} (${unitLabel(channel.unit)})`,
@@ -217,7 +219,7 @@ export function chartSvg(model: ExportModel, { title, theme, width }: Options): 
         line.stepped,
       )
       body.push(
-        `<path class="series" clip-path="url(#clip${p})" d="${d}" fill="none" stroke="${line.colour}" stroke-width="1.25"/>`,
+        `<path class="series" clip-path="url(#clip${p})" d="${d}" fill="none" stroke="${line.colour}" stroke-width="1.25"${line.dash.length ? ` stroke-dasharray="${line.dash.join(' ')}"` : ''}/>`,
       )
     }
     top += plotHeight + X_AXIS

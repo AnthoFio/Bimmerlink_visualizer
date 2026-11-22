@@ -27,6 +27,8 @@ export interface Panel {
   normalise: NormaliseMode
   /** Shares the time window and the cursor with the other panels. */
   synced: boolean
+  /** Dashes per series, so that colour is not the only difference. */
+  patterns: boolean
 }
 
 /** What the user set for one series; whatever is absent is automatic. */
@@ -60,7 +62,15 @@ export interface View {
 }
 
 export function createPanel(id: string, height: number): Panel {
-  return { id, height, lines: 'auto', fit: 'visible', normalise: 'off', synced: true }
+  return {
+    id,
+    height,
+    lines: 'auto',
+    fit: 'visible',
+    normalise: 'off',
+    synced: true,
+    patterns: false,
+  }
 }
 
 export function defaultView(selected: readonly string[]): View {

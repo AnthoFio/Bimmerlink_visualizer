@@ -38,9 +38,19 @@ export function Legend(props: Props) {
         )}
       </p>
       <ul className="legend" aria-label="Legend" tabIndex={0}>
-        {items.map(({ channel, colour }) => (
+        {items.map(({ channel, colour, dash }) => (
           <li key={channel.id} className={hiddenOf(channel.id) ? 'is-hidden' : undefined}>
-            <span className="swatch" aria-hidden="true" style={{ backgroundColor: colour }} />
+            <svg className="line-sample" aria-hidden="true" viewBox="0 0 24 10">
+              <line
+                x1="0"
+                y1="5"
+                x2="24"
+                y2="5"
+                stroke={colour}
+                strokeWidth="3"
+                strokeDasharray={dash?.length ? dash.join(' ') : undefined}
+              />
+            </svg>
             <button
               type="button"
               className="legend-name"

@@ -731,3 +731,23 @@ button.legend-name {
   align-items: center;
   font-size: 0.85rem;
 }
+
+.line-sample {
+  flex: none;
+  width: 24px;
+  height: 10px;
+}
+
+.data-table {
+  margin: 0.75rem 0;
+}
+
+.data-table summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.data-table .table-scroll {
+  max-height: 24rem;
+  overflow: auto;
+}

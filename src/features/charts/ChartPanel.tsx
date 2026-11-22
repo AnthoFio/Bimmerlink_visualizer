@@ -33,6 +33,7 @@ export interface PlotSeries {
   /** Index into `axes`. */
   axis: number
   stepped: boolean
+  dash: readonly number[]
   /** In a normalised panel: the min and max that become 0 and 100%. */
   span?: Range
 }
@@ -229,7 +230,7 @@ export function ChartPanel(props: Props) {
   useLayoutEffect(() => {
     const chart = plot.current!
     const structure = JSON.stringify(
-      series.map((line) => [line.id, line.name, line.axis, line.stepped]),
+      series.map((line) => [line.id, line.name, line.axis, line.stepped, line.dash]),
     )
     axisStrips.current.forEach((strip, slot) => {
       strip.hidden = !axes[slot]?.visible
@@ -248,6 +249,7 @@ export function ChartPanel(props: Props) {
               scale: scaleKey(line.axis),
               // One pixel is a hairline, which software rasterisers stroke several times faster.
               width: 1,
+              dash: [...line.dash],
               points: { show: false },
               // align 1 holds each sample until the next one.
               paths: line.stepped ? uPlot.paths.stepped?.({ align: 1 }) : undefined,
