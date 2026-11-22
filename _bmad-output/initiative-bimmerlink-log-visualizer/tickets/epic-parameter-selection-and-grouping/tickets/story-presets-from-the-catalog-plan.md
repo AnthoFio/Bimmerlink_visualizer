@@ -1,5 +1,5 @@
 ---
 title: 'Presets from the catalog'
 ticket: 5
-status: in-progress
+status: built
 ---

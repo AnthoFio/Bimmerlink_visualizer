@@ -516,3 +516,46 @@ describe('colours and legend', () => {
     expect(strokeOf('Engine Speed')).toBe('#123456')
   })
 })
+
+describe('presets', () => {
+  const apply = (name: string) => {
+    fireEvent.change(screen.getByRole('combobox', { name: 'Preset' }), { target: { value: name } })
+    click(screen.getByRole('button', { name: 'Apply preset' }))
+  }
+  const legendNames = () =>
+    within(screen.getByRole('list', { name: 'Legend' }))
+      .queryAllByRole('listitem')
+      .map((item) => item.querySelector('.legend-name')!.textContent)
+
+  it('replaces the selection and reports what is missing', () => {
+    setup()
+
+    apply('Misfire')
+    expect(legendNames()).toHaveLength(6)
+    expect(legendNames().every((name) => name!.startsWith('Misfire'))).toBe(true)
+    expect(screen.getByRole('status', { name: 'Preset result' })).toHaveTextContent(
+      '7 of 13 not in this log',
+    )
+  })
+
+  it('can be undone', () => {
+    setup()
+    const before = legendNames()
+
+    apply('Misfire')
+    click(screen.getByRole('button', { name: 'Undo preset' }))
+    expect(legendNames()).toEqual(before)
+    expect(screen.queryByRole('button', { name: 'Undo preset' })).toBeNull()
+  })
+
+  it('keeps the selection when none of the preset is in the log', () => {
+    setup()
+    const before = legendNames()
+
+    apply('Knock')
+    expect(legendNames()).toEqual(before)
+    expect(screen.getByRole('status', { name: 'Preset result' })).toHaveTextContent(
+      'None of the 27 parameters of Knock is in this log',
+    )
+  })
+})

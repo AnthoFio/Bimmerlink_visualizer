@@ -6,6 +6,7 @@ import { ChartPanels } from './features/charts/ChartPanels.tsx'
 import { Minimap } from './features/charts/Minimap.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
+import { PresetPicker } from './features/selection/PresetPicker.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
@@ -21,6 +22,7 @@ import {
   assignPanel,
   defaultView,
   panelOf,
+  selectOnly,
   setSelected,
   settingsOf,
   viewsEqual,
@@ -74,6 +76,16 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [channels, selected, view],
   )
 
+  // The selection before the last preset, while the selection is still the one it set.
+  const [beforePreset, setBeforePreset] = useState<{ before: string[]; after: string[] }>()
+  const applyPresetIds = (ids: string[]) => {
+    const after = [...ids]
+    setBeforePreset({ before: view.selected, after })
+    // Not selectOnly, which copies: the identity of `after` tells that nothing changed since.
+    setView((current) => ({ ...current, selected: after }))
+  }
+  const undoable = beforePreset?.after === view.selected ? beforePreset : undefined
+
   const select = useCallback(
     (ids: string[], on: boolean) => setView((current) => setSelected(current, ids, on)),
     [],
@@ -119,6 +131,17 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       />
       <div className="workspace-body">
         <aside className="sidebar" aria-label="Parameters">
+          <PresetPicker
+            channels={channels}
+            onApply={applyPresetIds}
+            onUndo={
+              undoable &&
+              (() => {
+                setBeforePreset(undefined)
+                setView((current) => selectOnly(current, undoable.before))
+              })
+            }
+          />
           <ParameterList
             channels={channels}
             selected={selected}

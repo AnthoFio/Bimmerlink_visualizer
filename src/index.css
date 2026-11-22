@@ -703,3 +703,16 @@ button.legend-name {
 .legend li.is-hidden .swatch {
   opacity: 0.3;
 }
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.presets select {
+  flex: 1;
+  min-width: 8rem;
+}

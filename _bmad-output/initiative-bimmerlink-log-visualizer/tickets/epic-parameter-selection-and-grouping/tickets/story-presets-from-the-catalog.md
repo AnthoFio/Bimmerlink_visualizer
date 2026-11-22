@@ -17,15 +17,15 @@ As a BimmerLink user, I want one-click presets (BimmerLink log presets, 'Core on
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Presets derived from the catalog `presets` field and categories; only parameters present in the log are applied
-- [ ] Missing parameters reported ('3 of 8 not in this log')
-- [ ] Applying a preset replaces the selection (undo available)
+- [x] Presets derived from the catalog `presets` field and categories; only parameters present in the log are applied
+- [x] Missing parameters reported ('3 of 8 not in this log')
+- [x] Applying a preset replaces the selection (undo available)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
