@@ -33,6 +33,7 @@ Node 24 and npm 11 (`.nvmrc`, `engines` in `package.json`). Run everything from 
 | Full quality gate | `npm run check` = lint + format:check + typecheck + test                          |
 | Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`)           |
 | e2e (Playwright)  | `npm run e2e` (run `npm run build` first; `npx playwright install chromium` once) |
+| Performance       | `npm run e2e:perf` (after a build; one worker, on a quiet machine)                |
 | CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`                   |
 
 Before every commit/PR run `npm run check`, `npm run build` and `npm run e2e`; all must be green.

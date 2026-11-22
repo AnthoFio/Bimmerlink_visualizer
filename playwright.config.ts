@@ -17,7 +17,16 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', testIgnore: 'perf.spec.ts', use: { ...devices['Desktop Chrome'] } },
+    // Measures time, so it runs on its own: npm run e2e:perf
+    {
+      name: 'perf',
+      testMatch: 'perf.spec.ts',
+      // Tracing takes a screenshot per frame, which is most of what would be measured.
+      use: { ...devices['Desktop Chrome'], trace: 'off' },
+    },
+  ],
   webServer: {
     command: `npm run preview -- --host 127.0.0.1 --port ${PORT} --strictPort`,
     url: baseURL,

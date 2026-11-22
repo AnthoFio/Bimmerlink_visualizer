@@ -1,11 +1,12 @@
 /// <reference types="node" />
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { readdirSync, readFileSync } from 'node:fs'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { parameters } from '../../data/catalog.ts'
 import { describeChannels } from '../../lib/channels.ts'
 import { formatAxisTime } from '../../lib/format.ts'
 import { parseLogText } from '../../lib/parseLog.ts'
+import { createViewport } from '../../lib/viewport.ts'
 import { exampleLogNames, loadExampleBytes, loadFixtureText } from '../../test/fixtures.ts'
 import { FakeUplot } from '../../test/fakeUplot.ts'
 import { TimeSeriesChart } from './TimeSeriesChart.tsx'
@@ -88,7 +89,8 @@ describe('TimeSeriesChart', () => {
 
     const { data } = FakeUplot.last
     expect(data).toHaveLength(log.channels.length + 1)
-    expect(data.every((column) => column!.length === log.dataset.time.length)).toBe(true)
+    expect(data[0]!.length).toBeGreaterThan(100)
+    expect(data.every((column) => column!.length === data[0]!.length)).toBe(true)
   })
 })
 
@@ -151,5 +153,27 @@ describe('axes by unit', () => {
     render(chart([ids[0]!, ids[6]!, ids[7]!, ids[8]!, ids[9]!]))
 
     expect(screen.getByRole('list', { name: 'Further axes' })).toHaveTextContent('rpm')
+  })
+})
+
+describe('downsampling', () => {
+  it('draws few points for a long log and samples again on zoom', () => {
+    const log = logOf(new TextDecoder().decode(loadExampleBytes('2026-10-25_09-33-22.csv')))
+    const viewport = createViewport()
+    render(
+      <TimeSeriesChart
+        {...log}
+        {...LOOK}
+        viewport={viewport}
+        selected={new Set([log.channels[0]!.id])}
+      />,
+    )
+    expect(FakeUplot.last.data[0]!.length).toBeLessThan(4000)
+
+    act(() => viewport.set({ window: { min: 600, max: 610 } }))
+    const x = Array.from(FakeUplot.last.data[0]!)
+    expect(x.length).toBeGreaterThan(300)
+    expect(x[0]).toBeGreaterThan(599.8)
+    expect(x.at(-1)).toBeLessThan(610.2)
   })
 })

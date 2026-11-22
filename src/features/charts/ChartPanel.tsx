@@ -3,13 +3,13 @@
 // uPlot cannot add a scale or an axis to an existing chart, so a chart gets a scale per channel
 // and four axes up front. An unused scale has no range, which hides its axis. That way the
 // selection can change without remounting the chart.
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import uPlot from 'uplot'
 import 'uplot/dist/uPlot.min.css'
 import { VISIBLE_AXES } from '../../lib/axes.ts'
 import type { Axis, Gutters } from '../../lib/axes.ts'
 import { formatAxisTime } from '../../lib/format.ts'
-import { withGaps } from '../../lib/gaps.ts'
+import { downsample } from '../../lib/downsample.ts'
 import { CHART_COLOURS } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import type { TimeWindow } from '../../lib/timeWindow.ts'
@@ -119,6 +119,7 @@ export function ChartPanel(props: Props) {
   const host = useRef<HTMLDivElement>(null)
   const plot = useRef<uPlot>(null)
   const drawn = useRef('')
+  const [width, setWidth] = useState(0)
   const duration = time.length ? time[time.length - 1]! - time[0]! : 0
   const latest = useRef<Model>({ ...props, duration })
 
@@ -140,7 +141,9 @@ export function ChartPanel(props: Props) {
     drawn.current = ''
 
     const observer = new ResizeObserver(() => {
-      if (target.clientWidth) chart.setSize({ width: target.clientWidth, height: model().height })
+      if (!target.clientWidth) return
+      chart.setSize({ width: target.clientWidth, height: model().height })
+      setWidth(target.clientWidth)
     })
     observer.observe(target)
     const detach = attachGestures(chart.over, {
@@ -173,7 +176,8 @@ export function ChartPanel(props: Props) {
             {
               label: line.name,
               scale: scaleKey(line.axis),
-              width: 1.5,
+              // One pixel is a hairline, which software rasterisers stroke several times faster.
+              width: 1,
               points: { show: false },
               stroke: () => latest.current.series[i]?.colour ?? line.colour,
             },
@@ -181,14 +185,17 @@ export function ChartPanel(props: Props) {
           )
         })
       }
-      chart.setData([time, ...series.map((line) => withGaps(line.values))], false)
-      chart.setScale('x', { min: latest.current.window.min, max: latest.current.window.max })
+      // One bucket per pixel of the plot, sampled again for every window.
+      const { x, ys } = downsample(
+        time,
+        series.map((line) => line.values),
+        shown,
+        chart.over.clientWidth || width || FALLBACK_WIDTH,
+      )
+      chart.setData([x, ...ys], false)
+      chart.setScale('x', { min: shown.min, max: shown.max })
     })
-  }, [time, series, axes, ranges, capacity])
-
-  useLayoutEffect(() => {
-    plot.current?.setScale('x', { min: shown.min, max: shown.max })
-  }, [shown])
+  }, [time, series, axes, ranges, capacity, shown, width])
 
   // A new size makes uPlot measure the padding again, hence the gutters.
   useLayoutEffect(() => {
