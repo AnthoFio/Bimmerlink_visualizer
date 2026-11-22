@@ -6,6 +6,7 @@ import type { AxisChoice, Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { isStepped } from '../../lib/lineStyle.ts'
 import type { Range } from '../../lib/yRange.ts'
+import { dimmed } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { normalisationSpans, PERCENT_RANGE } from '../../lib/normalise.ts'
 import { panelContent } from '../../lib/panelContent.ts'
@@ -45,6 +46,8 @@ interface Props {
   choiceOf?: (id: string) => AxisChoice | undefined
   /** Further controls of one series, in the legend. */
   renderOptions?: (channel: Channel) => ReactNode
+  hiddenOf?: (id: string) => boolean
+  onToggleHidden?: (id: string) => void
   rangeOf?: (key: string) => Range | undefined
   onRange?: (key: string, range: Range | null) => void
   /** Position of the panel, from 1. */
@@ -56,6 +59,7 @@ interface Props {
 const DEFAULT_PANEL = createPanel('p1', PANEL_HEIGHT.initial)
 const automatic = () => undefined
 const ignore = () => undefined
+const never = () => false
 
 export function TimeSeriesChart(props: Props) {
   const { dataset, channels, selected, colours, theme, gutters } = props
@@ -101,11 +105,23 @@ export function TimeSeriesChart(props: Props) {
     [viewport, sync],
   )
 
-  const { choiceOf, renderOptions } = props
+  const { choiceOf, renderOptions, hiddenOf = never, onToggleHidden = ignore } = props
+  const [focus, setFocus] = useState<string | null>(null)
+  const legendItems = useMemo(
+    () =>
+      channels
+        .filter((channel) => selected.has(channel.id))
+        .map((channel) => ({ channel, colour: colours.get(channel.id) ?? '#808080', axis: 0 })),
+    [channels, selected, colours],
+  )
+  const plotted = useMemo(
+    () => new Set([...selected].filter((id) => !hiddenOf(id))),
+    [selected, hiddenOf],
+  )
   const normalised = panel.normalise !== 'off'
   const { items, axes } = useMemo(
-    () => panelContent(channels, selected, colours, normalised, choiceOf),
-    [channels, selected, colours, normalised, choiceOf],
+    () => panelContent(channels, plotted, colours, normalised, choiceOf),
+    [channels, plotted, colours, normalised, choiceOf],
   )
   const spanned = panel.normalise === 'window' ? shown : bounds
   const spans = useMemo(() => {
@@ -119,12 +135,12 @@ export function TimeSeriesChart(props: Props) {
         id: channel.id,
         name: channel.name,
         values: dataset.columns[channel.column]!.values,
-        colour,
+        colour: focus && focus !== channel.id ? dimmed(colour) : colour,
         axis,
         stepped: isStepped(channel, panel.lines),
         span: spans?.[i],
       })),
-    [dataset, items, panel.lines, spans],
+    [dataset, items, panel.lines, spans, focus],
   )
   // Fitting all data does not depend on the window, so panning need not compute it again.
   const fitted = panel.fit === 'visible' ? shown : bounds
@@ -189,7 +205,15 @@ export function TimeSeriesChart(props: Props) {
         isManual={(key) => rangeOf(key) !== undefined}
         onRange={onRange}
       />
-      <Legend dataset={dataset} items={items} cursor={readout} renderOptions={renderOptions} />
+      <Legend
+        dataset={dataset}
+        items={legendItems}
+        cursor={readout}
+        renderOptions={renderOptions}
+        hiddenOf={hiddenOf}
+        onToggle={onToggleHidden}
+        onFocus={setFocus}
+      />
     </>
   )
 }

@@ -33,6 +33,10 @@ export interface Panel {
 export interface SeriesSettings {
   panel?: string
   axis?: AxisChoice
+  /** A colour the user picked, as #rrggbb. */
+  colour?: string
+  /** Selected but switched off in the legend. */
+  hidden?: boolean
 }
 
 /** A manual range of one axis of one panel; an axis without one is automatic. */

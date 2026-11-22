@@ -472,3 +472,47 @@ describe('moving series', () => {
     expect(first!.x).toEqual(zoomed)
   })
 })
+
+describe('colours and legend', () => {
+  const legendButton = (name: string) =>
+    within(screen.getByRole('list', { name: 'Legend' })).getByRole('button', { name })
+  const plotted = () => FakeUplot.last.series.slice(1).map((series) => series.label)
+  const strokeOf = (label: string) => {
+    const series = FakeUplot.last.series.find((candidate) => candidate.label === label)!
+    return (series.stroke as () => string)()
+  }
+
+  it('toggles the visibility of a series from the legend', () => {
+    setup()
+    expect(plotted()).toContain('Engine Speed')
+
+    click(legendButton('Engine Speed'))
+    expect(plotted()).not.toContain('Engine Speed')
+    expect(legendButton('Engine Speed')).toHaveAttribute('aria-pressed', 'false')
+
+    click(legendButton('Engine Speed'))
+    expect(plotted()).toContain('Engine Speed')
+  })
+
+  it('highlights the hovered series and dims the others', () => {
+    setup()
+    const normal = strokeOf('Oil Temperature')
+
+    act(() => void fireEvent.mouseEnter(legendButton('Engine Speed')))
+    expect(strokeOf('Oil Temperature')).toMatch(/^rgba\(.*0\.22\)$/)
+    expect(strokeOf('Engine Speed')).not.toMatch(/rgba/)
+
+    act(() => void fireEvent.mouseLeave(legendButton('Engine Speed')))
+    expect(strokeOf('Oil Temperature')).toBe(normal)
+  })
+
+  it('has a colour picker per series', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Options for Engine Speed' }))
+
+    fireEvent.change(screen.getByLabelText('Colour of Engine Speed'), {
+      target: { value: '#123456' },
+    })
+    expect(strokeOf('Engine Speed')).toBe('#123456')
+  })
+})

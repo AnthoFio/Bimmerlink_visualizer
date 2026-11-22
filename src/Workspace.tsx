@@ -12,12 +12,19 @@ import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
 import { describeChannels } from './lib/channels.ts'
 import { defaultSelection } from './lib/defaults.ts'
-import { slotColour } from './lib/palette.ts'
+import { assignSlots, slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { logExtent } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
 import { createViewport } from './lib/viewport.ts'
-import { assignPanel, defaultView, panelOf, setSelected, viewsEqual } from './lib/view.ts'
+import {
+  assignPanel,
+  defaultView,
+  panelOf,
+  setSelected,
+  settingsOf,
+  viewsEqual,
+} from './lib/view.ts'
 
 interface Props {
   log: LoadedLog
@@ -50,14 +57,21 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   const summary = useMemo(() => summarise(dataset), [dataset])
   const extent = useMemo(() => logExtent(dataset.time), [dataset])
   const selected = useMemo(() => new Set(view.selected), [view.selected])
-  const colours = useMemo(
-    () => new Map(channels.map((channel) => [channel.id, slotColour(channel.column, theme)])),
-    [channels, theme],
-  )
+  const slots = useMemo(() => assignSlots(channels.map((channel) => channel.id)), [channels])
+  const series = view.series
+  const colours = useMemo(() => {
+    const picked = (id: string) => (Object.hasOwn(series, id) ? series[id]!.colour : undefined)
+    return new Map(
+      channels.map(({ id }) => [id, picked(id) ?? slotColour(slots.get(id)!, theme)] as const),
+    )
+  }, [channels, slots, series, theme])
   const unmatched = channels.filter((channel) => !channel.matched).length
   const visible = useMemo(
-    () => channels.filter((channel) => selected.has(channel.id)),
-    [channels, selected],
+    () =>
+      channels.filter(
+        (channel) => selected.has(channel.id) && !settingsOf(view, channel.id).hidden,
+      ),
+    [channels, selected, view],
   )
 
   const select = useCallback(

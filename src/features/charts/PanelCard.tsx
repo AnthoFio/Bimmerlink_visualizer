@@ -12,6 +12,7 @@ import {
   removePanel,
   setAxisRange,
   settingsOf,
+  updateSeries,
   updatePanel,
 } from '../../lib/view.ts'
 import type { Range } from '../../lib/yRange.ts'
@@ -41,6 +42,14 @@ export function PanelCard(props: Props) {
   const [dropping, setDropping] = useState(false)
   const rangeOf = useCallback((key: string) => axisRangeOf(view, panel.id, key), [view, panel.id])
   const choiceOf = useCallback((id: string) => settingsOf(view, id).axis, [view])
+  const hiddenOf = useCallback((id: string) => settingsOf(view, id).hidden === true, [view])
+  const toggleHidden = useCallback(
+    (id: string) =>
+      onChange((current) =>
+        updateSeries(current, id, { hidden: settingsOf(current, id).hidden ? undefined : true }),
+      ),
+    [onChange],
+  )
   const setRange = useCallback(
     (key: string, range: Range | null) =>
       onChange((current) => setAxisRange(current, panel.id, key, range)),
@@ -94,8 +103,15 @@ export function PanelCard(props: Props) {
         number={index + 1}
         rangeOf={rangeOf}
         choiceOf={choiceOf}
+        hiddenOf={hiddenOf}
+        onToggleHidden={toggleHidden}
         renderOptions={(channel) => (
-          <SeriesMenu channel={channel} view={view} onChange={onChange} />
+          <SeriesMenu
+            channel={channel}
+            view={view}
+            colour={colours.get(channel.id) ?? '#808080'}
+            onChange={onChange}
+          />
         )}
         onRange={setRange}
         viewport={viewport}
