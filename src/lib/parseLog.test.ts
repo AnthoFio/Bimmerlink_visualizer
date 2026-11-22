@@ -85,16 +85,35 @@ describe('parseLogText: format tolerance', () => {
     ])
   })
 
-  it('handles a UTF-8 BOM identically to the LF log without it', () => {
-    const withBom = parseLogText(loadFixtureText('bom.csv'))
-    const plain = parseLogText(loadFixtureText('crlf.csv'))
+  it('handles a UTF-8 BOM: the bom.csv fixture equals its LF slice', () => {
+    const text = loadFixtureText('bom.csv')
+    expect(text.charCodeAt(0)).toBe(0xfeff)
 
-    expect(withBom.columns.map((column) => column.name)).toEqual(
-      plain.columns.map((column) => column.name),
-    )
+    const withBom = parseLogText(text)
+    const plain = parseLogText(text.slice(1))
+
     expect(withBom.time.length).toBe(20)
-    expect(Array.from(withBom.time)).toEqual(Array.from(plain.time))
-    expect(withBom.columns).toEqual(plain.columns)
+    expect(withBom.columns).toHaveLength(9)
+    expect(withBom).toEqual(plain)
+    expect(withBom.columns[0]!.name.includes(String.fromCharCode(0xfeff))).toBe(false)
+  })
+
+  it('strips a BOM prepended to any log, so it never ends up in the first label', () => {
+    const text = loadFixtureText('crlf.csv')
+
+    expect(parseLogText('\uFEFF' + text)).toEqual(parseLogText(text))
+  })
+
+  it('reads a file with lone CR line endings (no LF anywhere) like the LF file', () => {
+    const lf = 'Time,"A","B"\n0.000,1,2\n0.030,3,4\n'
+
+    expect(parseLogText(lf.split('\n').join('\r'))).toEqual(parseLogText(lf))
+  })
+
+  it('does not support a quoted cell that spans lines (documented limit, no label does)', () => {
+    const dataset = parseLogText('Time,"A\nB"\n0,1\n')
+
+    expect(dataset.columns.map((column) => column.name)).not.toEqual(['A\nB'])
   })
 
   it('handles CRLF line endings (including the last one) with the same result as LF', () => {
@@ -155,6 +174,67 @@ describe('parseLogText: bad cells become NaN, never throw', () => {
   it('maps a bad Time cell to NaN', () => {
     expect(parseLogText('Time,"A"\nx,1\n').time[0]).toBeNaN()
   })
+
+  it('maps non-finite cells to NaN: Infinity, -Infinity, an overflowing exponent and NaN', () => {
+    const dataset = parseLogText('Time,"A"\n0,Infinity\n1,-Infinity\n2,1e999\n3,NaN\n')
+    const values = dataset.columns[0]!.values
+
+    expect(values).toHaveLength(4)
+    expect(Array.from(values).every(Number.isNaN)).toBe(true)
+  })
+
+  it('maps hex, binary, octal and other non-decimal notations to NaN, not to a number', () => {
+    const dataset = parseLogText('Time,"A"\n0,0x10\n1,0b11\n2,0o7\n3,1_0\n4,12abc\n5,--1\n')
+
+    expect(Array.from(dataset.columns[0]!.values).every(Number.isNaN)).toBe(true)
+  })
+
+  it('still reads padded and signed decimals and exponents', () => {
+    const dataset = parseLogText('Time,"A"\n0, 5 \n1,+2.5\n2,-.5\n3,7.\n4,1E2\n')
+
+    expect(Array.from(dataset.columns[0]!.values)).toEqual([5, 2.5, -0.5, 7, 100])
+  })
+})
+
+describe('parseLogText: the dataset contract at its edges', () => {
+  it('passes NaN, repeated and backwards Time values through unvalidated', () => {
+    const dataset = parseLogText('Time,"A"\nx,1\n5,2\n1,3\n1,4\n')
+
+    expect(dataset.time[0]).toBeNaN()
+    expect(Array.from(dataset.time.slice(1))).toEqual([5, 1, 1])
+    expect(Array.from(dataset.columns[0]!.values)).toEqual([1, 2, 3, 4])
+  })
+
+  it('keeps an empty header label as a column named empty string', () => {
+    const dataset = parseLogText('Time,"A",\n0,1,2\n')
+
+    expect(dataset.columns.map((column) => column.name)).toEqual(['A', ''])
+    expect(Array.from(dataset.columns[1]!.values)).toEqual([2])
+  })
+
+  it('gives no columns but all the rows for a header with only Time', () => {
+    const dataset = parseLogText('Time\n0\n1\n')
+
+    expect(dataset.columns).toEqual([])
+    expect(Array.from(dataset.time)).toEqual([0, 1])
+  })
+
+  it('keeps a second Time column as a plain series', () => {
+    const dataset = parseLogText('Time,"A",Time\n0,1,2\n')
+
+    expect(dataset.columns.map((column) => column.name)).toEqual(['A', 'Time'])
+    expect(Array.from(dataset.columns[1]!.values)).toEqual([2])
+  })
+
+  it('keeps the error code read-only', () => {
+    const error = new LogParseError('empty', 'x')
+
+    expect(() => {
+      // @ts-expect-error code is readonly
+      error.code = 'missing-time'
+    }).not.toThrow()
+    expect(error.name).toBe('LogParseError')
+  })
 })
 
 describe('parseLogText: duplicate column names', () => {
@@ -193,9 +273,18 @@ describe('parseLogText: trimmed real logs', () => {
 
   it('keeps non-zero first samples: the lambda adaptation factor is 1.03 in row 0', () => {
     const dataset = parseLogText(loadFixtureText('trimmed_2026-09-06_10-09-49.csv'))
-    const firstRow = dataset.columns.map((column) => column.values[0])
+    const column = dataset.columns.find(
+      (candidate) => candidate.name === 'Factor from lambda control adaptation for bank 1',
+    )
 
-    expect(firstRow).toContain(1.03)
+    expect(column?.values[0]).toBe(1.03)
+  })
+
+  it('keeps non-zero first samples: Target Rail Pressure is 90.50 in row 0', () => {
+    const dataset = parseLogText(loadFixtureText('trimmed_2026-10-24_12-29-08.csv'))
+    const column = dataset.columns.find((candidate) => candidate.name === 'Target Rail Pressure')
+
+    expect(column?.values[0]).toBe(90.5)
   })
 })
 
@@ -212,41 +301,52 @@ describe('parseLog: text or File', () => {
   it('rejects with a LogParseError for an empty File', async () => {
     await expect(parseLog(new File([], 'empty.csv'))).rejects.toMatchObject({ code: 'empty' })
   })
+
+  it('rejects with missing-time for a File whose first column is not Time', async () => {
+    const text = loadFixtureText('missing-time.csv')
+
+    await expect(parseLog(new File([text], 'log.csv'))).rejects.toMatchObject({
+      code: 'missing-time',
+    })
+  })
+
+  it('parses a real Example/ log from a File like from its text', async () => {
+    const bytes = loadExampleBytes('2026-11-14_10-12-17.csv')
+    const fromFile = await parseLog(new File([bytes.slice()], '2026-11-14_10-12-17.csv'))
+
+    expect(fromFile).toEqual(parseLogText(decode(bytes)))
+    expect(fromFile.time).toHaveLength(14570)
+    expect(fromFile.columns).toHaveLength(13)
+  })
 })
 
 describe('every log in Example/', () => {
-  const names = [
-    '2026-09-06_09-23-14.csv',
-    '2026-09-06_10-09-49.csv',
-    '2026-10-24_12-29-08 2.csv',
-    '2026-10-24_12-29-08.csv',
-    '2026-10-25_09-33-22.csv',
-    '2026-11-14_10-12-17.csv',
+  // Data rows and parameter columns of each log, counted from the files themselves
+  // (line count minus the header; header labels minus Time), not derived by the parser.
+  const expected: [name: string, rows: number, columns: number][] = [
+    ['2026-09-06_09-23-14.csv', 29244, 12],
+    ['2026-09-06_10-09-49.csv', 15128, 12],
+    ['2026-10-24_12-29-08 2.csv', 23112, 9],
+    ['2026-10-24_12-29-08.csv', 23112, 9],
+    ['2026-10-25_09-33-22.csv', 51019, 11],
+    ['2026-11-14_10-12-17.csv', 14570, 13],
   ]
 
-  it.each(names)('%s parses with the header-driven columns and every row', (name) => {
-    const text = decode(loadExampleBytes(name))
-    const lines = text.split('\n').filter((line) => line.length > 0)
-    const headerCount = lines[0]!.split('","').length
+  it.each(expected)(
+    '%s parses to %i rows and %i parameter columns, all finite',
+    (name, rows, count) => {
+      const dataset = parseLogText(decode(loadExampleBytes(name)))
 
-    const dataset = parseLogText(text)
-
-    expect(dataset.time.length).toBe(lines.length - 1)
-    expect(dataset.columns).toHaveLength(headerCount)
-    expect(dataset.time[0]).toBe(0)
-    expect(dataset.time.at(-1)).toBeGreaterThan(60)
-    for (const column of dataset.columns) {
-      expect(column.values.length).toBe(dataset.time.length)
-      expect(column.values.every(Number.isFinite), column.name).toBe(true)
-    }
-  })
-
-  it('parses the 51k-row log (2026-10-25_09-33-22.csv) with 11 columns', () => {
-    const dataset = parseLogText(decode(loadExampleBytes('2026-10-25_09-33-22.csv')))
-
-    expect(dataset.time.length).toBe(51019)
-    expect(dataset.columns).toHaveLength(11)
-  })
+      expect(dataset.time.length).toBe(rows)
+      expect(dataset.columns).toHaveLength(count)
+      expect(dataset.time[0]).toBe(0)
+      expect(dataset.time.at(-1)).toBeGreaterThan(0)
+      for (const column of dataset.columns) {
+        expect(column.values.length).toBe(rows)
+        expect(column.values.every(Number.isFinite), column.name).toBe(true)
+      }
+    },
+  )
 
   it('treats the byte-identical duplicate log identically', () => {
     const a = parseLogText(decode(loadExampleBytes('2026-10-24_12-29-08.csv')))

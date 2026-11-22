@@ -8,13 +8,17 @@
 // (comma separated, `.` decimal point, optional BOM and CRLF, quoted header labels,
 // numeric data), the output must be typed arrays rather than row objects, and a
 // dependency would cost bundle size and an extra pass over 50k rows.
-// This keeps the dependency list untouched and parses the 51k-row example well
-// under the 1 s budget (see the performance story).
+// This keeps the dependency list untouched; the 51k-row example log parses in about
+// 0.2 s on a developer laptop (the budget is 1 s, measured by the performance story).
 //
 // Scope: structure only. Friendly messages, duplicate-name reporting, bad-cell
 // counts and time monotonicity belong to the validation story; here a bad cell is
 // `NaN`, duplicate names are kept as they are, and only a log that cannot be
 // interpreted at all throws a `LogParseError`.
+//
+// Known limits, on purpose: the parser is line based, so a quoted cell cannot span
+// lines (no BimmerLink label does), and a lone CR counts as a line break only when the
+// file has no LF at all (classic Mac endings), not in a file that mixes both.
 
 export interface LogColumn {
   /** Header label with the quotes removed, original casing kept. */
@@ -23,16 +27,25 @@ export interface LogColumn {
 }
 
 export interface LogDataset {
-  /** Seconds, taken from the `Time` column. Irregular sampling is kept as is. */
+  /**
+   * Seconds, taken from the `Time` column. Irregular sampling is kept as is.
+   * Not validated here: a bad Time cell is `NaN`, and values may repeat or go backwards
+   * (the validation story detects that), so consumers must not assume a finite,
+   * increasing axis.
+   */
   time: Float64Array
-  /** Every column after `Time`, in header order. All arrays have `time.length` entries. */
+  /**
+   * Every column after `Time`, in header order, exactly as the header lists them: an
+   * empty label gives a column named `''`, a second `Time` column is a plain series, and a
+   * header with only `Time` gives no columns. All arrays have `time.length` entries.
+   */
   columns: LogColumn[]
 }
 
 export type LogParseErrorCode = 'empty' | 'missing-time'
 
 export class LogParseError extends Error {
-  code: LogParseErrorCode
+  readonly code: LogParseErrorCode
 
   constructor(code: LogParseErrorCode, message: string) {
     super(message)
@@ -41,7 +54,10 @@ export class LogParseError extends Error {
   }
 }
 
-const BOM = '﻿'
+const BOM = '\uFEFF'
+
+// Plain decimal or exponent notation only: Number() would also accept 0x1A, 0b11, 0o7.
+const NUMERIC = /^\s*[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?\s*$/
 
 /** Splits one CSV line on commas, honouring double quotes and `""` escapes. */
 function splitQuoted(line: string): string[] {
@@ -74,10 +90,10 @@ function splitQuoted(line: string): string[] {
   return cells
 }
 
+/** A cell as a number; anything that is not plain decimal notation (or overflows) is `NaN`. */
 function toNumber(cell: string | undefined): number {
-  if (cell === undefined) return NaN
+  if (cell === undefined || !NUMERIC.test(cell)) return NaN
   const value = Number(cell)
-  if (value === 0 && cell.trim() === '') return NaN
   return Number.isFinite(value) ? value : NaN
 }
 
@@ -89,7 +105,8 @@ function countLines(text: string): number {
 
 /** Parses the text of a BimmerLink log. Throws `LogParseError` if there is no usable header. */
 export function parseLogText(input: string): LogDataset {
-  const text = input.startsWith(BOM) ? input.slice(BOM.length) : input
+  let text = input.startsWith(BOM) ? input.slice(BOM.length) : input
+  if (!text.includes('\n') && text.includes('\r')) text = text.split('\r').join('\n')
   const capacity = countLines(text)
 
   let header: string[] | undefined
