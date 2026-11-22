@@ -10,6 +10,8 @@ parent: 36
 area: scale
 mvp: false
 labels: ['user-story', 'area:scale']
+depends_on: [S43]
+blocks: []
 created: 2026-11-18
 ---
 

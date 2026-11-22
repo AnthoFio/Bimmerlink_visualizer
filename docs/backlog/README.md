@@ -2,6 +2,7 @@
 
 Local mirror of the GitHub issues on project board 7 (owner `AnthoFio`), snapshot of 2026-11-22.
 Hierarchy: epic > feature > story, one folder per feature and one Markdown file per story, each with a YAML front matter.
+Story dependencies and the parallel execution waves are in [dependencies.md](dependencies.md).
 
 | Status      | Count |
 | ----------- | ----- |

@@ -10,6 +10,8 @@ parent: 42
 area: interaction
 mvp: true
 labels: ['user-story', 'mvp', 'area:interaction']
+depends_on: [S25]
+blocks: [S38, S41, S44, S46, S47, S52]
 created: 2026-11-18
 ---
 

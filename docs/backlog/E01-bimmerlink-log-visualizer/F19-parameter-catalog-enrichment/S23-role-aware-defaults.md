@@ -10,6 +10,8 @@ parent: 19
 area: catalog
 mvp: false
 labels: ['user-story', 'area:catalog']
+depends_on: [S21, S31]
+blocks: []
 created: 2026-11-18
 ---
 

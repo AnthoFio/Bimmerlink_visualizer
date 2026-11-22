@@ -10,6 +10,8 @@ parent: 48
 area: session
 mvp: false
 labels: ['user-story', 'area:session']
+depends_on: [S49]
+blocks: []
 created: 2026-11-18
 ---
 

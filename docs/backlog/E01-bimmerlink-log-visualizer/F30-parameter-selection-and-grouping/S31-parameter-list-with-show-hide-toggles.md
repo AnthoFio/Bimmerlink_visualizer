@@ -10,6 +10,8 @@ parent: 30
 area: selection
 mvp: true
 labels: ['user-story', 'mvp', 'area:selection']
+depends_on: [S14, S25]
+blocks: [S22, S23, S32, S33, S34, S35, S49, S52, S56, S57]
 created: 2026-11-18
 ---
 

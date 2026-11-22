@@ -10,6 +10,8 @@ parent: 24
 area: charts
 mvp: true
 labels: ['user-story', 'mvp', 'area:charts']
+depends_on: [S21, S25]
+blocks: [S37, S39, S40]
 created: 2026-11-18
 ---
 

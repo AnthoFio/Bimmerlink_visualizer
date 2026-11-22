@@ -10,6 +10,8 @@ parent: 2
 area: foundation
 mvp: false
 labels: ['user-story', 'area:foundation']
+depends_on: [S13, S14, S25]
+blocks: [S54, S56, S57, S58]
 created: 2026-11-18
 ---
 

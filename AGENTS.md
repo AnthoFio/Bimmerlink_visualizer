@@ -127,9 +127,9 @@ Fixtures: committed test inputs live in `tests/fixtures/` (a README documents ev
 
 ## Story workflow
 
-Work is tracked as Markdown files in `docs/backlog/` (index in `docs/backlog/README.md`): one folder per feature, one file per story, each with a YAML front matter (`id`, `type`, `parent`, `status`, `area`, `mvp`, `labels`, `children`). Hierarchy: epic E01 > features F<nn> > stories S<nn>. The numbers (`S10`, story #10) are the original GitHub issue numbers. The GitHub issues were closed on 2026-11-22 and the backlog files are the single source of truth; do not reopen or create issues.
+Work is tracked as Markdown files in `docs/backlog/` (index in `docs/backlog/README.md`): one folder per feature, one file per story, each with a YAML front matter (`id`, `type`, `parent`, `status`, `area`, `mvp`, `labels`, `children`, and for stories `depends_on` / `blocks`). Hierarchy: epic E01 > features F<nn> > stories S<nn>. The numbers (`S10`, story #10) are the original GitHub issue numbers. The GitHub issues were closed on 2026-11-22 and the backlog files are the single source of truth; do not reopen or create issues.
 
-1. Read the story file and the epic file (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`). Acceptance criteria and the Definition of done are the spec.
+1. Pick a story that is ready: every story in its `depends_on` is `Done` (overview and parallel waves in `docs/backlog/dependencies.md`). Read the story file and the epic file (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`). Acceptance criteria and the Definition of done are the spec.
 2. Branch from the latest origin/main: `story/<n>-<short-slug>`. When several agents work at once, use your own git worktree (`git worktree add -b story/<n>-<slug> ../wt-<n> origin/main`, then `npm ci`) and never switch branches in the main checkout.
 3. First commit of the branch: set `status: 'In progress'` in the story's front matter and in its row of `docs/backlog/README.md`.
 4. Turn each acceptance criterion into a failing test first (Vitest; Playwright for e2e once it exists).

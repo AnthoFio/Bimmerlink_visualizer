@@ -10,6 +10,8 @@ parent: 2
 area: foundation
 mvp: true
 labels: ['user-story', 'mvp', 'area:foundation']
+depends_on: []
+blocks: []
 created: 2026-11-18
 ---
 

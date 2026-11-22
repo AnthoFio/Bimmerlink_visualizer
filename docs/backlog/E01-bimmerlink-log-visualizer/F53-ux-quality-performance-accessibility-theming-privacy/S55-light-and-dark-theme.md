@@ -10,6 +10,8 @@ parent: 53
 area: nfr
 mvp: false
 labels: ['user-story', 'area:nfr']
+depends_on: [S25]
+blocks: []
 created: 2026-11-18
 ---
 

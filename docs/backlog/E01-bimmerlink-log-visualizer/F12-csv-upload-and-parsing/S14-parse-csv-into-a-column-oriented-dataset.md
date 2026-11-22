@@ -10,6 +10,8 @@ parent: 12
 area: ingest
 mvp: true
 labels: ['user-story', 'mvp', 'area:ingest']
+depends_on: []
+blocks: [S10, S15, S16, S17, S18, S21, S25, S31]
 created: 2026-11-18
 ---
 
