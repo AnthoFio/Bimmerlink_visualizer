@@ -1,0 +1,2668 @@
+{
+  "meta": {
+    "vehicle": "BMW X4 M40i F26 (N55), DME via BimmerLink over ENET",
+    "source": "Header of BimmerLink all-parameters CSV 2026-08-09_15-12-47.csv (210 columns, CSV order)",
+    "fields": {
+      "index": "1-based column position in the all-parameters CSV (labels may be reordered in smaller logs: match on label)",
+      "label": "Exact BimmerLink column label",
+      "key": "snake_case identifier for code; duplicates suffixed _2",
+      "unit": "Typical unit; BimmerLink may display another scale, so verify against a log",
+      "role": "core = primary analysis channel | standard = useful context | flag = 0/1 or status | counter = event count | raw = sensor voltage/raw value where a physical value exists | redundant = duplicate of another channel | static = adaptation/diagnostic value that rarely moves | broken = unusable on this car",
+      "confidence": "high = established meaning | medium = meaning clear, exact definition or scaling uncertain | low = machine-translated label, best interpretation",
+      "presets": "Log presets from the project doc (1b = fine-misfire variant of preset 1)"
+    }
+  },
+  "parameters": [
+    {
+      "index": 1,
+      "label": "ADC voltage Lambda probe behind catalytic converter",
+      "key": "adc_voltage_lambda_probe_behind_catalytic_converter",
+      "category": "Exhaust / catalyst",
+      "description": "Signal voltage of the downstream (post-cat) narrowband O2 sensor. ~0.1 V lean, ~0.8 V rich; a steady value means the cat is storing oxygen.",
+      "unit": "V",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1"
+      ],
+      "note": "Preferred downstream channel (refresh ~1.3/s)."
+    },
+    {
+      "index": 2,
+      "label": "Accepted generator torque",
+      "key": "accepted_generator_torque",
+      "category": "Electrical / charging",
+      "description": "Alternator drag torque accepted by the DME into its torque model.",
+      "unit": "Nm",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 3,
+      "label": "Actual gear",
+      "key": "actual_gear",
+      "category": "Drivetrain",
+      "description": "Gear currently engaged, as known by the DME.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "index": 4,
+      "label": "Actual gear information from the gear sensor",
+      "key": "actual_gear_information_from_the_gear_sensor",
+      "category": "Drivetrain",
+      "description": "Gear information straight from the transmission gear/selector sensor.",
+      "unit": "-",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Duplicate of Actual gear for most uses."
+    },
+    {
+      "index": 5,
+      "label": "Actual ignition angle",
+      "key": "actual_ignition_angle",
+      "category": "Ignition / knock",
+      "description": "Actual spark advance (degrees before TDC). Drops when the DME retards for knock or torque reduction.",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 6,
+      "label": "Actual inlet spread",
+      "key": "actual_inlet_spread",
+      "category": "VANOS",
+      "description": "Measured intake camshaft position (VANOS spread) relative to the crankshaft.",
+      "unit": "°CRK",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 7,
+      "label": "Actual oil pressure value (absolute pressure)",
+      "key": "actual_oil_pressure_value_absolute_pressure",
+      "category": "Oil",
+      "description": "Measured engine oil pressure, absolute (includes ~1 bar atmospheric).",
+      "unit": "bar",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 8,
+      "label": "Actual operating mode",
+      "key": "actual_operating_mode",
+      "category": "Engine status",
+      "description": "Current DME combustion/operating mode (e.g. normal homogeneous, catalyst heating).",
+      "unit": "enum",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Enum codes not documented; useful to split cold-start phases."
+    },
+    {
+      "index": 9,
+      "label": "Actual operating mode, oil pressure control",
+      "key": "actual_operating_mode_oil_pressure_control",
+      "category": "Oil",
+      "description": "Current stage of the map-controlled oil pump (low / high pressure stage).",
+      "unit": "enum",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 10,
+      "label": "Actual speed electr. water pump",
+      "key": "actual_speed_electr_water_pump",
+      "category": "Cooling",
+      "description": "Measured speed of the electric coolant pump.",
+      "unit": "rpm",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 11,
+      "label": "Actual value exhaust spread BMW",
+      "key": "actual_value_exhaust_spread_bmw",
+      "category": "VANOS",
+      "description": "Measured exhaust camshaft position (BMW spread definition).",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": "Compare with Target angle camshaft exhaust closes."
+    },
+    {
+      "index": 12,
+      "label": "Actual value intake spread BMW",
+      "key": "actual_value_intake_spread_bmw",
+      "category": "VANOS",
+      "description": "Measured intake camshaft position (BMW spread definition).",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": "Compare with Target angle (inlet VANOS)."
+    },
+    {
+      "index": 13,
+      "label": "Actual value of the eccentric angle VVT",
+      "key": "actual_value_of_the_eccentric_angle_vvt",
+      "category": "Valvetronic",
+      "description": "Measured Valvetronic eccentric-shaft angle, which sets intake valve lift.",
+      "unit": "°",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": "Compare with Setpoint eccentric angle VVT (135808)."
+    },
+    {
+      "index": 14,
+      "label": "Actual value of the outlet spread",
+      "key": "actual_value_of_the_outlet_spread",
+      "category": "VANOS",
+      "description": "Measured exhaust camshaft spread (alternative definition).",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 15,
+      "label": "Adjustment of throttle valve model (factor)",
+      "key": "adjustment_of_throttle_valve_model_factor",
+      "category": "Air / throttle",
+      "description": "Learned multiplicative correction of the throttle air-flow model (≈1.0 when nominal).",
+      "unit": "-",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Drifts with throttle carbon build-up or air leaks."
+    },
+    {
+      "index": 16,
+      "label": "Adjustment of throttle valve model (offset)",
+      "key": "adjustment_of_throttle_valve_model_offset",
+      "category": "Air / throttle",
+      "description": "Learned additive offset correction of the throttle air-flow model.",
+      "unit": "kg/h",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "A large offset can point to an unmetered air leak."
+    },
+    {
+      "index": 17,
+      "label": "Adjustment range of the eccentric angle",
+      "key": "adjustment_range_of_the_eccentric_angle",
+      "category": "Valvetronic",
+      "description": "Learned Valvetronic eccentric-shaft travel between its end stops.",
+      "unit": "°",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 18,
+      "label": "Air damper - actual position in degrees",
+      "key": "air_damper_actual_position_in_degrees",
+      "category": "Cooling",
+      "description": "Active grille shutter, actual position (degrees).",
+      "unit": "°",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 19,
+      "label": "Air damper - actual position in steps",
+      "key": "air_damper_actual_position_in_steps",
+      "category": "Cooling",
+      "description": "Active grille shutter, actual position (motor steps).",
+      "unit": "steps",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 20,
+      "label": "Air damper - target position in degrees",
+      "key": "air_damper_target_position_in_degrees",
+      "category": "Cooling",
+      "description": "Active grille shutter, target position (degrees).",
+      "unit": "°",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 21,
+      "label": "Air damper - target position in steps",
+      "key": "air_damper_target_position_in_steps",
+      "category": "Cooling",
+      "description": "Active grille shutter, target position (motor steps).",
+      "unit": "steps",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 22,
+      "label": "Air flap - lower air flap status",
+      "key": "air_flap_lower_air_flap_status",
+      "category": "Cooling",
+      "description": "Status of the lower active grille flap.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 23,
+      "label": "Air flap - upper air flap status",
+      "key": "air_flap_upper_air_flap_status",
+      "category": "Cooling",
+      "description": "Status of the upper active grille flap.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 24,
+      "label": "Air mass flow",
+      "key": "air_mass_flow",
+      "category": "Air / throttle",
+      "description": "Engine air mass flow as calculated by the DME (main load signal).",
+      "unit": "kg/h",
+      "role": "core",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 25,
+      "label": "Air mass flow HFM, corrected and filtered (for calculation of control difference mass flow controller)",
+      "key": "air_mass_flow_hfm_corrected_and_filtered_for_calculation_of_control_difference_mass_flow_controller",
+      "category": "Air / throttle",
+      "description": "Corrected and filtered MAF (HFM) value used by the mass-flow controller diagnosis.",
+      "unit": "kg/h",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": "The N55 normally has no physical MAF; may be modelled or static. Check in a log."
+    },
+    {
+      "index": 26,
+      "label": "Air mass flow filtered",
+      "key": "air_mass_flow_filtered",
+      "category": "Air / throttle",
+      "description": "Filtered version of Air mass flow.",
+      "unit": "kg/h",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 27,
+      "label": "Ambient pressure",
+      "key": "ambient_pressure",
+      "category": "Ambient",
+      "description": "Barometric pressure used by the DME.",
+      "unit": "hPa",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": "Baseline for boost/vacuum calculations."
+    },
+    {
+      "index": 28,
+      "label": "Ambient pressure from sensor",
+      "key": "ambient_pressure_from_sensor",
+      "category": "Ambient",
+      "description": "Barometric pressure read from the sensor inside the DME.",
+      "unit": "hPa",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 29,
+      "label": "Ambient pressure sensor voltage (10-bit from ADC)",
+      "key": "ambient_pressure_sensor_voltage_10_bit_from_adc",
+      "category": "Ambient",
+      "description": "Raw ADC reading of the barometric sensor.",
+      "unit": "ADC counts",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 30,
+      "label": "Ambient temperature",
+      "key": "ambient_temperature",
+      "category": "Ambient",
+      "description": "Outside air temperature.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": "Good context tag for each log."
+    },
+    {
+      "index": 31,
+      "label": "Angle inlet valve opens based on LWOT",
+      "key": "angle_inlet_valve_opens_based_on_lwot",
+      "category": "VANOS",
+      "description": "Intake-valve opening angle relative to gas-exchange TDC (LWOT).",
+      "unit": "°CRK",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Results from VANOS position."
+    },
+    {
+      "index": 32,
+      "label": "Average angle of rotation of the camshaft",
+      "key": "average_angle_of_rotation_of_the_camshaft",
+      "category": "VANOS",
+      "description": "Averaged camshaft angle measurement (cam/crank correlation).",
+      "unit": "°CRK",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 33,
+      "label": "Average of the measured values for mass flow diagnosis HFM in the LL",
+      "key": "average_of_the_measured_values_for_mass_flow_diagnosis_hfm_in_the_ll",
+      "category": "Air / throttle",
+      "description": "Idle (LL) average from the MAF plausibility diagnosis.",
+      "unit": "kg/h",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": "Probably only updates during the diagnostic run."
+    },
+    {
+      "index": 34,
+      "label": "Boost pressure",
+      "key": "boost_pressure",
+      "category": "Boost",
+      "description": "Measured charge pressure upstream of the throttle (absolute).",
+      "unit": "hPa",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "3",
+        "4",
+        "6"
+      ],
+      "note": "Subtract ambient pressure for gauge boost."
+    },
+    {
+      "index": 35,
+      "label": "Boost pressure from the sensor as an average",
+      "key": "boost_pressure_from_the_sensor_as_an_average",
+      "category": "Boost",
+      "description": "Averaged boost sensor reading.",
+      "unit": "hPa",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 36,
+      "label": "Boost pressure raw value",
+      "key": "boost_pressure_raw_value",
+      "category": "Boost",
+      "description": "Unfiltered boost sensor value.",
+      "unit": "hPa",
+      "role": "raw",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Faster than the filtered value for lift-off analysis."
+    },
+    {
+      "index": 37,
+      "label": "Boost pressure setpoint",
+      "key": "boost_pressure_setpoint",
+      "category": "Boost",
+      "description": "Boost pressure target requested by the DME.",
+      "unit": "hPa",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "3",
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 38,
+      "label": "Clutch motor torque actual value",
+      "key": "clutch_motor_torque_actual_value",
+      "category": "Torque",
+      "description": "Actual engine torque at the crankshaft/clutch after losses.",
+      "unit": "Nm",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 39,
+      "label": "Condition Level measurement error from the oil condition sensor",
+      "key": "condition_level_measurement_error_from_the_oil_condition_sensor",
+      "category": "Oil",
+      "description": "Flag: the oil condition/level sensor reports a measurement error.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 40,
+      "label": "Condition Vanos entrance at the ready",
+      "key": "condition_vanos_entrance_at_the_ready",
+      "category": "VANOS",
+      "description": "Flag: intake VANOS released and ready to control (after oil pressure builds).",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 41,
+      "label": "Condition The probe behind the catalyst is sufficiently heated",
+      "key": "condition_the_probe_behind_the_catalyst_is_sufficiently_heated",
+      "category": "Exhaust / catalyst",
+      "description": "Flag: downstream O2 sensor has reached operating temperature.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "high",
+      "presets": [],
+      "note": "Filter downstream-sensor analysis on this."
+    },
+    {
+      "index": 42,
+      "label": "Condition for detected knockers",
+      "key": "condition_for_detected_knockers",
+      "category": "Ignition / knock",
+      "description": "Flag: knock detected (any cylinder).",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "high",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 43,
+      "label": "Condition exhaust flap with resonator",
+      "key": "condition_exhaust_flap_with_resonator",
+      "category": "Exhaust / catalyst",
+      "description": "Exhaust flap state (open/closed).",
+      "unit": "enum",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 44,
+      "label": "Condition oil sensor failure",
+      "key": "condition_oil_sensor_failure",
+      "category": "Oil",
+      "description": "Flag: oil condition sensor fault.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 45,
+      "label": "Condition probe ready for operation before cat",
+      "key": "condition_probe_ready_for_operation_before_cat",
+      "category": "Exhaust / catalyst",
+      "description": "Flag: upstream wideband sensor ready, so closed-loop lambda control is possible.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "high",
+      "presets": [],
+      "note": "Use to split open loop from closed loop."
+    },
+    {
+      "index": 46,
+      "label": "Condition probe ready for operation behind cat",
+      "key": "condition_probe_ready_for_operation_behind_cat",
+      "category": "Exhaust / catalyst",
+      "description": "Flag: downstream sensor ready for operation.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 47,
+      "label": "Condition start request",
+      "key": "condition_start_request",
+      "category": "Engine status",
+      "description": "Flag: engine start requested (start button or auto start-stop restart).",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 48,
+      "label": "Condition super knocker",
+      "key": "condition_super_knocker",
+      "category": "Ignition / knock",
+      "description": "Flag: pre-ignition (super knock / LSPI) detected.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 49,
+      "label": "Confirmed target speed electr. water pump",
+      "key": "confirmed_target_speed_electr_water_pump",
+      "category": "Cooling",
+      "description": "Speed command acknowledged by the electric coolant pump.",
+      "unit": "rpm",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 50,
+      "label": "Control unit temperature",
+      "key": "control_unit_temperature",
+      "category": "Engine status",
+      "description": "Internal temperature of the DME.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 51,
+      "label": "Control difference boost pressure - bank-specific bank 1",
+      "key": "control_difference_boost_pressure_bank_specific_bank_1",
+      "category": "Boost",
+      "description": "Boost control error (setpoint minus actual).",
+      "unit": "hPa",
+      "role": "core",
+      "confidence": "high",
+      "presets": [],
+      "note": "Persistent positive value = underboost."
+    },
+    {
+      "index": 52,
+      "label": "Coolant temperature",
+      "key": "coolant_temperature",
+      "category": "Cooling",
+      "description": "Engine coolant temperature.",
+      "unit": "°C",
+      "role": "core",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 53,
+      "label": "Coolant temperature (sensor value) after low-pass filtering",
+      "key": "coolant_temperature_sensor_value_after_low_pass_filtering",
+      "category": "Cooling",
+      "description": "Low-pass filtered coolant temperature.",
+      "unit": "°C",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 54,
+      "label": "Coordinated moment for filling",
+      "key": "coordinated_moment_for_filling",
+      "category": "Torque",
+      "description": "Torque request handed to the air path (slow, charge-based torque path).",
+      "unit": "Nm",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Gap vs. actual torque shows when the air path lags."
+    },
+    {
+      "index": 55,
+      "label": "Correction factor for the amount of fuel",
+      "key": "correction_factor_for_the_amount_of_fuel",
+      "category": "Fuel / lambda",
+      "description": "Overall multiplicative correction applied to injected fuel quantity.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 56,
+      "label": "Correction factor height",
+      "key": "correction_factor_height",
+      "category": "Ambient",
+      "description": "Altitude correction factor.",
+      "unit": "-",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 57,
+      "label": "Correction value of the LSU voltage before CAT",
+      "key": "correction_value_of_the_lsu_voltage_before_cat",
+      "category": "Fuel / lambda",
+      "description": "Learned offset correction of the upstream wideband (Bosch LSU) sensor voltage.",
+      "unit": "V",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Large values suggest an ageing upstream sensor."
+    },
+    {
+      "index": 58,
+      "label": "Correction value shutdown",
+      "key": "correction_value_shutdown",
+      "category": "Engine status",
+      "description": "Correction value learned at engine shutdown (purpose unclear).",
+      "unit": "-",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 59,
+      "label": "Crankshaft adaptation exhaust takes place",
+      "key": "crankshaft_adaptation_exhaust_takes_place",
+      "category": "VANOS",
+      "description": "Flag: exhaust cam/crank reference adaptation in progress.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 60,
+      "label": "Crankshaft adaptation intake takes place",
+      "key": "crankshaft_adaptation_intake_takes_place",
+      "category": "VANOS",
+      "description": "Flag: intake cam/crank reference adaptation in progress.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 61,
+      "label": "Cross slope (estimated) in degrees",
+      "key": "cross_slope_estimated_in_degrees",
+      "category": "Ambient",
+      "description": "Estimated lateral (side) slope of the car.",
+      "unit": "°",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": "Affects oil level readings."
+    },
+    {
+      "index": 62,
+      "label": "Degree of utilization generator 1",
+      "key": "degree_of_utilization_generator_1",
+      "category": "Electrical / charging",
+      "description": "Alternator load (field duty).",
+      "unit": "%",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 63,
+      "label": "Delta probe offset master control",
+      "key": "delta_probe_offset_master_control",
+      "category": "Fuel / lambda",
+      "description": "Trim correction from the downstream sensor applied to upstream lambda control.",
+      "unit": "V",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Drifting value points to upstream sensor or cat ageing."
+    },
+    {
+      "index": 64,
+      "label": "Difference between ambient pressure and brake booster pressure from pressure sensor (raw value)",
+      "key": "difference_between_ambient_pressure_and_brake_booster_pressure_from_pressure_sensor_raw_value",
+      "category": "Air / throttle",
+      "description": "Brake booster vacuum (ambient minus booster pressure), raw.",
+      "unit": "hPa",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Booster/vacuum-pump health."
+    },
+    {
+      "index": 65,
+      "label": "Differential pressure in front of the throttle valve between the start and the end of the dynamic test SSP",
+      "key": "differential_pressure_in_front_of_the_throttle_valve_between_the_start_and_the_end_of_the_dynamic_test_ssp",
+      "category": "Boost",
+      "description": "Result of a dynamic plausibility test on the pre-throttle pressure sensor.",
+      "unit": "hPa",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": "Only changes when the test runs."
+    },
+    {
+      "index": 66,
+      "label": "Engine oil level",
+      "key": "engine_oil_level",
+      "category": "Oil",
+      "description": "Oil level from the oil condition sensor.",
+      "unit": "mm",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Unit/scale to confirm against the dipstick."
+    },
+    {
+      "index": 67,
+      "label": "Engine speed",
+      "key": "engine_speed",
+      "category": "Engine status",
+      "description": "Engine speed.",
+      "unit": "rpm",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "note": "Master time-base parameter for almost every preset."
+    },
+    {
+      "index": 68,
+      "label": "Electric Fuel Pump",
+      "key": "electric_fuel_pump",
+      "category": "Fuel / injection",
+      "description": "Command/state of the in-tank low-pressure fuel pump (EKP).",
+      "unit": "%",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 69,
+      "label": "Effective engine power",
+      "key": "effective_engine_power",
+      "category": "Torque",
+      "description": "Calculated current engine power output.",
+      "unit": "kW",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 70,
+      "label": "Engine starting temperature",
+      "key": "engine_starting_temperature",
+      "category": "Engine status",
+      "description": "Coolant temperature at engine start.",
+      "unit": "°C",
+      "role": "core",
+      "confidence": "high",
+      "presets": [],
+      "note": "Key tag for sorting cold-start logs."
+    },
+    {
+      "index": 71,
+      "label": "Exhaust camshaft position",
+      "key": "exhaust_camshaft_position",
+      "category": "VANOS",
+      "description": "Measured exhaust camshaft position.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 72,
+      "label": "Exhaust gas temperature according to KAT from model",
+      "key": "exhaust_gas_temperature_according_to_kat_from_model",
+      "category": "Exhaust / catalyst",
+      "description": "Modelled exhaust gas temperature at the catalyst.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": "Model value, not a sensor."
+    },
+    {
+      "index": 73,
+      "label": "Exhaust gas temperature behind main catalyst from model",
+      "key": "exhaust_gas_temperature_behind_main_catalyst_from_model",
+      "category": "Exhaust / catalyst",
+      "description": "Modelled exhaust gas temperature downstream of the main catalyst.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Model value, not a sensor."
+    },
+    {
+      "index": 74,
+      "label": "Exhaust valve angle closes based on LWOT",
+      "key": "exhaust_valve_angle_closes_based_on_lwot",
+      "category": "VANOS",
+      "description": "Exhaust-valve closing angle relative to gas-exchange TDC.",
+      "unit": "°CRK",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Results from exhaust VANOS position."
+    },
+    {
+      "index": 75,
+      "label": "Factor from lambda control adaptation for bank 1",
+      "key": "factor_from_lambda_control_adaptation_for_bank_1",
+      "category": "Fuel / lambda",
+      "description": "Long-term mixture adaptation (LTFT equivalent). ≈1.000 healthy; >1 adds fuel, <1 removes.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "index": 76,
+      "label": "Fast mean value of the lambda control factor",
+      "key": "fast_mean_value_of_the_lambda_control_factor",
+      "category": "Fuel / lambda",
+      "description": "Short-window average of the lambda controller output (smoothed STFT).",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 77,
+      "label": "Filtered rail pressure actual value (absolute pressure)",
+      "key": "filtered_rail_pressure_actual_value_absolute_pressure",
+      "category": "Fuel / injection",
+      "description": "Filtered high-pressure fuel rail pressure (absolute).",
+      "unit": "bar",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 78,
+      "label": "Filtered spark burning time cylinder 1",
+      "key": "filtered_spark_burning_time_cylinder_1",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 1 (coil diagnosis).",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Compare cylinders: an outlier points to a plug or coil."
+    },
+    {
+      "index": 79,
+      "label": "Filtered spark burning time cylinder 2",
+      "key": "filtered_spark_burning_time_cylinder_2",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 2.",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 80,
+      "label": "Filtered spark burning time cylinder 3",
+      "key": "filtered_spark_burning_time_cylinder_3",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 3.",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 81,
+      "label": "Filtered spark burning time cylinder 4",
+      "key": "filtered_spark_burning_time_cylinder_4",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 4.",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 82,
+      "label": "Filtered spark burning time cylinder 5",
+      "key": "filtered_spark_burning_time_cylinder_5",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 5.",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Worth tracking after the cylinder 5 coil replacement."
+    },
+    {
+      "index": 83,
+      "label": "Filtered spark burning time cylinder 6",
+      "key": "filtered_spark_burning_time_cylinder_6",
+      "category": "Ignition / knock",
+      "description": "Measured spark burn duration, cylinder 6.",
+      "unit": "ms",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 84,
+      "label": "Filtering pressure difference ambient pressure - intake manifold pressure",
+      "key": "filtering_pressure_difference_ambient_pressure_intake_manifold_pressure",
+      "category": "Air / throttle",
+      "description": "Filtered manifold vacuum (ambient minus manifold pressure).",
+      "unit": "hPa",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 85,
+      "label": "Firing angle cylinder 1",
+      "key": "firing_angle_cylinder_1",
+      "category": "Ignition / knock",
+      "description": "Ignition angle applied to cylinder 1.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 86,
+      "label": "Fuel mass flow",
+      "key": "fuel_mass_flow",
+      "category": "Fuel / injection",
+      "description": "Injected fuel mass flow.",
+      "unit": "kg/h",
+      "role": "core",
+      "confidence": "medium",
+      "presets": [
+        "3"
+      ],
+      "note": "Unit to confirm (kg/h or mg/stroke)."
+    },
+    {
+      "index": 87,
+      "label": "Fuel mass homogeneous as setpoint 0",
+      "key": "fuel_mass_homogeneous_as_setpoint_0",
+      "category": "Fuel / injection",
+      "description": "Fuel mass setpoint for injection pulse 0 (homogeneous mode).",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 88,
+      "label": "Fuel mass homogeneous as setpoint 1",
+      "key": "fuel_mass_homogeneous_as_setpoint_1",
+      "category": "Fuel / injection",
+      "description": "Fuel mass setpoint for injection pulse 1.",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 89,
+      "label": "Fuel mass homogeneous as setpoint 4",
+      "key": "fuel_mass_homogeneous_as_setpoint_4",
+      "category": "Fuel / injection",
+      "description": "Fuel mass setpoint for injection pulse 4.",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 90,
+      "label": "Fuel mass homogeneous as target value 2",
+      "key": "fuel_mass_homogeneous_as_target_value_2",
+      "category": "Fuel / injection",
+      "description": "Fuel mass target for injection pulse 2.",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 91,
+      "label": "Fuel mass homogeneous as target value 3",
+      "key": "fuel_mass_homogeneous_as_target_value_3",
+      "category": "Fuel / injection",
+      "description": "Fuel mass target for injection pulse 3.",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 92,
+      "label": "Fuel mass homogeneous as target value 5",
+      "key": "fuel_mass_homogeneous_as_target_value_5",
+      "category": "Fuel / injection",
+      "description": "Fuel mass target for injection pulse 5.",
+      "unit": "mg",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 93,
+      "label": "Gear sensor error message",
+      "key": "gear_sensor_error_message",
+      "category": "Drivetrain",
+      "description": "Error status of the gear sensor.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 94,
+      "label": "Generator speed",
+      "key": "generator_speed",
+      "category": "Electrical / charging",
+      "description": "Alternator speed (proportional to engine speed).",
+      "unit": "rpm",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 95,
+      "label": "Idle control condition",
+      "key": "idle_control_condition",
+      "category": "Engine status",
+      "description": "Idle speed controller state (active / inactive).",
+      "unit": "enum",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Use to isolate idle segments."
+    },
+    {
+      "index": 96,
+      "label": "Idle speed learned",
+      "key": "idle_speed_learned",
+      "category": "Engine status",
+      "description": "Learned idle adaptation value.",
+      "unit": "-",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 97,
+      "label": "Ignition angle output",
+      "key": "ignition_angle_output",
+      "category": "Ignition / knock",
+      "description": "Ignition angle sent to the coils (global).",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Close to Actual ignition angle."
+    },
+    {
+      "index": 98,
+      "label": "Injection mode 0",
+      "key": "injection_mode_0",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 0 (e.g. intake or compression stroke, off).",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 99,
+      "label": "Injection mode 1",
+      "key": "injection_mode_1",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 1.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 100,
+      "label": "Injection mode 2",
+      "key": "injection_mode_2",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 2.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 101,
+      "label": "Injection mode 3",
+      "key": "injection_mode_3",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 3.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 102,
+      "label": "Injection mode 4",
+      "key": "injection_mode_4",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 4.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 103,
+      "label": "Injection mode 5",
+      "key": "injection_mode_5",
+      "category": "Fuel / injection",
+      "description": "Mode of injection pulse 5.",
+      "unit": "enum",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 104,
+      "label": "Inlet camshaft position",
+      "key": "inlet_camshaft_position",
+      "category": "VANOS",
+      "description": "Measured intake camshaft position.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 105,
+      "label": "Inlet valve lift setpoint filtered",
+      "key": "inlet_valve_lift_setpoint_filtered",
+      "category": "Valvetronic",
+      "description": "Target intake valve lift (Valvetronic), filtered.",
+      "unit": "mm",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "index": 106,
+      "label": "Intake air temperature",
+      "key": "intake_air_temperature",
+      "category": "Air / throttle",
+      "description": "Charge-air temperature downstream of the intercooler.",
+      "unit": "°C",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "4",
+        "6"
+      ],
+      "note": "Heat-soak indicator."
+    },
+    {
+      "index": 107,
+      "label": "Intake manifold absolute pressure",
+      "key": "intake_manifold_absolute_pressure",
+      "category": "Air / throttle",
+      "description": "Intake manifold absolute pressure as used by the DME.",
+      "unit": "hPa",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 108,
+      "label": "Intake manifold absolute pressure measured",
+      "key": "intake_manifold_absolute_pressure_measured",
+      "category": "Air / throttle",
+      "description": "Measured intake manifold pressure (sensor).",
+      "unit": "hPa",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 109,
+      "label": "Intake manifold pressure measured with pressure sensor on the intake manifold (DS-S)",
+      "key": "intake_manifold_pressure_measured_with_pressure_sensor_on_the_intake_manifold_ds_s",
+      "category": "Air / throttle",
+      "description": "Manifold pressure straight from the manifold sensor (DS-S).",
+      "unit": "hPa",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 110,
+      "label": "Intake manifold pressure sensor voltage",
+      "key": "intake_manifold_pressure_sensor_voltage",
+      "category": "Air / throttle",
+      "description": "Raw voltage of the manifold pressure sensor.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 111,
+      "label": "Interval counter for emissions-related misfires",
+      "key": "interval_counter_for_emissions_related_misfires",
+      "category": "Misfire",
+      "description": "Counter of evaluation intervals for emissions-related misfire monitoring.",
+      "unit": "count",
+      "role": "counter",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Context for the misfire counters."
+    },
+    {
+      "index": 112,
+      "label": "Is position electrical wastegate",
+      "key": "is_position_electrical_wastegate",
+      "category": "Boost",
+      "description": "Actual position of the electric wastegate actuator ('Is' = actual).",
+      "unit": "%",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 113,
+      "label": "KW angular offset when starting the engine",
+      "key": "kw_angular_offset_when_starting_the_engine",
+      "category": "Engine status",
+      "description": "Crankshaft (KW) angle offset learned at engine start/sync.",
+      "unit": "°CRK",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 114,
+      "label": "Lambda actual value",
+      "key": "lambda_actual_value",
+      "category": "Fuel / lambda",
+      "description": "Measured upstream lambda (wideband). 1.00 = stoichiometric, <1 rich, >1 lean.",
+      "unit": "λ",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "index": 115,
+      "label": "Lambda probe actual value",
+      "key": "lambda_probe_actual_value",
+      "category": "Fuel / lambda",
+      "description": "Upstream sensor lambda (possibly less processed than Lambda actual value).",
+      "unit": "λ",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 116,
+      "label": "Lambda controller output",
+      "key": "lambda_controller_output",
+      "category": "Fuel / lambda",
+      "description": "Closed-loop lambda controller correction (STFT equivalent). ≈1.00 neutral.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1"
+      ],
+      "note": ""
+    },
+    {
+      "index": 117,
+      "label": "Lambda probe voltage (4.88mV / LSB) behind the catalytic converter",
+      "key": "lambda_probe_voltage_4_88mv_lsb_behind_the_catalytic_converter",
+      "category": "Exhaust / catalyst",
+      "description": "Downstream O2 sensor voltage (alternative channel, 4.88 mV resolution).",
+      "unit": "V",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": "Equivalent to the ADC voltage channel."
+    },
+    {
+      "index": 118,
+      "label": "Lambda setpoint based on the installation location of the lambda sensor",
+      "key": "lambda_setpoint_based_on_the_installation_location_of_the_lambda_sensor",
+      "category": "Fuel / lambda",
+      "description": "Target lambda at the upstream sensor location.",
+      "unit": "λ",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "index": 119,
+      "label": "Level of the left half of the tank",
+      "key": "level_of_the_left_half_of_the_tank",
+      "category": "Fuel / injection",
+      "description": "Fuel level, left half of the saddle tank.",
+      "unit": "l",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 120,
+      "label": "Lambda target limitation",
+      "key": "lambda_target_limitation",
+      "category": "Fuel / lambda",
+      "description": "Limit applied to the lambda target (e.g. component-protection enrichment).",
+      "unit": "λ",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 121,
+      "label": "Level of the right half of the tank",
+      "key": "level_of_the_right_half_of_the_tank",
+      "category": "Fuel / injection",
+      "description": "Fuel level, right half of the saddle tank.",
+      "unit": "l",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 122,
+      "label": "Low pass filtered intake manifold pressure",
+      "key": "low_pass_filtered_intake_manifold_pressure",
+      "category": "Air / throttle",
+      "description": "Low-pass filtered manifold pressure.",
+      "unit": "hPa",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 123,
+      "label": "Mass flow HFM",
+      "key": "mass_flow_hfm",
+      "category": "Air / throttle",
+      "description": "MAF (HFM) mass flow.",
+      "unit": "kg/h",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": "Same N55 caveat: probably no physical MAF."
+    },
+    {
+      "index": 124,
+      "label": "Mass flow of tank ventilation into the intake manifold",
+      "key": "mass_flow_of_tank_ventilation_into_the_intake_manifold",
+      "category": "EVAP / tank",
+      "description": "Purge flow from the EVAP canister into the intake.",
+      "unit": "kg/h",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Can bias lambda at idle."
+    },
+    {
+      "index": 125,
+      "label": "Mass flow through throttle valve bank 1",
+      "key": "mass_flow_through_throttle_valve_bank_1",
+      "category": "Air / throttle",
+      "description": "Modelled air mass flow through the throttle.",
+      "unit": "kg/h",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 126,
+      "label": "Medium voltage rail pressure sensor",
+      "key": "medium_voltage_rail_pressure_sensor",
+      "category": "Fuel / injection",
+      "description": "Average signal voltage of the rail pressure sensor ('Mittel' translated as 'medium').",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 127,
+      "label": "Min. Pump current for gross leak measurement",
+      "key": "min_pump_current_for_gross_leak_measurement",
+      "category": "EVAP / tank",
+      "description": "Reference pump current from the EVAP leak test (DMTL).",
+      "unit": "mA",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 128,
+      "label": "Misfire detection counter cylinder 1",
+      "key": "misfire_detection_counter_cylinder_1",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 1.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 129,
+      "label": "Misfire detection counter cylinder 2",
+      "key": "misfire_detection_counter_cylinder_2",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 2.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 130,
+      "label": "Misfire detection counter cylinder 3",
+      "key": "misfire_detection_counter_cylinder_3",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 3.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 131,
+      "label": "Misfire detection counter cylinder 4",
+      "key": "misfire_detection_counter_cylinder_4",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 4.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 132,
+      "label": "Misfire detection counter cylinder 5",
+      "key": "misfire_detection_counter_cylinder_5",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 5.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 133,
+      "label": "Misfire detection counter cylinder 6",
+      "key": "misfire_detection_counter_cylinder_6",
+      "category": "Misfire",
+      "description": "Emissions misfire counter, cylinder 6.",
+      "unit": "count",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": ""
+    },
+    {
+      "index": 134,
+      "label": "Motor speed, high resolution",
+      "key": "motor_speed_high_resolution",
+      "category": "Engine status",
+      "description": "High-resolution engine speed.",
+      "unit": "rpm",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 135,
+      "label": "Motor temperature reference value from model",
+      "key": "motor_temperature_reference_value_from_model",
+      "category": "Engine status",
+      "description": "Modelled engine (component) temperature reference.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 136,
+      "label": "Normalized accelerator pedal angle",
+      "key": "normalized_accelerator_pedal_angle",
+      "category": "Engine status",
+      "description": "Accelerator pedal position, 0-100 %.",
+      "unit": "%",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "note": "Main driver-input channel."
+    },
+    {
+      "index": 137,
+      "label": "Nominal voltage regulator generator 1",
+      "key": "nominal_voltage_regulator_generator_1",
+      "category": "Electrical / charging",
+      "description": "Alternator target voltage commanded by the DME.",
+      "unit": "V",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": "Compare with the multimeter check."
+    },
+    {
+      "index": 138,
+      "label": "Normalized reference level knock control cylinder 1",
+      "key": "normalized_reference_level_knock_control_cylinder_1",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 1.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 139,
+      "label": "Normalized heating output of the lambda probe behind cat",
+      "key": "normalized_heating_output_of_the_lambda_probe_behind_cat",
+      "category": "Exhaust / catalyst",
+      "description": "Heater output for the downstream O2 sensor.",
+      "unit": "%",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 140,
+      "label": "Normalized reference level knock control cylinder 2",
+      "key": "normalized_reference_level_knock_control_cylinder_2",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 2.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 141,
+      "label": "Normalized reference level knock control cylinder 3",
+      "key": "normalized_reference_level_knock_control_cylinder_3",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 3.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 142,
+      "label": "Normalized reference level knock control cylinder 4",
+      "key": "normalized_reference_level_knock_control_cylinder_4",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 4.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 143,
+      "label": "Normalized reference level of knock control cylinder 5",
+      "key": "normalized_reference_level_of_knock_control_cylinder_5",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 5.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 144,
+      "label": "Normalized reference level of knock control cylinder 6",
+      "key": "normalized_reference_level_of_knock_control_cylinder_6",
+      "category": "Ignition / knock",
+      "description": "Normalised knock-sensor background noise level, cylinder 6.",
+      "unit": "-",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 145,
+      "label": "Number of VVT emergency runs",
+      "key": "number_of_vvt_emergency_runs",
+      "category": "Valvetronic",
+      "description": "Count of Valvetronic emergency (limp-home) runs.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 146,
+      "label": "Number of VVT emergency runs until replacement",
+      "key": "number_of_vvt_emergency_runs_until_replacement",
+      "category": "Valvetronic",
+      "description": "Remaining/threshold count of emergency runs before replacement is flagged.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 147,
+      "label": "Number of dense EVAP systems recognized by diagnosis",
+      "key": "number_of_dense_evap_systems_recognized_by_diagnosis",
+      "category": "EVAP / tank",
+      "description": "Count of passed (leak-tight) EVAP tests.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Appears twice in the CSV."
+    },
+    {
+      "index": 148,
+      "label": "Number of dense EVAP systems recognized by diagnosis",
+      "key": "number_of_dense_evap_systems_recognized_by_diagnosis_2",
+      "category": "EVAP / tank",
+      "description": "Count of passed (leak-tight) EVAP tests (second instance).",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Duplicate label: disambiguate by column index."
+    },
+    {
+      "index": 149,
+      "label": "Number of detected VVT position control error warnings reversible",
+      "key": "number_of_detected_vvt_position_control_error_warnings_reversible",
+      "category": "Valvetronic",
+      "description": "Count of reversible Valvetronic position-control warnings.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 150,
+      "label": "Number of detected VVT position control errors",
+      "key": "number_of_detected_vvt_position_control_errors",
+      "category": "Valvetronic",
+      "description": "Count of Valvetronic position-control errors.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 151,
+      "label": "Number of recognized VVT position control error warnings irreversible",
+      "key": "number_of_recognized_vvt_position_control_error_warnings_irreversible",
+      "category": "Valvetronic",
+      "description": "Count of irreversible Valvetronic position-control warnings.",
+      "unit": "count",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 152,
+      "label": "Offset corrected probe voltage in front of the catalyst of a broadband lambda probe",
+      "key": "offset_corrected_probe_voltage_in_front_of_the_catalyst_of_a_broadband_lambda_probe",
+      "category": "Fuel / lambda",
+      "description": "Upstream wideband sensor voltage after offset correction.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 153,
+      "label": "Oil pressure",
+      "key": "oil_pressure",
+      "category": "Oil",
+      "description": "Engine oil pressure.",
+      "unit": "bar",
+      "role": "core",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Absolute or gauge to confirm against the absolute channel."
+    },
+    {
+      "index": 154,
+      "label": "Oil condition sensor status",
+      "key": "oil_condition_sensor_status",
+      "category": "Oil",
+      "description": "Status of the oil condition sensor.",
+      "unit": "enum",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 155,
+      "label": "Oil temperature",
+      "key": "oil_temperature",
+      "category": "Oil",
+      "description": "Engine oil temperature.",
+      "unit": "°C",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1",
+        "2"
+      ],
+      "note": "Best warm-up indicator."
+    },
+    {
+      "index": 156,
+      "label": "Output duty cycle for the tank ventilation valve",
+      "key": "output_duty_cycle_for_the_tank_ventilation_valve",
+      "category": "EVAP / tank",
+      "description": "Duty cycle of the purge valve.",
+      "unit": "%",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 157,
+      "label": "Output ignition angle 0",
+      "key": "output_ignition_angle_0",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 0 (per cylinder, firing-order index).",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 158,
+      "label": "Output ignition angle 1",
+      "key": "output_ignition_angle_1",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 1.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 159,
+      "label": "Output ignition angle 2",
+      "key": "output_ignition_angle_2",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 2.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 160,
+      "label": "Output ignition angle 3",
+      "key": "output_ignition_angle_3",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 3.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 161,
+      "label": "Output ignition angle 4",
+      "key": "output_ignition_angle_4",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 4.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 162,
+      "label": "Output ignition angle 5",
+      "key": "output_ignition_angle_5",
+      "category": "Ignition / knock",
+      "description": "Ignition angle output, index 5.",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 163,
+      "label": "Oxygen storage capacity CAT",
+      "key": "oxygen_storage_capacity_cat",
+      "category": "Exhaust / catalyst",
+      "description": "Catalyst oxygen storage capacity from the cat-efficiency diagnosis.",
+      "unit": "-",
+      "role": "static",
+      "confidence": "low",
+      "presets": [
+        "1"
+      ],
+      "note": "Floor at 50, jumps to 90-95 after fuel cut-off; scale unknown."
+    },
+    {
+      "index": 164,
+      "label": "Raw value position sensor electrical wastegate",
+      "key": "raw_value_position_sensor_electrical_wastegate",
+      "category": "Boost",
+      "description": "Raw signal from the electric wastegate position sensor.",
+      "unit": "raw",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 165,
+      "label": "Setpoint eccentric angle VVT",
+      "key": "setpoint_eccentric_angle_vvt",
+      "category": "Valvetronic",
+      "description": "Target Valvetronic eccentric-shaft angle.",
+      "unit": "°",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "index": 166,
+      "label": "Set current supply to VVT motor",
+      "key": "set_current_supply_to_vvt_motor",
+      "category": "Valvetronic",
+      "description": "Current commanded to the Valvetronic motor.",
+      "unit": "A",
+      "role": "core",
+      "confidence": "medium",
+      "presets": [
+        "5"
+      ],
+      "note": "High sustained current = sticky shaft or motor."
+    },
+    {
+      "index": 167,
+      "label": "Spreading inlet VANOS",
+      "key": "spreading_inlet_vanos",
+      "category": "VANOS",
+      "description": "Intake VANOS spread (another representation).",
+      "unit": "°CRK",
+      "role": "redundant",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 168,
+      "label": "Signal voltage of the coolant temperature sensor",
+      "key": "signal_voltage_of_the_coolant_temperature_sensor",
+      "category": "Cooling",
+      "description": "Raw voltage of the coolant temperature sensor.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 169,
+      "label": "Shutdown time from relative minute counter until engine start",
+      "key": "shutdown_time_from_relative_minute_counter_until_engine_start",
+      "category": "Engine status",
+      "description": "How long the engine was off before this start (soak time).",
+      "unit": "min",
+      "role": "core",
+      "confidence": "high",
+      "presets": [],
+      "note": "Key tag for sorting cold-start logs."
+    },
+    {
+      "index": 170,
+      "label": "Super knock",
+      "key": "super_knock",
+      "category": "Ignition / knock",
+      "description": "Super-knock (pre-ignition) event count/indicator.",
+      "unit": "count",
+      "role": "counter",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 171,
+      "label": "Target air mass flow",
+      "key": "target_air_mass_flow",
+      "category": "Air / throttle",
+      "description": "Target air mass flow.",
+      "unit": "kg/h",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 172,
+      "label": "Target angle (inlet VANOS)",
+      "key": "target_angle_inlet_vanos",
+      "category": "VANOS",
+      "description": "Intake VANOS target position.",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "index": 173,
+      "label": "Target angle camshaft exhaust closes",
+      "key": "target_angle_camshaft_exhaust_closes",
+      "category": "VANOS",
+      "description": "Exhaust VANOS target (exhaust closing angle).",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "index": 174,
+      "label": "Target angle camshaft inlet opens",
+      "key": "target_angle_camshaft_inlet_opens",
+      "category": "VANOS",
+      "description": "Intake VANOS target (intake opening angle).",
+      "unit": "°CRK",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 175,
+      "label": "Target differential pressure intake manifold",
+      "key": "target_differential_pressure_intake_manifold",
+      "category": "Air / throttle",
+      "description": "Target pressure difference across the throttle/manifold.",
+      "unit": "hPa",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 176,
+      "label": "Target idle speed",
+      "key": "target_idle_speed",
+      "category": "Engine status",
+      "description": "Idle speed target.",
+      "unit": "rpm",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 177,
+      "label": "Target ignition angle from torque intervention",
+      "key": "target_ignition_angle_from_torque_intervention",
+      "category": "Ignition / knock",
+      "description": "Ignition angle requested by torque reduction (shifts, traction control, lift-off).",
+      "unit": "°CRK",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "4"
+      ],
+      "note": ""
+    },
+    {
+      "index": 178,
+      "label": "Target intake manifold pressure",
+      "key": "target_intake_manifold_pressure",
+      "category": "Air / throttle",
+      "description": "Target manifold pressure.",
+      "unit": "hPa",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 179,
+      "label": "Target speed water pump",
+      "key": "target_speed_water_pump",
+      "category": "Cooling",
+      "description": "Requested electric coolant pump speed.",
+      "unit": "rpm",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 180,
+      "label": "Target temperature coolant",
+      "key": "target_temperature_coolant",
+      "category": "Cooling",
+      "description": "Coolant temperature setpoint from heat management (map thermostat).",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 181,
+      "label": "Target value for throttle valve angle, based on (lower) stop",
+      "key": "target_value_for_throttle_valve_angle_based_on_lower_stop",
+      "category": "Air / throttle",
+      "description": "Target throttle opening relative to the lower stop.",
+      "unit": "%",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": "Duplicate of the next label."
+    },
+    {
+      "index": 182,
+      "label": "Target value for throttle valve angle, based on lower stop",
+      "key": "target_value_for_throttle_valve_angle_based_on_lower_stop_2",
+      "category": "Air / throttle",
+      "description": "Target throttle opening relative to the lower stop.",
+      "unit": "%",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 183,
+      "label": "Throttle valve angle related to the lower stop",
+      "key": "throttle_valve_angle_related_to_the_lower_stop",
+      "category": "Air / throttle",
+      "description": "Actual throttle opening relative to the lower stop.",
+      "unit": "%",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "6"
+      ],
+      "note": ""
+    },
+    {
+      "index": 184,
+      "label": "Throttle valve angle from potentiometer 1",
+      "key": "throttle_valve_angle_from_potentiometer_1",
+      "category": "Air / throttle",
+      "description": "Throttle angle from potentiometer 1 only.",
+      "unit": "%",
+      "role": "redundant",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 185,
+      "label": "Throttle angle of the emergency air position",
+      "key": "throttle_angle_of_the_emergency_air_position",
+      "category": "Air / throttle",
+      "description": "Learned limp-home (spring rest) throttle position.",
+      "unit": "%",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 186,
+      "label": "Torque loss monitoring",
+      "key": "torque_loss_monitoring",
+      "category": "Torque",
+      "description": "Torque losses (friction/pumping) in the torque monitoring path.",
+      "unit": "Nm",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 187,
+      "label": "Transmission temperature",
+      "key": "transmission_temperature",
+      "category": "Drivetrain",
+      "description": "Gearbox oil temperature.",
+      "unit": "°C",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 188,
+      "label": "Uneven running cylinder 2",
+      "key": "uneven_running_cylinder_2",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 2 (fast misfire indicator).",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 189,
+      "label": "Uneven running cylinder 3",
+      "key": "uneven_running_cylinder_3",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 3.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 190,
+      "label": "Uneven running cylinder 4",
+      "key": "uneven_running_cylinder_4",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 4.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 191,
+      "label": "Uneven running cylinder 5",
+      "key": "uneven_running_cylinder_5",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 5.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 192,
+      "label": "Uneven running cylinder 6",
+      "key": "uneven_running_cylinder_6",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 6.",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 193,
+      "label": "Uneven running of cylinder 1",
+      "key": "uneven_running_of_cylinder_1",
+      "category": "Misfire",
+      "description": "Crank-speed roughness value, cylinder 1 (fast misfire indicator).",
+      "unit": "-",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "1b"
+      ],
+      "note": ""
+    },
+    {
+      "index": 194,
+      "label": "Unfiltered low pressure raw value",
+      "key": "unfiltered_low_pressure_raw_value",
+      "category": "Fuel / injection",
+      "description": "Low-pressure fuel feed (before the HPFP), unfiltered.",
+      "unit": "bar",
+      "role": "core",
+      "confidence": "medium",
+      "presets": [
+        "3"
+      ],
+      "note": "Unit/scale to confirm (raw)."
+    },
+    {
+      "index": 195,
+      "label": "Unfiltered rail pressure actual value (abs.)",
+      "key": "unfiltered_rail_pressure_actual_value_abs",
+      "category": "Fuel / injection",
+      "description": "Unfiltered high-pressure rail pressure (absolute). Best for transients.",
+      "unit": "bar",
+      "role": "core",
+      "confidence": "high",
+      "presets": [
+        "2",
+        "3"
+      ],
+      "note": ""
+    },
+    {
+      "index": 196,
+      "label": "VVT motor rotor position",
+      "key": "vvt_motor_rotor_position",
+      "category": "Valvetronic",
+      "description": "Valvetronic motor rotor position sensor value.",
+      "unit": "°",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    },
+    {
+      "index": 197,
+      "label": "VVT overload, stuck actuator",
+      "key": "vvt_overload_stuck_actuator",
+      "category": "Valvetronic",
+      "description": "Flag/counter: Valvetronic actuator overloaded or stuck.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 198,
+      "label": "VVT electricity",
+      "key": "vvt_electricity",
+      "category": "Valvetronic",
+      "description": "Actual Valvetronic motor current.",
+      "unit": "A",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 199,
+      "label": "VVT overloaded",
+      "key": "vvt_overloaded",
+      "category": "Valvetronic",
+      "description": "Flag: Valvetronic motor thermal overload.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 200,
+      "label": "VVT position control, vibration detected",
+      "key": "vvt_position_control_vibration_detected",
+      "category": "Valvetronic",
+      "description": "Flag: oscillation detected in Valvetronic position control.",
+      "unit": "flag",
+      "role": "flag",
+      "confidence": "medium",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 201,
+      "label": "VVT stop learning status",
+      "key": "vvt_stop_learning_status",
+      "category": "Valvetronic",
+      "description": "Status of the Valvetronic end-stop learning.",
+      "unit": "enum",
+      "role": "static",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Check after a Valvetronic intervention."
+    },
+    {
+      "index": 202,
+      "label": "Voltage throttle valve potentiometer 2",
+      "key": "voltage_throttle_valve_potentiometer_2",
+      "category": "Air / throttle",
+      "description": "Raw voltage, throttle potentiometer 2.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 203,
+      "label": "Voltage throttle valve potentiometer 1",
+      "key": "voltage_throttle_valve_potentiometer_1",
+      "category": "Air / throttle",
+      "description": "Raw voltage, throttle potentiometer 1.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 204,
+      "label": "Voltage pressure sensor in front of throttle valve",
+      "key": "voltage_pressure_sensor_in_front_of_throttle_valve",
+      "category": "Boost",
+      "description": "Raw voltage of the boost (pre-throttle) pressure sensor.",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 205,
+      "label": "Voltage of rear cat sensor Lambda HEGO",
+      "key": "voltage_of_rear_cat_sensor_lambda_hego",
+      "category": "Exhaust / catalyst",
+      "description": "Downstream O2 sensor voltage (HEGO channel).",
+      "unit": "V",
+      "role": "broken",
+      "confidence": "high",
+      "presets": [],
+      "note": "Reads 0 constantly on this car (tested 2026-11-07). Do not use."
+    },
+    {
+      "index": 206,
+      "label": "Voltage knock values cylinder 5",
+      "key": "voltage_knock_values_cylinder_5",
+      "category": "Ignition / knock",
+      "description": "Knock-sensor signal level attributed to cylinder 5.",
+      "unit": "V",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 207,
+      "label": "Voltage knock values cylinder 2",
+      "key": "voltage_knock_values_cylinder_2",
+      "category": "Ignition / knock",
+      "description": "Knock-sensor signal level attributed to cylinder 2.",
+      "unit": "V",
+      "role": "standard",
+      "confidence": "low",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 208,
+      "label": "Voltage PWG potentiometer 1",
+      "key": "voltage_pwg_potentiometer_1",
+      "category": "Engine status",
+      "description": "Raw voltage, accelerator pedal sensor 1 (PWG).",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 209,
+      "label": "Voltage PWG potentiometer 2",
+      "key": "voltage_pwg_potentiometer_2",
+      "category": "Engine status",
+      "description": "Raw voltage, accelerator pedal sensor 2 (PWG).",
+      "unit": "V",
+      "role": "raw",
+      "confidence": "high",
+      "presets": [],
+      "note": ""
+    },
+    {
+      "index": 210,
+      "label": "Voltage behind VVT / motor relay",
+      "key": "voltage_behind_vvt_motor_relay",
+      "category": "Electrical / charging",
+      "description": "Supply voltage after the Valvetronic/engine relay. Good proxy for system voltage.",
+      "unit": "V",
+      "role": "standard",
+      "confidence": "high",
+      "presets": [
+        "5"
+      ],
+      "note": ""
+    }
+  ]
+}

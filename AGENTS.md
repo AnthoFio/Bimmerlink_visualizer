@@ -20,19 +20,20 @@ Hard rules:
 
 Node 24 and npm 11 (`.nvmrc`, `engines` in `package.json`). Run everything from the repository root.
 
-| Purpose           | Command                                                             |
-| ----------------- | ------------------------------------------------------------------- |
-| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)  |
-| Dev server        | `npm run dev` (http://localhost:5173)                               |
-| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch |
-| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                    |
-| Format            | `npm run format` writes; `npm run format:check` only verifies       |
-| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)       |
-| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)     |
-| Preview build     | `npm run preview` (http://localhost:4173)                           |
-| Full quality gate | `npm run check` = lint + format:check + typecheck + test            |
-| e2e (Playwright)  | `npm run e2e` (planned, story #10)                                  |
-| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`     |
+| Purpose           | Command                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)      |
+| Dev server        | `npm run dev` (http://localhost:5173)                                   |
+| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch     |
+| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                        |
+| Format            | `npm run format` writes; `npm run format:check` only verifies           |
+| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)           |
+| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)         |
+| Preview build     | `npm run preview` (http://localhost:4173)                               |
+| Full quality gate | `npm run check` = lint + format:check + typecheck + test                |
+| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`) |
+| e2e (Playwright)  | `npm run e2e` (planned, story #10)                                      |
+| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`         |
 
 Before every commit/PR run `npm run check` and `npm run build`; both must be green.
 A pre-commit hook (husky + lint-staged) lints and formats staged files. Never bypass it with `--no-verify`.
@@ -71,7 +72,7 @@ scripts/                   Small helper scripts (set-project-status.ps1)
 docs/adr/                  Architecture decision records (0001: charting library)
 spikes/                    Throwaway, isolated mini-projects that back an ADR (own package.json)
 bimmerlink_n55_parameter_catalog.csv   Source parameter catalog (CSV)
-bimmerlink_n55_parameter_catalog.json  Same catalog as JSON (prefer this one in code)
+bimmerlink_n55_parameter_catalog.json  Same catalog as JSON (the source; code imports `src/data/catalog.ts`)
 tests/fixtures/            Small, committed, byte-exact test inputs (README inside)
 ```
 
@@ -124,6 +125,8 @@ Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV;
 - Fields: `index`, `label`, `key` (snake_case, duplicates suffixed `_2`), `category`, `description`, `unit`, `role`, `confidence` (`high`/`medium`/`low`), `presets` (`1`..`6`, `1b`), `note`. The JSON has a `meta` block that documents the fields and a `parameters` array.
 - `role` is one of `core`, `standard`, `flag`, `counter`, `raw`, `redundant`, `static`, `broken`. `core` are the primary analysis channels, `redundant`/`static`/`broken` are usually hidden by default.
 - Match log columns to catalog entries by label, case-insensitively, not by `index` (log columns are a subset in another order). One label occurs twice in the catalog, so matching must tolerate duplicates.
+
+Code imports the catalog from `src/data/catalog.ts`. Its JSON is a generated copy: edit the root files, run `npm run catalog:sync`, and `src/data/catalog.test.ts` fails while they differ.
 
 Fixtures: committed test inputs live in `tests/fixtures/` (a README documents every file): the first 150 rows of each distinct example log (`trimmed_*.csv`) plus edge cases (BOM, CRLF line endings, empty file, header only, missing `Time` column, non-numeric cell, duplicate columns). Load them in tests with `src/test/fixtures.ts`. The full `Example/` logs stay available for e2e and performance tests.
 
