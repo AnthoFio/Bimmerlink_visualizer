@@ -559,3 +559,20 @@ tbody th {
   background: var(--accent);
   content: '';
 }
+
+.time-window {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.inline-error {
+  color: var(--error);
+  font-size: 0.85rem;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--error);
+}

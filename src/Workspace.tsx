@@ -5,6 +5,7 @@ import { parameters } from './data/catalog.ts'
 import { ChartPanels } from './features/charts/ChartPanels.tsx'
 import { Minimap } from './features/charts/Minimap.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
+import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
@@ -13,6 +14,7 @@ import { describeChannels } from './lib/channels.ts'
 import { defaultSelection } from './lib/defaults.ts'
 import { slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
+import { logExtent } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
 import { createViewport } from './lib/viewport.ts'
 import { assignPanel, defaultView, panelOf, setSelected, viewsEqual } from './lib/view.ts'
@@ -46,6 +48,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [log, view.trim],
   )
   const summary = useMemo(() => summarise(dataset), [dataset])
+  const extent = useMemo(() => logExtent(dataset.time), [dataset])
   const selected = useMemo(() => new Set(view.selected), [view.selected])
   const colours = useMemo(
     () => new Map(channels.map((channel) => [channel.id, slotColour(channel.column, theme)])),
@@ -125,6 +128,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             checked={view.trim}
             onChange={(trim) => setView((current) => ({ ...current, trim }))}
           />
+          <TimeWindowControl extent={extent} viewport={viewport} />
           <Minimap time={dataset.time} series={overview} viewport={viewport} />
           <ChartPanels
             dataset={dataset}
