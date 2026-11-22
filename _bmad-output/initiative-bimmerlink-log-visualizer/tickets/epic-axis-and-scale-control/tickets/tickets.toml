@@ -1,0 +1,52 @@
+# Stories of epic-axis-and-scale-control, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Manual Y-axis min/max per axis"
+description = "As a BimmerLink user, I want to set min and max on any Y axis, or reset to auto so that I can zoom on a value range such as lambda 0.7 to 1.3."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.3"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Auto-fit modes"
+description = "As a BimmerLink user, I want 'fit all data' vs 'fit visible window' auto-scaling so that axes stay readable when I zoom in time."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1", "6.1"]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Normalised overlay mode"
+description = "As a BimmerLink user, I want to plot selected series normalised (0 to 100 % of their own min-max) on one shared axis so that channels with unrelated units can be compared on shape and timing."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.3"]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Move series between axes and panels"
+description = "As a BimmerLink user, I want to choose which axis or panel each series uses so that I can override the automatic unit-based assignment."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.2", "4.3"]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "Time-window control"
+description = "As a BimmerLink user, I want to enter an exact start and end time for the X axis so that I can jump to a known event, for example 612 s to 640 s."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["6.1"]
+hitl = false
+

@@ -1,0 +1,42 @@
+# Stories of epic-parameter-catalog-enrichment, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Bundle the catalog as typed app data"
+description = "As a developer, I want the catalog available as a typed, tree-shakeable module so that any feature can look up parameter metadata."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Match log columns to catalog entries"
+description = "As the app, I want to link each column header to a catalog parameter so that units and categories can be shown even when label casing differs."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["2.2", 1]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Show unit, category and description on parameters"
+description = "As a BimmerLink user, I want units and descriptions next to each parameter so that I understand what a channel measures."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [2, "4.1", "5.1"]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Role-aware defaults"
+description = "As a BimmerLink user, I want sensible initial parameter visibility so that the first chart is useful instead of cluttered."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [2, "5.1"]
+hitl = false
+

@@ -1,0 +1,52 @@
+# Stories of epic-dynamic-chart-rendering, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Render selected parameters on a time-series chart"
+description = "As a BimmerLink user, I want my selected parameters plotted against time so that I can see how channels evolve during the drive."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["2.2"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Multiple chart panels"
+description = "As a BimmerLink user, I want to add, remove and reorder chart panels and assign parameters to them so that I can compare channels with very different scales in stacked views."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Multiple Y axes by unit"
+description = "As a BimmerLink user, I want channels with different units to get their own Y axes in one panel so that rpm and lambda can be overlaid readably."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["3.2", 1]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Downsampling for large series"
+description = "As a BimmerLink user, I want smooth rendering of long logs so that zooming and hovering never lag."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "Step vs linear line style"
+description = "As a BimmerLink user, I want channels to be drawn as sample-and-hold steps or linear lines so that the plot reflects how the ECU actually reports values."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["3.2", 1]
+hitl = false
+

@@ -1,0 +1,73 @@
+# Epics of the initiative, in build order. Migrated from docs/backlog (features F02..F53 became epics 1..9, with the exploration feature F42 ahead of the axis feature F36).
+
+[[epic]]
+id = 1
+slug = "epic-foundation-and-aidd-workflow"
+title = "Foundation and AIDD workflow"
+description = "a green CI pipeline on an empty app, an AGENTS.md/CLAUDE.md that tells an agent how to build, test and contribute, and issue/PR templates that turn a story into an agent-ready task."
+covers = ["R1"]
+after = [{ epic = 2, needs = "S13 Landing page inviting a CSV upload; S14 Parse CSV into a column-oriented dataset" }, { epic = 4, needs = "S25 Render selected parameters on a time-series chart" }]
+
+[[epic]]
+id = 2
+slug = "epic-csv-upload-and-parsing"
+title = "CSV upload and parsing"
+description = "dropping any file from Example/ produces a Dataset (time vector + named numeric columns) or a clear, actionable error."
+covers = ["R2"]
+
+[[epic]]
+id = 3
+slug = "epic-parameter-catalog-enrichment"
+title = "Parameter catalog enrichment"
+description = "every matched column shows a unit and category; unmatched columns still work with generic metadata."
+covers = ["R3"]
+after = [{ epic = 2, needs = "S14 Parse CSV into a column-oriented dataset" }, { epic = 4, needs = "S25 Render selected parameters on a time-series chart" }, { epic = 5, needs = "S31 Parameter list with show/hide toggles" }]
+
+[[epic]]
+id = 4
+slug = "epic-dynamic-chart-rendering"
+title = "Dynamic chart rendering"
+description = "a log with 51k rows renders instantly and stays fluid while interacting."
+covers = ["R4"]
+after = [{ epic = 2, needs = "S14 Parse CSV into a column-oriented dataset" }, { epic = 3, needs = "S21 Match log columns to catalog entries" }]
+
+[[epic]]
+id = 5
+slug = "epic-parameter-selection-and-grouping"
+title = "Parameter selection and grouping"
+description = "selecting/unselecting any of the up-to-210 parameters is a one-click, instant operation."
+covers = ["R5"]
+after = [{ epic = 2, needs = "S14 Parse CSV into a column-oriented dataset" }, { epic = 3, needs = "S21 Match log columns to catalog entries" }, { epic = 4, needs = "S25 Render selected parameters on a time-series chart" }]
+
+[[epic]]
+id = 6
+slug = "epic-chart-exploration-interactions"
+title = "Chart exploration interactions"
+description = "the user can find a knock/misfire event and read exact values without leaving the chart."
+covers = ["R7"]
+after = [{ epic = 4, needs = "S25 Render selected parameters on a time-series chart; S26 Multiple chart panels" }]
+
+[[epic]]
+id = 7
+slug = "epic-axis-and-scale-control"
+title = "Axis and scale control"
+description = "the user can make any two channels comparable and focus on a precise value range or time window."
+covers = ["R6"]
+after = [{ epic = 4, needs = "S27 Multiple Y axes by unit; S25 Render selected parameters on a time-series chart; S26 Multiple chart panels" }, { epic = 6, needs = "S43 Zoom and pan on the time axis" }]
+
+[[epic]]
+id = 8
+slug = "epic-session-persistence-and-export"
+title = "Session persistence and export"
+description = "coming back to a similar log restores the working view; results can leave the app as images or JSON."
+covers = ["R8"]
+after = [{ epic = 4, needs = "S25 Render selected parameters on a time-series chart; S26 Multiple chart panels" }, { epic = 5, needs = "S31 Parameter list with show/hide toggles; S34 Series colours and legend" }, { epic = 6, needs = "S43 Zoom and pan on the time axis" }]
+
+[[epic]]
+id = 9
+slug = "epic-ux-quality-performance-accessibility-theming"
+title = "UX quality: performance, accessibility, theming, privacy"
+description = "fast, keyboard-friendly, readable in light and dark, privacy-preserving and measurable."
+covers = ["R9"]
+after = [{ epic = 1, needs = "S10 E2E smoke test with Playwright" }, { epic = 2, needs = "S15 Parse in a Web Worker with progress; S13 Landing page inviting a CSV upload" }, { epic = 4, needs = "S28 Downsampling for large series; S25 Render selected parameters on a time-series chart" }, { epic = 5, needs = "S31 Parameter list with show/hide toggles" }]
+
