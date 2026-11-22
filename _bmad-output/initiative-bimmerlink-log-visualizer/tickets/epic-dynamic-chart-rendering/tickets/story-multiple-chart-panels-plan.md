@@ -1,5 +1,5 @@
 ---
 title: 'Multiple chart panels'
 ticket: 2
-status: in-progress
+status: built
 ---

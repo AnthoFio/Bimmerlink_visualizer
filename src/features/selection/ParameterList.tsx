@@ -9,6 +9,10 @@ interface Props {
   selected: ReadonlySet<string>
   colours: ReadonlyMap<string, string>
   onSelect: (ids: string[], on: boolean) => void
+  /** The panels, top to bottom; with only one there is nothing to assign. */
+  panels?: readonly string[]
+  panelOf?: (id: string) => string
+  onAssign?: (id: string, panel: string) => void
 }
 
 /** Arrow keys, Home and End move between the checkboxes of the list. */
@@ -27,7 +31,12 @@ function moveFocus(event: KeyboardEvent<HTMLElement>) {
   boxes[to]?.focus()
 }
 
-export function ParameterList({ channels, selected, colours, onSelect }: Props) {
+const ONE_PANEL: readonly string[] = []
+const ignore = () => undefined
+
+export function ParameterList(props: Props) {
+  const { channels, selected, colours, onSelect } = props
+  const { panels = ONE_PANEL, panelOf, onAssign = ignore } = props
   const [showAll, setShowAll] = useState(false)
   // A selected channel is always listed, or it could not be switched off.
   const listed = showAll
@@ -59,6 +68,9 @@ export function ParameterList({ channels, selected, colours, onSelect }: Props) 
               channel={channel}
               checked={selected.has(channel.id)}
               colour={colours.get(channel.id)}
+              panel={panelOf?.(channel.id) ?? ''}
+              panels={panels}
+              onAssign={onAssign}
               onSelect={onSelect}
             />
           ))}

@@ -3,11 +3,10 @@ import type { Channel } from '../../lib/channels.ts'
 import type { Theme } from '../../lib/palette.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { unitLabel } from '../../lib/units.ts'
+import { PANEL_HEIGHT } from '../../lib/view.ts'
 import { ChartPanel } from './ChartPanel.tsx'
 import type { PlotSeries } from './ChartPanel.tsx'
 import { Legend } from './Legend.tsx'
-
-const HEIGHT = 420
 
 interface Props {
   dataset: LogDataset
@@ -15,9 +14,17 @@ interface Props {
   selected: ReadonlySet<string>
   colours: ReadonlyMap<string, string>
   theme: Theme
+  height?: number
 }
 
-export function TimeSeriesChart({ dataset, channels, selected, colours, theme }: Props) {
+export function TimeSeriesChart({
+  dataset,
+  channels,
+  selected,
+  colours,
+  theme,
+  height = PANEL_HEIGHT.initial,
+}: Props) {
   const items = useMemo(
     () =>
       channels
@@ -38,14 +45,14 @@ export function TimeSeriesChart({ dataset, channels, selected, colours, theme }:
   const axisTitle = [...new Set(items.map(({ channel }) => unitLabel(channel.unit)))].join(' / ')
 
   return (
-    <section aria-label="Chart" className="panel">
+    <>
       <div className="plot">
         <ChartPanel
           time={dataset.time}
           series={series}
           axisTitle={axisTitle}
           theme={theme}
-          height={HEIGHT}
+          height={height}
         />
         {series.length === 0 && (
           <p className="plot-empty">
@@ -54,6 +61,6 @@ export function TimeSeriesChart({ dataset, channels, selected, colours, theme }:
         )}
       </div>
       <Legend items={items} />
-    </section>
+    </>
   )
 }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
-import { TimeSeriesChart } from './features/charts/TimeSeriesChart.tsx'
+import { ChartPanels } from './features/charts/ChartPanels.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
@@ -12,7 +12,7 @@ import { defaultSelection } from './lib/defaults.ts'
 import { slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
-import { defaultView, setSelected, viewsEqual } from './lib/view.ts'
+import { assignPanel, defaultView, panelOf, setSelected, viewsEqual } from './lib/view.ts'
 
 interface Props {
   log: LoadedLog
@@ -54,6 +54,12 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [],
   )
 
+  const assign = useCallback(
+    (id: string, panel: string) => setView((current) => assignPanel(current, id, panel)),
+    [],
+  )
+  const panelIds = useMemo(() => view.panels.map((panel) => panel.id), [view.panels])
+
   const unsaved = !viewsEqual(view, initial)
   useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
 
@@ -82,6 +88,9 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             selected={selected}
             colours={colours}
             onSelect={select}
+            panels={panelIds}
+            panelOf={(id) => panelOf(view, id)}
+            onAssign={assign}
           />
         </aside>
         <main className="workspace-main">
@@ -97,10 +106,11 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             checked={view.trim}
             onChange={(trim) => setView((current) => ({ ...current, trim }))}
           />
-          <TimeSeriesChart
+          <ChartPanels
             dataset={dataset}
             channels={channels}
-            selected={selected}
+            view={view}
+            onChange={setView}
             colours={colours}
             theme={theme}
           />
