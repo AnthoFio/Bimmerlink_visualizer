@@ -4,6 +4,7 @@ import { axisGutters } from '../../lib/axes.ts'
 import type { Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { isStepped } from '../../lib/lineStyle.ts'
+import type { Range } from '../../lib/yRange.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
@@ -20,6 +21,7 @@ import {
 } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { panelRanges } from '../../lib/panelRanges.ts'
+import { AxisControls } from './AxisControls.tsx'
 import { ChartPanel } from './ChartPanel.tsx'
 import type { CursorSource, PlotSeries } from './ChartPanel.tsx'
 import { FurtherAxes } from './FurtherAxes.tsx'
@@ -37,15 +39,22 @@ interface Props {
   panel?: Panel
   /** Shared by all panels; left out, the chart only makes room for its own axes. */
   gutters?: Gutters
+  /** The manual range of an axis, if it has one. */
+  rangeOf?: (key: string) => Range | undefined
+  onRange?: (key: string, range: Range | null) => void
+  /** Position of the panel, from 1. */
+  number?: number
   /** Shared by all panels; left out, the chart has a window of its own. */
   viewport?: ViewportStore
 }
 
 const DEFAULT_PANEL = createPanel('p1', PANEL_HEIGHT.initial)
+const automatic = () => undefined
+const ignore = () => undefined
 
 export function TimeSeriesChart(props: Props) {
   const { dataset, channels, selected, colours, theme, gutters } = props
-  const { panel = DEFAULT_PANEL } = props
+  const { panel = DEFAULT_PANEL, rangeOf = automatic, onRange = ignore, number = 1 } = props
   const [ownViewport] = useState(createViewport)
   const viewport = props.viewport ?? ownViewport
 
@@ -105,9 +114,13 @@ export function TimeSeriesChart(props: Props) {
   )
   // Fitting all data does not depend on the window, so panning need not compute it again.
   const fitted = panel.fit === 'visible' ? shown : bounds
-  const ranges = useMemo(
+  const fittedRanges = useMemo(
     () => panelRanges(dataset.time, series, axes.length, panel.fit, fitted),
     [dataset.time, series, axes, panel.fit, fitted],
+  )
+  const ranges = useMemo(
+    () => axes.map((axis, i) => rangeOf(axis.key) ?? fittedRanges[i]!),
+    [axes, fittedRanges, rangeOf],
   )
   const own = useMemo(() => axisGutters([axes]), [axes])
 
@@ -139,6 +152,7 @@ export function TimeSeriesChart(props: Props) {
           series={series}
           axes={axes}
           ranges={ranges}
+          onRange={onRange}
           gutters={gutters ?? own}
           capacity={channels.length}
           theme={theme}
@@ -151,6 +165,13 @@ export function TimeSeriesChart(props: Props) {
         )}
       </div>
       <FurtherAxes axes={axes} ranges={ranges} />
+      <AxisControls
+        number={number}
+        axes={axes}
+        ranges={ranges}
+        isManual={(key) => rangeOf(key) !== undefined}
+        onRange={onRange}
+      />
       <Legend dataset={dataset} items={items} cursor={readout} />
     </>
   )

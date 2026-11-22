@@ -17,16 +17,16 @@ As a BimmerLink user, I want to set min and max on any Y axis, or reset to auto 
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Each axis has min, max inputs and an 'Auto' toggle
-- [ ] Invalid ranges (min >= max, NaN) rejected inline
-- [ ] Values persist while switching panels/selection in the session
-- [ ] Y zoom via the inputs and via axis drag (if supported by the chosen library)
+- [x] Each axis has min, max inputs and an 'Auto' toggle
+- [x] Invalid ranges (min >= max, NaN) rejected inline
+- [x] Values persist while switching panels/selection in the session
+- [x] Y zoom via the inputs and via axis drag (if supported by the chosen library)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

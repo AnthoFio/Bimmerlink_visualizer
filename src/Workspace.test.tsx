@@ -306,3 +306,81 @@ describe('auto-fit', () => {
     expect(rangeOfFirstAxis()).toEqual(full)
   })
 })
+
+describe('manual Y ranges', () => {
+  // The plot of panel 1: later instances can belong to panels that were removed.
+  const rangeOfAxis = (slot: number) =>
+    (FakeUplot.instances[0]!.opts.scales![`a${slot}`]!.range as (...args: unknown[]) => number[])()
+  const field = (name: string) => screen.getByRole<HTMLInputElement>('textbox', { name })
+  const type = (name: string, value: string) => fireEvent.change(field(name), { target: { value } })
+  const set = () => click(screen.getByRole('button', { name: 'Set range of rpm in panel 1' }))
+
+  function onlyEngineSpeed() {
+    setup()
+    click(screen.getByRole('button', { name: 'Clear' }))
+    click(screen.getByRole('checkbox', { name: /Engine Speed/ }))
+    click(screen.getByText('Axes of panel 1'))
+  }
+
+  it('sets min and max, and goes back to auto', () => {
+    onlyEngineSpeed()
+    const auto = rangeOfAxis(0)
+
+    type('Min of rpm in panel 1', '700')
+    type('Max of rpm in panel 1', '1300')
+    set()
+    expect(rangeOfAxis(0)).toEqual([700, 1300])
+
+    const toggle = screen.getByRole('checkbox', { name: 'Auto range of rpm in panel 1' })
+    expect(toggle).not.toBeChecked()
+    click(toggle)
+    expect(rangeOfAxis(0)).toEqual(auto)
+  })
+
+  it.each([
+    ['5', '5'],
+    ['9', '2'],
+    ['abc', '2'],
+    ['', '2'],
+  ])('rejects min %j with max %j inline', (min, max) => {
+    onlyEngineSpeed()
+    const before = rangeOfAxis(0)
+
+    type('Min of rpm in panel 1', min)
+    type('Max of rpm in panel 1', max)
+    set()
+    expect(screen.getByRole('alert')).toHaveTextContent('Min must be a number below max')
+    expect(rangeOfAxis(0)).toEqual(before)
+  })
+
+  it('keeps the range while the selection and the panels change', () => {
+    onlyEngineSpeed()
+    type('Min of rpm in panel 1', '700')
+    type('Max of rpm in panel 1', '1300')
+    set()
+
+    const box = () => screen.getByRole('checkbox', { name: /^Engine Speed/ })
+    click(box())
+    click(box())
+    click(screen.getByRole('button', { name: 'Add panel' }))
+    click(screen.getByRole('button', { name: 'Remove panel 2' }))
+    expect(rangeOfAxis(0)).toEqual([700, 1300])
+  })
+
+  it('zooms by dragging the axis, and a double click resets it', () => {
+    onlyEngineSpeed()
+    const auto = rangeOfAxis(0)
+    const strip = FakeUplot.last.root.querySelector<HTMLElement>('.axis-drag')!
+
+    act(() => {
+      fireEvent.pointerDown(strip, { clientY: 200, button: 0 })
+      fireEvent.pointerMove(window, { clientY: 120 })
+      fireEvent.pointerUp(window)
+    })
+    const [min, max] = rangeOfAxis(0)
+    expect(max! - min!).toBeLessThan(auto[1]! - auto[0]!)
+
+    act(() => void fireEvent.dblClick(strip))
+    expect(rangeOfAxis(0)).toEqual(auto)
+  })
+})

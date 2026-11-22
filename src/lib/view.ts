@@ -1,6 +1,8 @@
 // The view: everything the user chose about a log. Plain data and pure updates, so that it can
 // be compared, saved and exported. The time window and the cursor are not part of it.
 
+import type { Range } from './yRange.ts'
+
 export const PANEL_HEIGHT = { min: 160, max: 900, step: 20, initial: 420, added: 260 }
 
 export const LINE_STYLES = ['auto', 'linear', 'step'] as const
@@ -26,6 +28,14 @@ export interface SeriesSettings {
   panel?: string
 }
 
+/** A manual range of one axis of one panel; an axis without one is automatic. */
+export interface AxisSetting {
+  panel: string
+  key: string
+  min: number
+  max: number
+}
+
 export interface View {
   /** Leave out the ramp-up rows at the start of the log. */
   trim: boolean
@@ -33,6 +43,7 @@ export interface View {
   selected: string[]
   /** Top to bottom; never empty. */
   panels: Panel[]
+  axes: AxisSetting[]
   /** By channel id. Read it with `settingsOf`: an id can be any label, `constructor` included. */
   series: Record<string, SeriesSettings>
 }
@@ -46,6 +57,7 @@ export function defaultView(selected: readonly string[]): View {
     trim: true,
     selected: [...selected],
     panels: [createPanel('p1', PANEL_HEIGHT.initial)],
+    axes: [],
     series: {},
   }
 }
@@ -94,7 +106,11 @@ export function addPanel(view: View): View {
 
 export function removePanel(view: View, panelId: string): View {
   if (view.panels.length < 2) return view
-  let next: View = { ...view, panels: view.panels.filter((panel) => panel.id !== panelId) }
+  let next: View = {
+    ...view,
+    panels: view.panels.filter((panel) => panel.id !== panelId),
+    axes: view.axes.filter((axis) => axis.panel !== panelId),
+  }
   // Forget the assignment: a panel added later can get the same id.
   for (const [id, settings] of Object.entries(view.series)) {
     if (settings.panel === panelId) next = updateSeries(next, id, { panel: undefined })
@@ -138,4 +154,16 @@ function canonical(view: View): string {
 
 export function viewsEqual(a: View, b: View): boolean {
   return canonical(a) === canonical(b)
+}
+
+export function axisRangeOf(view: View, panelId: string, key: string): Range | undefined {
+  const found = view.axes.find((axis) => axis.panel === panelId && axis.key === key)
+  return found && [found.min, found.max]
+}
+
+/** `null` makes the axis automatic again. */
+export function setAxisRange(view: View, panel: string, key: string, range: Range | null): View {
+  const axes = view.axes.filter((axis) => axis.panel !== panel || axis.key !== key)
+  if (range) axes.push({ panel, key, min: range[0], max: range[1] })
+  return { ...view, axes }
 }

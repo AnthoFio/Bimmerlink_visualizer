@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   addPanel,
+  axisRangeOf,
   assignPanel,
   defaultView,
   movePanel,
   panelOf,
   removePanel,
   selectOnly,
+  setAxisRange,
   setSelected,
   updatePanel,
   viewsEqual,
@@ -85,5 +87,18 @@ describe('panels', () => {
     expect(panelOf(assignPanel(two, '__proto__', two.panels[1]!.id), '__proto__')).toBe(
       two.panels[1]!.id,
     )
+  })
+})
+
+describe('manual ranges', () => {
+  it('are kept per panel and axis, and leave with their panel', () => {
+    const two = addPanel(view)
+    const second = two.panels[1]!.id
+    const ranged = setAxisRange(two, second, 'unit:rpm', [700, 1300])
+
+    expect(axisRangeOf(ranged, second, 'unit:rpm')).toEqual([700, 1300])
+    expect(axisRangeOf(ranged, two.panels[0]!.id, 'unit:rpm')).toBeUndefined()
+    expect(axisRangeOf(removePanel(ranged, second), second, 'unit:rpm')).toBeUndefined()
+    expect(setAxisRange(ranged, second, 'unit:rpm', null).axes).toEqual([])
   })
 })

@@ -14,6 +14,7 @@ import { CHART_COLOURS } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import type { TimeWindow } from '../../lib/timeWindow.ts'
 import type { Range } from '../../lib/yRange.ts'
+import { createAxisStrips } from './axisDrag.ts'
 import { attachGestures } from './gestures.ts'
 import type { GestureTarget } from './gestures.ts'
 
@@ -37,6 +38,7 @@ interface Props {
   time: Float64Array
   window: TimeWindow
   gestures: GestureTarget
+  onRange: (key: string, range: Range | null) => void
   cursor: CursorSource
   selection: TimeWindow | null
   series: readonly PlotSeries[]
@@ -62,6 +64,20 @@ const LEFT = 3
 const RIGHT = 1
 
 const scaleKey = (axis: number) => `a${axis}`
+
+/** The strips lie on the gutters, which move whenever the axes do. */
+function placeStrips(chart: uPlot) {
+  const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = chart.over
+  const size = AXIS_SIZE + AXIS_TITLE_SIZE
+  chart.root.querySelectorAll<HTMLElement>('.axis-drag').forEach((strip, slot) => {
+    const outwards = Math.floor(slot / 2) * size
+    const left = slot % 2 ? offsetLeft + offsetWidth + outwards : offsetLeft - size - outwards
+    strip.style.left = `${left}px`
+    strip.style.top = `${offsetTop}px`
+    strip.style.width = `${size}px`
+    strip.style.height = `${offsetHeight}px`
+  })
+}
 
 function chartOptions(model: () => Model, width: number, height: number): uPlot.Options {
   const ink = () => CHART_COLOURS[model().theme].ink
@@ -101,6 +117,7 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
     width,
     height,
     padding: [EDGE, padding('right'), 0, padding('left')],
+    hooks: { draw: [(chart) => placeStrips(chart)] },
     legend: { show: false },
     cursor: {
       show: false,
@@ -142,6 +159,7 @@ export function ChartPanel(props: Props) {
   const drawn = useRef('')
   const cursorLine = useRef<HTMLDivElement>(null)
   const band = useRef<HTMLDivElement>(null)
+  const axisStrips = useRef<HTMLDivElement[]>([])
   const [width, setWidth] = useState(0)
   const duration = time.length ? time[time.length - 1]! - time[0]! : 0
   const latest = useRef<Model>({ ...props, duration })
@@ -178,6 +196,15 @@ export function ChartPanel(props: Props) {
       setWidth(target.clientWidth)
     })
     observer.observe(target)
+    const { strips, destroy } = createAxisStrips(VISIBLE_AXES, {
+      range: (slot) => model().ranges[slot],
+      setRange: (slot, range) => {
+        const axis = model().axes[slot]
+        if (axis) model().onRange(axis.key, range)
+      },
+    })
+    ;(chart.over.parentElement ?? chart.root).append(...strips)
+    axisStrips.current = strips
     const detach = attachGestures(chart.over, {
       window: () => model().gestures.window(),
       extent: () => model().gestures.extent(),
@@ -189,6 +216,7 @@ export function ChartPanel(props: Props) {
 
     return () => {
       detach()
+      destroy()
       observer.disconnect()
       chart.destroy()
       plot.current = null
@@ -200,6 +228,9 @@ export function ChartPanel(props: Props) {
     const structure = JSON.stringify(
       series.map((line) => [line.id, line.name, line.axis, line.stepped]),
     )
+    axisStrips.current.forEach((strip, slot) => {
+      strip.hidden = slot >= axes.length
+    })
     // uPlot reads the titles each time it draws.
     for (let i = 0; i < VISIBLE_AXES; i++) chart.axes[i + 1]!.label = axes[i]?.title ?? ''
 

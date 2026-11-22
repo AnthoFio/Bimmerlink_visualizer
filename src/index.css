@@ -576,3 +576,28 @@ tbody th {
 input[aria-invalid='true'] {
   border-color: var(--error);
 }
+
+.axis-drag {
+  position: absolute;
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.axis-controls {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: start;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.axis-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.axis-title {
+  min-width: 8rem;
+}
