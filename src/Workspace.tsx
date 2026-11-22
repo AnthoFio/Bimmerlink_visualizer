@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useTheme } from './components/useTheme.ts'
 import { parameters } from './data/catalog.ts'
 import { ChartPanels } from './features/charts/ChartPanels.tsx'
+import { Minimap } from './features/charts/Minimap.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
@@ -67,6 +68,17 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   )
   const panelIds = useMemo(() => view.panels.map((panel) => panel.id), [view.panels])
 
+  const overview = useMemo(() => {
+    const first = visible[0]
+    return (
+      first && {
+        name: first.name,
+        values: dataset.columns[first.column]!.values,
+        colour: colours.get(first.id)!,
+      }
+    )
+  }, [visible, dataset, colours])
+
   const unsaved = !viewsEqual(view, initial)
   useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
 
@@ -113,6 +125,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
             checked={view.trim}
             onChange={(trim) => setView((current) => ({ ...current, trim }))}
           />
+          <Minimap time={dataset.time} series={overview} viewport={viewport} />
           <ChartPanels
             dataset={dataset}
             channels={channels}

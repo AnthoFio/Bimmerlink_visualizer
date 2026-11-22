@@ -17,14 +17,14 @@ As a BimmerLink user, I want a small overview of the whole log with a draggable 
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Minimap shows the first selected series (or normalised overlay)
-- [ ] Dragging/resizing the window updates the main charts and vice versa
+- [x] Minimap shows the first selected series (or normalised overlay)
+- [x] Dragging/resizing the window updates the main charts and vice versa
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
