@@ -7,6 +7,7 @@ import { Minimap } from './features/charts/Minimap.tsx'
 import { RangeStatistics } from './features/charts/RangeStatistics.tsx'
 import { TimeWindowControl } from './features/charts/TimeWindowControl.tsx'
 import { PresetPicker } from './features/selection/PresetPicker.tsx'
+import { ViewFileActions } from './features/session/ViewFileActions.tsx'
 import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
@@ -15,7 +16,7 @@ import { describeChannels } from './lib/channels.ts'
 import { defaultSelection } from './lib/defaults.ts'
 import { assignSlots, slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
-import { logExtent } from './lib/timeWindow.ts'
+import { clampWindow, logExtent } from './lib/timeWindow.ts'
 import { summarise } from './lib/summary.ts'
 import { plural } from './lib/format.ts'
 import { usePersistedView } from './usePersistedView.ts'
@@ -166,9 +167,20 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
               .
             </div>
           )}
-          <button type="button" onClick={reset}>
-            Reset view
-          </button>
+          <div className="view-actions">
+            <button type="button" onClick={reset}>
+              Reset view
+            </button>
+            <ViewFileActions
+              fileName={log.fileName}
+              ids={ids}
+              current={() => ({ view, window: viewport.get().window })}
+              onImport={(imported, window) => {
+                setView(imported)
+                viewport.set({ window: window && clampWindow(window, extent) })
+              }}
+            />
+          </div>
           <RampUpToggle
             rows={log.dataset.time.length - dataset.time.length}
             seconds={dataset.time[0]! - log.dataset.time[0]!}

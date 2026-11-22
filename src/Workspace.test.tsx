@@ -627,3 +627,50 @@ describe('saved view', () => {
     setItem.mockRestore()
   })
 })
+
+describe('view files', () => {
+  it('exports the view as a JSON download', async () => {
+    let saved: Blob | undefined
+    const create = vi.spyOn(URL, 'createObjectURL').mockImplementation((blob) => {
+      saved = blob as Blob
+      return 'blob:view'
+    })
+    const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined)
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    setup()
+
+    click(screen.getByRole('button', { name: 'Export view' }))
+    expect(anchorClick).toHaveBeenCalledOnce()
+    const file = JSON.parse(await saved!.text()) as { version: number; selected: string[] }
+    expect(file.version).toBe(1)
+    expect(file.selected).toHaveLength(6)
+    for (const spy of [create, revoke, anchorClick]) spy.mockRestore()
+  })
+
+  it('imports a view and reports unknown parameters', async () => {
+    setup()
+    const text = JSON.stringify({
+      ...defaultView(['oil temperature', 'no such channel']),
+      version: 1,
+      window: { min: 1, max: 2 },
+    })
+
+    fireEvent.change(screen.getByLabelText('View file'), {
+      target: { files: [new File([text], 'view.json', { type: 'application/json' })] },
+    })
+    expect(await screen.findByText(/1 parameter of the file is not in this log/)).toBeVisible()
+    expect(
+      within(screen.getByRole('list', { name: 'Legend' })).getAllByRole('listitem'),
+    ).toHaveLength(1)
+    expect(FakeUplot.last.x).toEqual({ min: 1, max: 2 })
+  })
+
+  it('says why a file cannot be imported', async () => {
+    setup()
+
+    fireEvent.change(screen.getByLabelText('View file'), {
+      target: { files: [new File(['nope'], 'view.json')] },
+    })
+    expect(await screen.findByRole('alert')).toHaveTextContent('not a view file')
+  })
+})

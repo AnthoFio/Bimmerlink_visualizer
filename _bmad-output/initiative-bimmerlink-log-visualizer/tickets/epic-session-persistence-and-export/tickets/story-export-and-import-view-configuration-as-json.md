@@ -17,15 +17,15 @@ As a BimmerLink user, I want to save my view to a file and load it on another lo
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Versioned JSON schema (`version`, panels, series, axes, window)
-- [ ] Import validates the schema and reports unknown parameters
-- [ ] Round-trip test: export > import yields identical view state
+- [x] Versioned JSON schema (`version`, panels, series, axes, window)
+- [x] Import validates the schema and reports unknown parameters
+- [x] Round-trip test: export > import yields identical view state
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

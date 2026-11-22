@@ -716,3 +716,12 @@ button.legend-name {
   flex: 1;
   min-width: 8rem;
 }
+
+.view-actions,
+.view-file {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin: 0.4rem 0;
+}
