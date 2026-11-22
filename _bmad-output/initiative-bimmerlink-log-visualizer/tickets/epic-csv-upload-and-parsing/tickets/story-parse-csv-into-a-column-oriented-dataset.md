@@ -17,17 +17,17 @@ As the app, I want to parse a log using its header row so that any BimmerLink lo
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] `parseLog(text|File)` returns `{ time: Float64Array, columns: [{ name, values: Float64Array }] }`
-- [ ] First column must be `Time` (case-insensitive); other columns discovered from the header
-- [ ] Handles quoted labels, comma delimiter, `.` decimal, BOM and CRLF/LF
-- [ ] Passes on all files in `Example/` (6 files, incl. the 51k-row one)
-- [ ] Unit tests on fixtures including edge cases
+- [x] `parseLog(text|File)` returns `{ time: Float64Array, columns: [{ name, values: Float64Array }] }`
+- [x] First column must be `Time` (case-insensitive); other columns discovered from the header
+- [x] Handles quoted labels, comma delimiter, `.` decimal, BOM and CRLF/LF
+- [x] Passes on all files in `Example/` (6 files, incl. the 51k-row one)
+- [x] Unit tests on fixtures including edge cases
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
@@ -36,4 +36,4 @@ Verify: Every acceptance criterion below holds.
 ## Notes
 
 - Decision: 2026-11-22 — migrated from docs/backlog story S14 (GitHub issue #14), area ingest, mvp; text and checkbox state kept.
-- Open question: PapaParse or a purpose-built parser, decide in the PR and justify in the description. Answered on the unmerged branch story/14-parse-csv-dataset (worktree ../wt-14, purpose-built parser, in review); the story stays backlog until that branch is merged, then mark it done.
+- Decision: 2026-11-22 — purpose-built parser instead of PapaParse: the format is fixed and simple, the output must be typed arrays, and it adds no dependency (see the parser header comment).
