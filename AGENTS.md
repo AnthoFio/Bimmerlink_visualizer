@@ -81,7 +81,7 @@ Rules:
 - `src/features/<name>/` owns its components, hooks and local state. Features may import from `src/lib/` and `src/data/`; `src/lib/` never imports from `src/features/`. Features do not import from each other: lift shared code into `src/lib/` or a shared component folder.
 - Heavy work (CSV parsing of 50k rows) belongs in a Web Worker so the UI stays responsive (planned, story #15).
 - Keep `src/lib/` functions worker-safe, so that move is cheap.
-- Data model: column-oriented dataset (one typed array per channel plus a shared time array) (planned, story #14).
+- Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). Friendly messages and warnings are story #16.
 - Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
 - Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).
 - `spikes/` holds throwaway evidence projects with their own `package.json` and `node_modules`; ESLint, Prettier, `tsc -b`, Vitest and the app build ignore them, and the app never depends on them. Decisions that are expensive to reverse get an ADR in `docs/adr/`; `src/docs/adr.test.ts` asserts the ADR structure.
