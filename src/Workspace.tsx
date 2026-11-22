@@ -8,13 +8,11 @@ import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
 import { describeChannels } from './lib/channels.ts'
+import { defaultSelection } from './lib/defaults.ts'
 import { slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
 import { defaultView, setSelected, viewsEqual } from './lib/view.ts'
-
-/** Drawn on load, until the role-aware defaults decide. */
-const INITIAL_SERIES = 6
 
 interface Props {
   log: LoadedLog
@@ -36,9 +34,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       ),
     [log],
   )
-  const [initial] = useState(() =>
-    defaultView(channels.slice(0, INITIAL_SERIES).map((channel) => channel.id)),
-  )
+  const [initial] = useState(() => defaultView(defaultSelection(channels)))
   const [view, setView] = useState(initial)
 
   const dataset = useMemo(

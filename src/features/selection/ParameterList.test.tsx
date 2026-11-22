@@ -89,3 +89,41 @@ describe('ParameterList', () => {
     for (const box of boxes()) expect(box).toHaveAttribute('type', 'checkbox')
   })
 })
+
+describe('roles that are hidden by default', () => {
+  const core = parameters.find((parameter) => parameter.role === 'core')!
+  const hidden = ['redundant', 'static', 'broken'].map((role) =>
+    parameters.find((parameter) => parameter.role === role)!,
+  )
+  const mixed = describeChannels(
+    [core, ...hidden].map((parameter) => parameter.label),
+    parameters,
+  )
+
+  it('keeps them behind a "show all" toggle', () => {
+    const onSelect = vi.fn()
+    render(
+      <ParameterList channels={mixed} selected={new Set()} colours={colours} onSelect={onSelect} />,
+    )
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Select all' }))
+    expect(onSelect).toHaveBeenLastCalledWith([mixed[0]!.id], true)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show all (3 hidden)' }))
+    expect(screen.getAllByRole('listitem')).toHaveLength(4)
+  })
+
+  it('still lists one that is selected', () => {
+    render(
+      <ParameterList
+        channels={mixed}
+        selected={new Set([mixed[2]!.id])}
+        colours={colours}
+        onSelect={vi.fn()}
+      />,
+    )
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+  })
+})

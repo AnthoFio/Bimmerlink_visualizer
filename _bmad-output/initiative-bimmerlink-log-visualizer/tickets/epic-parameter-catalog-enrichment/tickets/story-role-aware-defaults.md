@@ -17,15 +17,15 @@ As a BimmerLink user, I want sensible initial parameter visibility so that the f
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] On load, `core` channels present in the log are pre-selected (max 6; fallback to first N columns if none match)
-- [ ] `redundant`, `static` and `broken` channels are hidden from the default list behind a 'show all' toggle
-- [ ] Behaviour covered by tests on at least three example logs
+- [x] On load, `core` channels present in the log are pre-selected (max 6; fallback to first N columns if none match)
+- [x] `redundant`, `static` and `broken` channels are hidden from the default list behind a 'show all' toggle
+- [x] Behaviour covered by tests on at least three example logs
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

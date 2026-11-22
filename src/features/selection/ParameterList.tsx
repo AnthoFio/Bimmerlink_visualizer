@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import type { Channel } from '../../lib/channels.ts'
+import { isHiddenByDefault } from '../../lib/defaults.ts'
 import { ParameterRow } from './ParameterRow.tsx'
 
 interface Props {
@@ -26,7 +28,13 @@ function moveFocus(event: KeyboardEvent<HTMLElement>) {
 }
 
 export function ParameterList({ channels, selected, colours, onSelect }: Props) {
-  const ids = channels.map((channel) => channel.id)
+  const [showAll, setShowAll] = useState(false)
+  // A selected channel is always listed, or it could not be switched off.
+  const listed = showAll
+    ? channels
+    : channels.filter((channel) => selected.has(channel.id) || !isHiddenByDefault(channel))
+  const hidden = channels.length - listed.length
+  const ids = listed.map((channel) => channel.id)
 
   return (
     <>
@@ -37,10 +45,15 @@ export function ParameterList({ channels, selected, colours, onSelect }: Props) 
         <button type="button" onClick={() => onSelect(ids, false)}>
           Clear
         </button>
+        {(showAll || hidden > 0) && (
+          <button type="button" aria-expanded={showAll} onClick={() => setShowAll(!showAll)}>
+            {showAll ? 'Show fewer' : `Show all (${hidden} hidden)`}
+          </button>
+        )}
       </div>
       <div className="parameter-groups" onKeyDown={moveFocus}>
         <ul className="parameter-list">
-          {channels.map((channel) => (
+          {listed.map((channel) => (
             <ParameterRow
               key={channel.id}
               channel={channel}
