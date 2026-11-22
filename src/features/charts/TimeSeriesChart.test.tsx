@@ -117,3 +117,23 @@ describe('the chart engine boundary', () => {
     expect(importers).toEqual(['features/charts/ChartPanel.tsx'])
   })
 })
+
+describe('units', () => {
+  it('shows the unit of each series in the legend', () => {
+    render(chart([ids[8]!, ids[9]!]))
+
+    const legend = screen.getByRole('list', { name: 'Legend' })
+    expect(legend).toHaveTextContent('°C')
+    expect(legend).toHaveTextContent('rpm')
+  })
+
+  it('titles the axis with the unit', () => {
+    render(chart([ids[9]!]))
+    expect(FakeUplot.last.axes[1]!.label).toBe('rpm')
+  })
+
+  it('names every unit when several share the axis', () => {
+    render(chart([ids[8]!, ids[9]!]))
+    expect(FakeUplot.last.axes[1]!.label).toBe('°C / rpm')
+  })
+})

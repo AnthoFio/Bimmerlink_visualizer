@@ -17,6 +17,7 @@ export interface PlotSeries {
 interface Props {
   time: Float64Array
   series: readonly PlotSeries[]
+  axisTitle: string
   theme: Theme
   height: number
 }
@@ -50,6 +51,8 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
         scale: 'y',
         stroke: ink,
         size: 64,
+        label: '',
+        labelSize: 20,
         grid: { stroke: grid, width: 1 },
         ticks: { stroke: grid },
       },
@@ -58,7 +61,7 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
 }
 
 export function ChartPanel(props: Props) {
-  const { time, series, theme, height } = props
+  const { time, series, axisTitle, theme, height } = props
   const host = useRef<HTMLDivElement>(null)
   const plot = useRef<uPlot>(null)
   const drawn = useRef('')
@@ -67,7 +70,7 @@ export function ChartPanel(props: Props) {
 
   // First, so that the callbacks uPlot calls while it is being updated see the new props.
   useLayoutEffect(() => {
-    latest.current = { time, series, theme, height, duration }
+    latest.current = { time, series, axisTitle, theme, height, duration }
   })
 
   useLayoutEffect(() => {
@@ -97,6 +100,8 @@ export function ChartPanel(props: Props) {
   useLayoutEffect(() => {
     const chart = plot.current!
     const structure = JSON.stringify(series.map((line) => [line.id, line.name]))
+    // uPlot reads the title each time it draws.
+    chart.axes[1]!.label = axisTitle
     chart.batch(() => {
       if (structure !== drawn.current) {
         drawn.current = structure
@@ -120,7 +125,7 @@ export function ChartPanel(props: Props) {
         chart.setScale('x', { min, max: Math.max(min + 0.001, time[time.length - 1]!) })
       }
     })
-  }, [time, series])
+  }, [time, series, axisTitle])
 
   useEffect(() => {
     const width = host.current?.clientWidth || FALLBACK_WIDTH

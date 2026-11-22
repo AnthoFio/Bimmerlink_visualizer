@@ -1,5 +1,7 @@
 import { memo } from 'react'
+import { ParameterInfo } from '../../components/ParameterInfo.tsx'
 import type { Channel } from '../../lib/channels.ts'
+import { unitLabel } from '../../lib/units.ts'
 
 interface Props {
   channel: Channel
@@ -25,8 +27,9 @@ export const ParameterRow = memo(function ParameterRow({
         />
         <span className="swatch" aria-hidden="true" style={{ backgroundColor: colour }} />
         <span className="parameter-name">{channel.name}</span>
-        <span className="unit">{channel.unit ?? 'unit unknown'}</span>
+        <span className="unit">{unitLabel(channel.unit)}</span>
       </label>
+      <ParameterInfo channel={channel} />
     </li>
   )
 })

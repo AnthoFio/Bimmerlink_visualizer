@@ -17,15 +17,15 @@ As a BimmerLink user, I want units and descriptions next to each parameter so th
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Parameter list and legend show the unit
-- [ ] Tooltip shows description, category, role and confidence badge (low confidence flagged)
-- [ ] Axis titles use the unit
+- [x] Parameter list and legend show the unit
+- [x] Tooltip shows description, category, role and confidence badge (low confidence flagged)
+- [x] Axis titles use the unit
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
