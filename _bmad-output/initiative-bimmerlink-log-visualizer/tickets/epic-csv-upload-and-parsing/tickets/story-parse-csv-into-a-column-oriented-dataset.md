@@ -26,7 +26,7 @@ Verify: Every acceptance criterion below holds.
 ## Definition of done
 
 - [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
-- [ ] Lint, typecheck, tests and build pass in CI
+- [x] Lint, typecheck, tests and build pass in CI
 - [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
