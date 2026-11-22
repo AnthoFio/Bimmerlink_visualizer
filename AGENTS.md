@@ -85,7 +85,7 @@ Rules:
 - jsdom has no Worker: UI tests pass `src/test/directLoader.ts` to `App`.
 - Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). `readLog` in `src/lib/readLog.ts` validates on top of it: user-facing errors, warnings for what is tolerated, and a finite, non-decreasing time axis.
 - Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
-- Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).
+- Chart wiring: `uplot` (pinned exact version) is imported only by `src/features/charts/ChartPanel.tsx`, a test enforces it. Panels are functions of app state and never set each other. In jsdom `src/test/setup.ts` replaces uPlot with `src/test/fakeUplot.ts`, so real drawing is verified in a browser.
 - `spikes/` holds throwaway evidence projects with their own `package.json` and `node_modules`; ESLint, Prettier, `tsc -b`, Vitest and the app build ignore them, and the app never depends on them. Decisions that are expensive to reverse get an ADR in `docs/adr/`; `src/docs/adr.test.ts` asserts the ADR structure.
 
 ## Naming and code conventions

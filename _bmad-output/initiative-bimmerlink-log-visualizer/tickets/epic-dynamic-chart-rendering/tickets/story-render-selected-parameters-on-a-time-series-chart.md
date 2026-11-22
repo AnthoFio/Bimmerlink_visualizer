@@ -17,16 +17,16 @@ As a BimmerLink user, I want my selected parameters plotted against time so that
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Chart renders one line per selected parameter, X axis = Time in seconds (mm:ss labels when > 120 s)
-- [ ] Series update immediately when the selection changes without remounting the chart
-- [ ] Empty selection shows a helpful empty state
-- [ ] Works on every file in `Example/`
+- [x] Chart renders one line per selected parameter, X axis = Time in seconds (mm:ss labels when > 120 s)
+- [x] Series update immediately when the selection changes without remounting the chart
+- [x] Empty selection shows a helpful empty state
+- [x] Works on every file in `Example/`
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

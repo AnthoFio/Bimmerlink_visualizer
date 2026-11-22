@@ -1,5 +1,5 @@
 ---
 title: 'Render selected parameters on a time-series chart'
 ticket: 1
-status: in-progress
+status: built
 ---

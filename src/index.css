@@ -214,3 +214,32 @@ button.primary {
   gap: 0.25rem 0.75rem;
   align-items: center;
 }
+
+.panel {
+  margin: 0.5rem 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.plot {
+  position: relative;
+  min-width: 0;
+}
+
+.chart-host {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.plot-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 1rem;
+  background: var(--surface);
+  color: var(--muted);
+  text-align: center;
+}

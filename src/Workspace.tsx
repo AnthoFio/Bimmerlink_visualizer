@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { TimeSeriesChart } from './features/charts/TimeSeriesChart.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
@@ -7,6 +8,9 @@ import { parameters } from './data/catalog.ts'
 import { describeChannels } from './lib/channels.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
+
+/** Drawn on load, until the parameter list and its defaults decide. */
+const INITIAL_SERIES = 6
 
 interface Props {
   log: LoadedLog
@@ -34,6 +38,10 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
     [log],
   )
   const unmatched = channels.filter((channel) => !channel.matched).length
+  const selected = useMemo(
+    () => new Set(channels.slice(0, INITIAL_SERIES).map((channel) => channel.id)),
+    [channels],
+  )
 
   const unsaved = !trim
   useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
@@ -69,6 +77,7 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
           checked={trim}
           onChange={setTrim}
         />
+        <TimeSeriesChart dataset={dataset} channels={channels} selected={selected} />
       </main>
     </div>
   )
