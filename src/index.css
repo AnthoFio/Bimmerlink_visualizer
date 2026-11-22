@@ -415,3 +415,13 @@ button.info-button {
   padding-left: 0.4rem;
   border-left: 3px solid var(--control-line);
 }
+
+.plot:focus-visible {
+  outline-offset: -2px;
+}
+
+/* One finger scrolls the page; two fingers are ours. */
+.chart-host .u-over {
+  cursor: grab;
+  touch-action: pan-y;
+}

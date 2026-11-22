@@ -6,12 +6,14 @@ import type { Theme } from '../../lib/palette.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { assignPanel, movePanel, panelOf, removePanel, updatePanel } from '../../lib/view.ts'
 import type { Panel, View } from '../../lib/view.ts'
+import type { ViewportStore } from '../../lib/viewport.ts'
 import { PanelToolbar } from './PanelToolbar.tsx'
 import { TimeSeriesChart } from './TimeSeriesChart.tsx'
 
 interface Props {
   panel: Panel
   index: number
+  viewport: ViewportStore
   gutters: Gutters
   dataset: LogDataset
   channels: readonly Channel[]
@@ -22,7 +24,8 @@ interface Props {
 }
 
 export function PanelCard(props: Props) {
-  const { panel, index, gutters, dataset, channels, view, onChange, colours, theme } = props
+  const { panel, index, gutters, viewport, dataset, channels, view, onChange, colours, theme } =
+    props
   const [dropping, setDropping] = useState(false)
   const selected = useMemo(
     () => new Set(view.selected.filter((id) => panelOf(view, id) === panel.id)),
@@ -63,6 +66,7 @@ export function PanelCard(props: Props) {
         theme={theme}
         height={panel.height}
         gutters={gutters}
+        viewport={viewport}
       />
     </section>
   )
