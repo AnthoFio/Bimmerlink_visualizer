@@ -7,10 +7,17 @@ import { isStepped } from '../../lib/lineStyle.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
+import { nearestIndex } from '../../lib/search.ts'
 import { logExtent, resolveWindow } from '../../lib/timeWindow.ts'
 import { createPanel, PANEL_HEIGHT } from '../../lib/view.ts'
 import type { Panel } from '../../lib/view.ts'
-import { createViewport, cursorTimeOf, setWindowOf, windowOf } from '../../lib/viewport.ts'
+import {
+  createViewport,
+  cursorTimeOf,
+  readoutTimeOf,
+  setWindowOf,
+  windowOf,
+} from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { autoRange, extent } from '../../lib/yRange.ts'
 import { ChartPanel } from './ChartPanel.tsx'
@@ -53,16 +60,28 @@ export function TimeSeriesChart(props: Props) {
       extent: () => bounds,
       setWindow: (window) => setWindowOf(viewport, sync, window),
       reset: () => setWindowOf(viewport, sync, null),
-      hover: (time) =>
+      hover: (time) => {
+        if (time === null) {
+          const last = viewport.get().cursor
+          if (last) viewport.set({ cursor: { ...last, hovering: false } })
+          return
+        }
+        const snapped = dataset.time[nearestIndex(dataset.time, time)]!
         viewport.set({
-          cursor: time === null ? null : { time, panel: sync.id, synced: sync.synced },
-        }),
+          cursor: { time: snapped, panel: sync.id, synced: sync.synced, hovering: true },
+        })
+      },
     }),
-    [viewport, bounds, sync],
+    [viewport, bounds, sync, dataset.time],
   )
 
   const cursor = useMemo<CursorSource>(
     () => ({ get: () => cursorTimeOf(viewport.get(), sync), subscribe: viewport.subscribe }),
+    [viewport, sync],
+  )
+
+  const readout = useMemo<CursorSource>(
+    () => ({ get: () => readoutTimeOf(viewport.get(), sync), subscribe: viewport.subscribe }),
     [viewport, sync],
   )
 
@@ -127,7 +146,7 @@ export function TimeSeriesChart(props: Props) {
         )}
       </div>
       <FurtherAxes axes={axes} ranges={ranges} />
-      <Legend items={items} />
+      <Legend dataset={dataset} items={items} cursor={readout} />
     </>
   )
 }

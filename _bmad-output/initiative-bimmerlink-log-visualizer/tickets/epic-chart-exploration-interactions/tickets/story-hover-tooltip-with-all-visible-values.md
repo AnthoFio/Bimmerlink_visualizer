@@ -17,15 +17,15 @@ As a BimmerLink user, I want a tooltip showing every visible series' value at th
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Shows time and, for each visible series, name, value, unit (with colour key)
-- [ ] Snaps to nearest sample
-- [ ] Handles 13+ series without covering the chart (scrollable / docked)
+- [x] Shows time and, for each visible series, name, value, unit (with colour key)
+- [x] Snaps to nearest sample
+- [x] Handles 13+ series without covering the chart (scrollable / docked)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

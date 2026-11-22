@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { nearestIndex } from './search.ts'
 import { createStore } from './store.ts'
 import { clampWindow, logExtent, MIN_SPAN, panBy, resolveWindow, zoomAround } from './timeWindow.ts'
 
@@ -55,5 +56,20 @@ describe('createStore', () => {
 
     expect(seen).toEqual([2])
     expect(store.get()).toEqual({ n: 3, other: 'kept' })
+  })
+})
+
+describe('nearestIndex', () => {
+  const time = Float64Array.of(0, 1, 3, 3.5)
+
+  it.each([
+    [-5, 0],
+    [0.4, 0],
+    [0.6, 1],
+    [2.1, 2],
+    [3.4, 3],
+    [99, 3],
+  ])('snaps %s s to sample %i', (at, index) => {
+    expect(nearestIndex(time, at)).toBe(index)
   })
 })

@@ -10,6 +10,8 @@ export interface Cursor {
   panel: string
   /** Whether that panel is synchronised with the others. */
   synced: boolean
+  /** False once the pointer left: the line goes, the values it read stay. */
+  hovering: boolean
 }
 
 export interface Viewport {
@@ -41,9 +43,14 @@ export function setWindowOf(store: ViewportStore, panel: PanelSync, window: Time
   else store.set({ ownWindows: new Map(store.get().ownWindows).set(panel.id, window) })
 }
 
-/** The time at which this panel draws the cursor line. */
-export function cursorTimeOf({ cursor }: Viewport, panel: PanelSync): number | null {
+/** The time at which this panel reads values. */
+export function readoutTimeOf({ cursor }: Viewport, panel: PanelSync): number | null {
   if (!cursor) return null
   if (cursor.panel === panel.id || (cursor.synced && panel.synced)) return cursor.time
   return null
+}
+
+/** The time at which this panel draws the cursor line. */
+export function cursorTimeOf(state: Viewport, panel: PanelSync): number | null {
+  return state.cursor?.hovering ? readoutTimeOf(state, panel) : null
 }

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PARAMETER_DRAG_TYPE } from './lib/dragParameter.ts'
+import { formatValue } from './lib/format.ts'
 import { readLog } from './lib/readLog.ts'
 import { loadFixtureText } from './test/fixtures.ts'
 import { FakeUplot } from './test/fakeUplot.ts'
@@ -162,5 +163,56 @@ describe('synchronised panels', () => {
 
     unsync(2)
     expect(second.x).toEqual(first.x)
+  })
+})
+
+describe('cursor readout', () => {
+  function hoverAt(share: number) {
+    const plot = FakeUplot.last
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    act(() => void fireEvent.mouseMove(plot.over, { clientX: share * 1000 }))
+    return plot
+  }
+
+  it('shows the time and the name, value, unit and colour of each visible series', () => {
+    setup()
+    hoverAt(1)
+
+    const last = result.dataset.time.length - 1
+    const readout = within(panel(1)).getByRole('list', { name: 'Legend' })
+    expect(within(panel(1)).getByText(`${result.dataset.time[last]!.toFixed(3)} s`)).toBeVisible()
+    const speed = within(readout).getByText('Engine Speed').closest('li')!
+    const value = result.dataset.columns.find((c) => c.name === 'Engine Speed')!.values[last]!
+    expect(within(speed).getByText(formatValue(value))).toBeVisible()
+    expect(speed).toHaveTextContent('rpm')
+    expect(speed.querySelector('.swatch')).toHaveAttribute('style')
+  })
+
+  it('snaps to the nearest sample', () => {
+    setup()
+    const plot = hoverAt(0.5004)
+
+    const { time } = result.dataset
+    const start = time[result.rampUp.rows]!
+    const at = start + 0.5004 * (time.at(-1)! - start)
+    const nearest = [...time].reduce((a, b) => (Math.abs(b - at) < Math.abs(a - at) ? b : a))
+    expect(within(panel(1)).getByText(`${nearest.toFixed(3)} s`)).toBeVisible()
+    const line = plot.over.querySelector<HTMLElement>('.cursor-line')!
+    expect(parseFloat(line.style.left)).toBeCloseTo(
+      ((nearest - start) / (time.at(-1)! - start)) * 100,
+      6,
+    )
+  })
+
+  it('is docked under the chart and keeps the values when the pointer moves to it', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Select all' }))
+    const plot = hoverAt(0.5)
+    act(() => void fireEvent.mouseLeave(plot.over))
+
+    const readout = within(panel(1)).getByRole('list', { name: 'Legend' })
+    expect(plot.root).not.toContainElement(readout)
+    expect(readout.closest('.plot')).toBeNull()
+    expect(readout.querySelectorAll('.value:not(:empty)')).toHaveLength(11)
   })
 })

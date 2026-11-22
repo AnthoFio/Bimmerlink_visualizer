@@ -23,3 +23,11 @@ export function indexAfter(time: Float64Array, value: number): number {
   }
   return low
 }
+
+/** The index of the sample nearest to `value`. */
+export function nearestIndex(time: Float64Array, value: number): number {
+  const after = indexAtOrAfter(time, value)
+  if (after === 0) return 0
+  if (after === time.length) return time.length - 1
+  return value - time[after - 1]! <= time[after]! - value ? after - 1 : after
+}
