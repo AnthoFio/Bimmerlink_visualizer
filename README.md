@@ -57,7 +57,7 @@ Once typescript-eslint supports TypeScript 7, drop the `typescript7` alias and p
 Example/          Sample BimmerLink logs (byte-exact, never edit)
 src/
   main.tsx        App entry point
-  App.tsx         Root component (placeholder page)
+  App.tsx         Root component (composes the features)
   features/       One folder per user-facing feature (upload, charts, selection...);
                   each owns its components, hooks and local state
   lib/            Pure, framework-independent logic (CSV parsing, downsampling...);

@@ -1,20 +1,145 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --ink: #15171a;
+  --muted: #4d535b;
+  --line: #d5d9de;
+  --control-line: #80878f;
+  --accent: #155ab6;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3edfb;
+  --error: #a11b1b;
+  --error-soft: #fbe7e7;
+  --warn: #704b00;
+  --warn-soft: #fbf0d4;
   font-family:
     system-ui,
     -apple-system,
     'Segoe UI',
     Roboto,
     sans-serif;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0f1113;
+    --surface: #17191c;
+    --ink: #eceef0;
+    --muted: #aeb5bd;
+    --line: #30353b;
+    --control-line: #737b85;
+    --accent: #8dbbff;
+    --accent-ink: #0b1a2e;
+    --accent-soft: #1b2b40;
+    --error: #ffaaa5;
+    --error-soft: #3a1c1c;
+    --warn: #f3cd75;
+    --warn-soft: #332910;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button,
+select,
+input:not([type='checkbox']) {
+  min-height: 28px;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--control-line);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .app {
-  max-width: 60rem;
+  min-height: 100vh;
+}
+
+.landing {
+  max-width: 42rem;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 12vh 1rem 2rem;
+}
+
+.lead,
+.privacy {
+  color: var(--muted);
+}
+
+.drop-zone {
+  margin: 1.5rem 0 1rem;
+  padding: 3rem 1rem;
+  border: 2px dashed var(--control-line);
+  border-radius: 8px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.drop-zone.is-dragging {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.drop-title {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.message {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+
+.message-error {
+  background: var(--error-soft);
+  color: var(--error);
+}
+
+.message-warning {
+  background: var(--warn-soft);
+  color: var(--warn);
 }

@@ -1,8 +1,14 @@
+import { useState } from 'react'
+import { UploadPanel } from './features/upload/UploadPanel.tsx'
+
 export default function App() {
+  const [file, setFile] = useState<File>()
+
   return (
     <main className="app">
-      <h1>BimmerLink Log Visualizer</h1>
-      <p>Drop a BimmerLink datalog (CSV) here to explore it. Coming soon.</p>
+      <UploadPanel onFile={setFile}>
+        {file && <p role="status">Selected {file.name}</p>}
+      </UploadPanel>
     </main>
   )
 }
