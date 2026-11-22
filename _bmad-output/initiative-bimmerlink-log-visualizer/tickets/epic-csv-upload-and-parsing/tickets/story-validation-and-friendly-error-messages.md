@@ -17,16 +17,16 @@ As a BimmerLink user, I want specific errors when a file cannot be used so that 
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Distinct messages for: not CSV, empty file, header only, missing `Time` column, duplicate column names, no numeric data
-- [ ] Non-numeric or blank cells are tolerated (treated as gaps/NaN) and counted in a warning, not fatal
-- [ ] Non-monotonic time is detected and reported
-- [ ] Errors never leave the app in a broken state; user can retry with another file
+- [x] Distinct messages for: not CSV, empty file, header only, missing `Time` column, duplicate column names, no numeric data
+- [x] Non-numeric or blank cells are tolerated (treated as gaps/NaN) and counted in a warning, not fatal
+- [x] Non-monotonic time is detected and reported
+- [x] Errors never leave the app in a broken state; user can retry with another file
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
