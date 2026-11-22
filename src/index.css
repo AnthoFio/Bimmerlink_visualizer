@@ -243,3 +243,74 @@ button.primary {
   color: var(--muted);
   text-align: center;
 }
+
+.workspace-body {
+  display: flex;
+  align-items: flex-start;
+}
+
+.workspace-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: none;
+  width: 20rem;
+  max-height: 100vh;
+  padding: 0.75rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.parameter-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.parameter-row {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.parameter-row label {
+  display: flex;
+  flex: 1;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.parameter-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.unit {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.swatch {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 2px;
+}

@@ -20,9 +20,10 @@ function logOf(text: string) {
 }
 
 const { dataset, channels } = logOf(loadFixtureText('trimmed_2026-10-25_09-33-22.csv'))
+const LOOK = { colours: new Map<string, string>(), theme: 'light' } as const
 const ids = channels.map((channel) => channel.id)
 const chart = (selected: string[]) => (
-  <TimeSeriesChart dataset={dataset} channels={channels} selected={new Set(selected)} />
+  <TimeSeriesChart dataset={dataset} channels={channels} {...LOOK} selected={new Set(selected)} />
 )
 
 beforeEach(() => FakeUplot.reset())
@@ -69,7 +70,7 @@ describe('TimeSeriesChart', () => {
 
   it('draws a blank cell as a gap', () => {
     const gappy = logOf('Time,"A"\n0,1\n1,\n2,3\n')
-    render(<TimeSeriesChart {...gappy} selected={new Set([gappy.channels[0]!.id])} />)
+    render(<TimeSeriesChart {...gappy} {...LOOK} selected={new Set([gappy.channels[0]!.id])} />)
 
     expect(FakeUplot.last.data[1]).toEqual([1, null, 3])
   })
@@ -83,7 +84,7 @@ describe('TimeSeriesChart', () => {
 
   it.each(exampleLogNames)('works on %s', (name) => {
     const log = logOf(new TextDecoder().decode(loadExampleBytes(name)))
-    render(<TimeSeriesChart {...log} selected={new Set(log.channels.map((c) => c.id))} />)
+    render(<TimeSeriesChart {...log} {...LOOK} selected={new Set(log.channels.map((c) => c.id))} />)
 
     const { data } = FakeUplot.last
     expect(data).toHaveLength(log.channels.length + 1)

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-import { useTheme } from '../../components/useTheme.ts'
 import type { Channel } from '../../lib/channels.ts'
-import { slotColour } from '../../lib/palette.ts'
+import type { Theme } from '../../lib/palette.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { ChartPanel } from './ChartPanel.tsx'
 import type { PlotSeries } from './ChartPanel.tsx'
@@ -12,10 +11,11 @@ interface Props {
   dataset: LogDataset
   channels: readonly Channel[]
   selected: ReadonlySet<string>
+  colours: ReadonlyMap<string, string>
+  theme: Theme
 }
 
-export function TimeSeriesChart({ dataset, channels, selected }: Props) {
-  const theme = useTheme()
+export function TimeSeriesChart({ dataset, channels, selected, colours, theme }: Props) {
   const series = useMemo<PlotSeries[]>(
     () =>
       channels
@@ -24,9 +24,9 @@ export function TimeSeriesChart({ dataset, channels, selected }: Props) {
           id: channel.id,
           name: channel.name,
           values: dataset.columns[channel.column]!.values,
-          colour: slotColour(channel.column, theme),
+          colour: colours.get(channel.id) ?? 'gray',
         })),
-    [dataset, channels, selected, theme],
+    [dataset, channels, selected, colours],
   )
 
   return (

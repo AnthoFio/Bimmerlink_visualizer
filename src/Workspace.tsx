@@ -1,15 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useTheme } from './components/useTheme.ts'
+import { parameters } from './data/catalog.ts'
 import { TimeSeriesChart } from './features/charts/TimeSeriesChart.tsx'
+import { ParameterList } from './features/selection/ParameterList.tsx'
 import { FileHeader } from './features/upload/FileHeader.tsx'
 import { RampUpToggle } from './features/upload/RampUpToggle.tsx'
 import type { LoadedLog } from './features/upload/useLogLoader.ts'
-import { parameters } from './data/catalog.ts'
 import { describeChannels } from './lib/channels.ts'
+import { slotColour } from './lib/palette.ts'
 import { trimLeadingRows } from './lib/rampUp.ts'
 import { summarise } from './lib/summary.ts'
+import { defaultView, setSelected, viewsEqual } from './lib/view.ts'
 
-/** Drawn on load, until the parameter list and its defaults decide. */
+/** Drawn on load, until the role-aware defaults decide. */
 const INITIAL_SERIES = 6
 
 interface Props {
@@ -23,12 +27,7 @@ interface Props {
 
 /** Everything that belongs to one loaded log. Mounted anew for every load. */
 export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
-  const [trim, setTrim] = useState(true)
-  const dataset = useMemo(
-    () => (trim ? trimLeadingRows(log.dataset, log.rampUp.rows) : log.dataset),
-    [log, trim],
-  )
-  const summary = useMemo(() => summarise(dataset), [dataset])
+  const theme = useTheme()
   const channels = useMemo(
     () =>
       describeChannels(
@@ -37,13 +36,29 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       ),
     [log],
   )
+  const [initial] = useState(() =>
+    defaultView(channels.slice(0, INITIAL_SERIES).map((channel) => channel.id)),
+  )
+  const [view, setView] = useState(initial)
+
+  const dataset = useMemo(
+    () => (view.trim ? trimLeadingRows(log.dataset, log.rampUp.rows) : log.dataset),
+    [log, view.trim],
+  )
+  const summary = useMemo(() => summarise(dataset), [dataset])
+  const selected = useMemo(() => new Set(view.selected), [view.selected])
+  const colours = useMemo(
+    () => new Map(channels.map((channel) => [channel.id, slotColour(channel.column, theme)])),
+    [channels, theme],
+  )
   const unmatched = channels.filter((channel) => !channel.matched).length
-  const selected = useMemo(
-    () => new Set(channels.slice(0, INITIAL_SERIES).map((channel) => channel.id)),
-    [channels],
+
+  const select = useCallback(
+    (ids: string[], on: boolean) => setView((current) => setSelected(current, ids, on)),
+    [],
   )
 
-  const unsaved = !trim
+  const unsaved = !viewsEqual(view, initial)
   useEffect(() => onUnsavedChange(unsaved), [onUnsavedChange, unsaved])
 
   return (
@@ -64,21 +79,37 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
         unmatched={unmatched}
         onFiles={onFiles}
       />
-      <main className="workspace-main">
-        {children}
-        {log.warnings.map((warning) => (
-          <p key={warning.code} role="status" className="message message-warning">
-            {warning.message}
-          </p>
-        ))}
-        <RampUpToggle
-          rows={log.dataset.time.length - dataset.time.length}
-          seconds={dataset.time[0]! - log.dataset.time[0]!}
-          checked={trim}
-          onChange={setTrim}
-        />
-        <TimeSeriesChart dataset={dataset} channels={channels} selected={selected} />
-      </main>
+      <div className="workspace-body">
+        <aside className="sidebar" aria-label="Parameters">
+          <ParameterList
+            channels={channels}
+            selected={selected}
+            colours={colours}
+            onSelect={select}
+          />
+        </aside>
+        <main className="workspace-main">
+          {children}
+          {log.warnings.map((warning) => (
+            <p key={warning.code} role="status" className="message message-warning">
+              {warning.message}
+            </p>
+          ))}
+          <RampUpToggle
+            rows={log.dataset.time.length - dataset.time.length}
+            seconds={dataset.time[0]! - log.dataset.time[0]!}
+            checked={view.trim}
+            onChange={(trim) => setView((current) => ({ ...current, trim }))}
+          />
+          <TimeSeriesChart
+            dataset={dataset}
+            channels={channels}
+            selected={selected}
+            colours={colours}
+            theme={theme}
+          />
+        </main>
+      </div>
     </div>
   )
 }
