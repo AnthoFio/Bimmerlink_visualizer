@@ -12,6 +12,8 @@ export interface Panel {
   /** Pixels. */
   height: number
   lines: LineStyle
+  /** Shares the time window and the cursor with the other panels. */
+  synced: boolean
 }
 
 /** What the user set for one series; whatever is absent is automatic. */
@@ -31,7 +33,7 @@ export interface View {
 }
 
 export function createPanel(id: string, height: number): Panel {
-  return { id, height, lines: 'auto' }
+  return { id, height, lines: 'auto', synced: true }
 }
 
 export function defaultView(selected: readonly string[]): View {

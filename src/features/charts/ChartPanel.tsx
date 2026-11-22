@@ -17,6 +17,12 @@ import type { Range } from '../../lib/yRange.ts'
 import { attachGestures } from './gestures.ts'
 import type { GestureTarget } from './gestures.ts'
 
+/** Read and followed without rendering React: the pointer moves on every frame. */
+export interface CursorSource {
+  get: () => number | null
+  subscribe: (listener: () => void) => () => void
+}
+
 export interface PlotSeries {
   id: string
   name: string
@@ -31,6 +37,7 @@ interface Props {
   time: Float64Array
   window: TimeWindow
   gestures: GestureTarget
+  cursor: CursorSource
   series: readonly PlotSeries[]
   axes: readonly Axis[]
   /** One per axis. */
@@ -116,10 +123,22 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
 }
 
 export function ChartPanel(props: Props) {
-  const { time, window: shown, series, axes, ranges, gutters, capacity, theme, height } = props
+  const {
+    time,
+    window: shown,
+    cursor,
+    series,
+    axes,
+    ranges,
+    gutters,
+    capacity,
+    theme,
+    height,
+  } = props
   const host = useRef<HTMLDivElement>(null)
   const plot = useRef<uPlot>(null)
   const drawn = useRef('')
+  const cursorLine = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const duration = time.length ? time[time.length - 1]! - time[0]! : 0
   const latest = useRef<Model>({ ...props, duration })
@@ -139,6 +158,11 @@ export function ChartPanel(props: Props) {
       target,
     )
     plot.current = chart
+    const line = document.createElement('div')
+    line.className = 'cursor-line'
+    line.hidden = true
+    chart.over.append(line)
+    cursorLine.current = line
     drawn.current = ''
 
     const observer = new ResizeObserver(() => {
@@ -152,6 +176,7 @@ export function ChartPanel(props: Props) {
       extent: () => model().gestures.extent(),
       setWindow: (next) => model().gestures.setWindow(next),
       reset: () => model().gestures.reset(),
+      hover: (at) => model().gestures.hover(at),
     })
 
     return () => {
@@ -201,6 +226,18 @@ export function ChartPanel(props: Props) {
       chart.setScale('x', { min: shown.min, max: shown.max })
     })
   }, [time, series, axes, ranges, capacity, shown, width])
+
+  useLayoutEffect(() => {
+    const follow = () => {
+      const line = cursorLine.current!
+      const at = cursor.get()
+      const share = at === null ? -1 : (at - shown.min) / (shown.max - shown.min)
+      line.hidden = share < 0 || share > 1
+      if (!line.hidden) line.style.left = `${share * 100}%`
+    }
+    follow()
+    return cursor.subscribe(follow)
+  }, [cursor, shown, capacity])
 
   // A new size makes uPlot measure the padding again, hence the gutters.
   useLayoutEffect(() => {

@@ -35,6 +35,15 @@ export function PanelToolbar({ panel, number, count, onUpdate, onMove, onRemove 
           ))}
         </select>
       </label>
+      <label>
+        <input
+          type="checkbox"
+          aria-label={`Sync panel ${number} with the others`}
+          checked={panel.synced}
+          onChange={(event) => onUpdate({ synced: event.target.checked })}
+        />{' '}
+        Sync
+      </label>
       <div className="panel-actions">
         <label>
           Height{' '}

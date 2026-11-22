@@ -7,6 +7,8 @@ export interface GestureTarget {
   extent: () => TimeWindow
   setWindow: (window: TimeWindow) => void
   reset: () => void
+  /** The time under the pointer; null when it left. */
+  hover: (time: number | null) => void
 }
 
 const WHEEL_SPEED = 0.0015
@@ -98,10 +100,20 @@ export function attachGestures(area: HTMLElement, target: GestureTarget): () => 
     pinch = undefined
   }
   const onDoubleClick = () => target.reset()
+  const onMouseMove = (event: MouseEvent) => {
+    const { left, width } = area.getBoundingClientRect()
+    if (!width) return
+    const { min, max } = target.window()
+    const share = Math.min(1, Math.max(0, (event.clientX - left) / width))
+    target.hover(min + share * (max - min))
+  }
+  const onMouseLeave = () => target.hover(null)
 
   area.addEventListener('wheel', onWheel, { passive: false })
   area.addEventListener('mousedown', onMouseDown)
   area.addEventListener('dblclick', onDoubleClick)
+  area.addEventListener('mousemove', onMouseMove)
+  area.addEventListener('mouseleave', onMouseLeave)
   area.addEventListener('touchstart', onTouchStart, { passive: false })
   area.addEventListener('touchmove', onTouchMove, { passive: false })
   area.addEventListener('touchend', onTouchEnd)
@@ -112,6 +124,8 @@ export function attachGestures(area: HTMLElement, target: GestureTarget): () => 
     area.removeEventListener('wheel', onWheel)
     area.removeEventListener('mousedown', onMouseDown)
     area.removeEventListener('dblclick', onDoubleClick)
+    area.removeEventListener('mousemove', onMouseMove)
+    area.removeEventListener('mouseleave', onMouseLeave)
     area.removeEventListener('touchstart', onTouchStart)
     area.removeEventListener('touchmove', onTouchMove)
     area.removeEventListener('touchend', onTouchEnd)

@@ -10,11 +10,11 @@ import type { LogDataset } from '../../lib/parseLog.ts'
 import { logExtent, resolveWindow } from '../../lib/timeWindow.ts'
 import { createPanel, PANEL_HEIGHT } from '../../lib/view.ts'
 import type { Panel } from '../../lib/view.ts'
-import { createViewport } from '../../lib/viewport.ts'
+import { createViewport, cursorTimeOf, setWindowOf, windowOf } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { autoRange, extent } from '../../lib/yRange.ts'
 import { ChartPanel } from './ChartPanel.tsx'
-import type { PlotSeries } from './ChartPanel.tsx'
+import type { CursorSource, PlotSeries } from './ChartPanel.tsx'
 import { FurtherAxes } from './FurtherAxes.tsx'
 import { handleChartKey } from './gestures.ts'
 import type { GestureTarget } from './gestures.ts'
@@ -43,17 +43,27 @@ export function TimeSeriesChart(props: Props) {
   const viewport = props.viewport ?? ownViewport
 
   const bounds = useMemo(() => logExtent(dataset.time), [dataset.time])
-  const stored = useStore(viewport, (state) => state.window)
+  const sync = useMemo(() => ({ id: panel.id, synced: panel.synced }), [panel.id, panel.synced])
+  const stored = useStore(viewport, (state) => windowOf(state, sync))
   const shown = useMemo(() => resolveWindow(stored, bounds), [stored, bounds])
   // Reads the store, not the last render: several events can arrive within one frame.
   const gestures = useMemo<GestureTarget>(
     () => ({
-      window: () => resolveWindow(viewport.get().window, bounds),
+      window: () => resolveWindow(windowOf(viewport.get(), sync), bounds),
       extent: () => bounds,
-      setWindow: (window) => viewport.set({ window }),
-      reset: () => viewport.set({ window: null }),
+      setWindow: (window) => setWindowOf(viewport, sync, window),
+      reset: () => setWindowOf(viewport, sync, null),
+      hover: (time) =>
+        viewport.set({
+          cursor: time === null ? null : { time, panel: sync.id, synced: sync.synced },
+        }),
     }),
-    [viewport, bounds],
+    [viewport, bounds, sync],
+  )
+
+  const cursor = useMemo<CursorSource>(
+    () => ({ get: () => cursorTimeOf(viewport.get(), sync), subscribe: viewport.subscribe }),
+    [viewport, sync],
   )
 
   const { items, axes } = useMemo(
@@ -101,6 +111,7 @@ export function TimeSeriesChart(props: Props) {
           time={dataset.time}
           window={shown}
           gestures={gestures}
+          cursor={cursor}
           series={series}
           axes={axes}
           ranges={ranges}

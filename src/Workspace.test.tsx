@@ -103,3 +103,64 @@ describe('line style', () => {
     expect(stepped()).not.toContain(false)
   })
 })
+
+describe('synchronised panels', () => {
+  function twoPanels() {
+    setup()
+    click(screen.getByRole('button', { name: 'Add panel' }))
+    const [first, second] = FakeUplot.instances
+    for (const plot of [first!, second!]) {
+      plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    }
+    return { first: first!, second: second! }
+  }
+  const wheelOn = (plot: FakeUplot) =>
+    act(() => void fireEvent.wheel(plot.over, { deltaY: -300, clientX: 500 }))
+  const hover = (plot: FakeUplot, clientX: number) =>
+    act(() => void fireEvent.mouseMove(plot.over, { clientX }))
+  const lineOf = (plot: FakeUplot) => plot.over.querySelector<HTMLElement>('.cursor-line')!
+  const unsync = (n: number) =>
+    click(within(panel(n)).getByRole('checkbox', { name: `Sync panel ${n} with the others` }))
+
+  it('applies zoom and pan in one panel to all', () => {
+    const { first, second } = twoPanels()
+    const full = { ...second.x! }
+
+    wheelOn(first)
+    expect(second.x).toEqual(first.x)
+    expect(second.x).not.toEqual(full)
+  })
+
+  it('shows the cursor line in every panel', () => {
+    const { first, second } = twoPanels()
+
+    hover(first, 250)
+    expect(lineOf(second)).toBeVisible()
+    expect(parseFloat(lineOf(second).style.left)).toBeCloseTo(25, 0)
+    expect(lineOf(first).style.left).toBe(lineOf(second).style.left)
+
+    act(() => void fireEvent.mouseLeave(first.over))
+    expect(lineOf(second)).not.toBeVisible()
+  })
+
+  it('can be switched off per panel', () => {
+    const { first, second } = twoPanels()
+    wheelOn(first)
+    const before = { ...second.x! }
+
+    unsync(2)
+    // It keeps the window it was showing.
+    expect(second.x).toEqual(before)
+
+    wheelOn(first)
+    expect(second.x).toEqual(before)
+    hover(first, 250)
+    expect(lineOf(second)).not.toBeVisible()
+
+    wheelOn(second)
+    expect(second.x).not.toEqual(before)
+
+    unsync(2)
+    expect(second.x).toEqual(first.x)
+  })
+})

@@ -6,6 +6,7 @@ import type { Theme } from '../../lib/palette.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { assignPanel, movePanel, panelOf, removePanel, updatePanel } from '../../lib/view.ts'
 import type { Panel, View } from '../../lib/view.ts'
+import { setWindowOf } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { PanelToolbar } from './PanelToolbar.tsx'
 import { TimeSeriesChart } from './TimeSeriesChart.tsx'
@@ -54,7 +55,13 @@ export function PanelCard(props: Props) {
         panel={panel}
         number={index + 1}
         count={view.panels.length}
-        onUpdate={(change) => onChange((current) => updatePanel(current, panel.id, change))}
+        onUpdate={(change) => {
+          // A panel that leaves the others keeps the window it shows.
+          if (change.synced === false) {
+            setWindowOf(viewport, { id: panel.id, synced: false }, viewport.get().window)
+          }
+          onChange((current) => updatePanel(current, panel.id, change))
+        }}
         onMove={(by) => onChange((current) => movePanel(current, panel.id, by))}
         onRemove={() => onChange((current) => removePanel(current, panel.id))}
       />
