@@ -281,3 +281,28 @@ describe('range selection', () => {
     expect(screen.getByRole('table', { name: /Statistics from/ })).toBeVisible()
   })
 })
+
+describe('auto-fit', () => {
+  it('fits the visible window by default, and all data when switched', () => {
+    setup()
+    const select = within(panel(1)).getByRole('combobox', { name: 'Fit panel 1' })
+    expect(select).toHaveValue('visible')
+
+    const rangeOfFirstAxis = () => {
+      const range = FakeUplot.last.opts.scales!.a0!.range as (...args: unknown[]) => number[]
+      return range()
+    }
+    // The pedal is the channel that moves within these 4 seconds, and not at their start.
+    click(screen.getByRole('button', { name: 'Clear' }))
+    click(screen.getByRole('checkbox', { name: /Normalized Accelerator Pedal Angle/ }))
+
+    const plot = FakeUplot.last
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    const full = rangeOfFirstAxis()
+    act(() => void fireEvent.wheel(plot.over, { deltaY: -900, clientX: 10 }))
+    expect(rangeOfFirstAxis()).not.toEqual(full)
+
+    fireEvent.change(select, { target: { value: 'all' } })
+    expect(rangeOfFirstAxis()).toEqual(full)
+  })
+})

@@ -7,11 +7,16 @@ export const LINE_STYLES = ['auto', 'linear', 'step'] as const
 /** `auto` steps flags, counters and the gear. */
 export type LineStyle = (typeof LINE_STYLES)[number]
 
+export const FIT_MODES = ['visible', 'all'] as const
+/** What automatic Y ranges fit: the visible window or all data. */
+export type FitMode = (typeof FIT_MODES)[number]
+
 export interface Panel {
   id: string
   /** Pixels. */
   height: number
   lines: LineStyle
+  fit: FitMode
   /** Shares the time window and the cursor with the other panels. */
   synced: boolean
 }
@@ -33,7 +38,7 @@ export interface View {
 }
 
 export function createPanel(id: string, height: number): Panel {
-  return { id, height, lines: 'auto', synced: true }
+  return { id, height, lines: 'auto', fit: 'visible', synced: true }
 }
 
 export function defaultView(selected: readonly string[]): View {

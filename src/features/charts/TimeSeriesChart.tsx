@@ -19,7 +19,7 @@ import {
   windowOf,
 } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
-import { autoRange, extent } from '../../lib/yRange.ts'
+import { panelRanges } from '../../lib/panelRanges.ts'
 import { ChartPanel } from './ChartPanel.tsx'
 import type { CursorSource, PlotSeries } from './ChartPanel.tsx'
 import { FurtherAxes } from './FurtherAxes.tsx'
@@ -103,10 +103,12 @@ export function TimeSeriesChart(props: Props) {
       })),
     [dataset, items, panel.lines],
   )
-  const ranges = useMemo(() => {
-    const extents = series.map((line) => extent(line.values))
-    return axes.map((_, axis) => autoRange(extents.filter((_, i) => series[i]!.axis === axis)))
-  }, [axes, series])
+  // Fitting all data does not depend on the window, so panning need not compute it again.
+  const fitted = panel.fit === 'visible' ? shown : bounds
+  const ranges = useMemo(
+    () => panelRanges(dataset.time, series, axes.length, panel.fit, fitted),
+    [dataset.time, series, axes, panel.fit, fitted],
+  )
   const own = useMemo(() => axisGutters([axes]), [axes])
 
   return (

@@ -1,5 +1,7 @@
-import { LINE_STYLES, PANEL_HEIGHT } from '../../lib/view.ts'
-import type { LineStyle, Panel } from '../../lib/view.ts'
+import { FIT_MODES, LINE_STYLES, PANEL_HEIGHT } from '../../lib/view.ts'
+import type { FitMode, LineStyle, Panel } from '../../lib/view.ts'
+
+const FIT_MODE_NAMES: Record<FitMode, string> = { visible: 'Visible window', all: 'All data' }
 
 const LINE_STYLE_NAMES: Record<LineStyle, string> = {
   auto: 'Automatic',
@@ -43,6 +45,20 @@ export function PanelToolbar({ panel, number, count, onUpdate, onMove, onRemove 
           onChange={(event) => onUpdate({ synced: event.target.checked })}
         />{' '}
         Sync
+      </label>
+      <label>
+        Fit{' '}
+        <select
+          aria-label={`Fit panel ${number}`}
+          value={panel.fit}
+          onChange={(event) => onUpdate({ fit: event.target.value as FitMode })}
+        >
+          {FIT_MODES.map((mode) => (
+            <option key={mode} value={mode}>
+              {FIT_MODE_NAMES[mode]}
+            </option>
+          ))}
+        </select>
       </label>
       <div className="panel-actions">
         <label>
