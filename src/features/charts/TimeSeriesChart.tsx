@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 import { useStore } from '../../components/useStore.ts'
 import { axisGutters } from '../../lib/axes.ts'
-import type { Gutters } from '../../lib/axes.ts'
+import type { AxisChoice, Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { isStepped } from '../../lib/lineStyle.ts'
 import type { Range } from '../../lib/yRange.ts'
@@ -41,6 +42,9 @@ interface Props {
   /** Shared by all panels; left out, the chart only makes room for its own axes. */
   gutters?: Gutters
   /** The manual range of an axis, if it has one. */
+  choiceOf?: (id: string) => AxisChoice | undefined
+  /** Further controls of one series, in the legend. */
+  renderOptions?: (channel: Channel) => ReactNode
   rangeOf?: (key: string) => Range | undefined
   onRange?: (key: string, range: Range | null) => void
   /** Position of the panel, from 1. */
@@ -97,10 +101,11 @@ export function TimeSeriesChart(props: Props) {
     [viewport, sync],
   )
 
+  const { choiceOf, renderOptions } = props
   const normalised = panel.normalise !== 'off'
   const { items, axes } = useMemo(
-    () => panelContent(channels, selected, colours, normalised),
-    [channels, selected, colours, normalised],
+    () => panelContent(channels, selected, colours, normalised, choiceOf),
+    [channels, selected, colours, normalised, choiceOf],
   )
   const spanned = panel.normalise === 'window' ? shown : bounds
   const spans = useMemo(() => {
@@ -184,7 +189,7 @@ export function TimeSeriesChart(props: Props) {
         isManual={(key) => rangeOf(key) !== undefined}
         onRange={onRange}
       />
-      <Legend dataset={dataset} items={items} cursor={readout} />
+      <Legend dataset={dataset} items={items} cursor={readout} renderOptions={renderOptions} />
     </>
   )
 }

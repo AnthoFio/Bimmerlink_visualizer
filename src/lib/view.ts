@@ -1,6 +1,7 @@
 // The view: everything the user chose about a log. Plain data and pure updates, so that it can
 // be compared, saved and exported. The time window and the cursor are not part of it.
 
+import type { AxisChoice } from './axes.ts'
 import type { Range } from './yRange.ts'
 
 export const PANEL_HEIGHT = { min: 160, max: 900, step: 20, initial: 420, added: 260 }
@@ -31,6 +32,7 @@ export interface Panel {
 /** What the user set for one series; whatever is absent is automatic. */
 export interface SeriesSettings {
   panel?: string
+  axis?: AxisChoice
 }
 
 /** A manual range of one axis of one panel; an axis without one is automatic. */

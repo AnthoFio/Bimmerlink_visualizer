@@ -1,5 +1,5 @@
 import { layoutAxes } from './axes.ts'
-import type { Axis } from './axes.ts'
+import type { Axis, AxisChoice } from './axes.ts'
 import type { Channel } from './channels.ts'
 import { PERCENT_AXIS } from './normalise.ts'
 
@@ -21,6 +21,7 @@ export function panelContent(
   selected: ReadonlySet<string>,
   colours: ReadonlyMap<string, string>,
   normalised = false,
+  choiceOf?: (id: string) => AxisChoice | undefined,
 ): PanelContent {
   const shown = channels
     .filter((channel) => selected.has(channel.id))
@@ -39,7 +40,13 @@ export function panelContent(
   }
 
   const axes = layoutAxes(
-    shown.map(({ channel: { id, name, unit }, colour }) => ({ id, name, unit, colour })),
+    shown.map(({ channel: { id, name, unit }, colour }) => ({
+      id,
+      name,
+      unit,
+      colour,
+      choice: choiceOf?.(id),
+    })),
   )
   const axisOf = new Map(axes.flatMap((axis, i) => axis.members.map((id) => [id, i] as const)))
 

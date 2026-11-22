@@ -4,7 +4,7 @@ import type { Channel } from '../../lib/channels.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
-import { addPanel, panelOf } from '../../lib/view.ts'
+import { addPanel, panelOf, settingsOf } from '../../lib/view.ts'
 import type { View } from '../../lib/view.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { PanelCard } from './PanelCard.tsx'
@@ -26,7 +26,9 @@ export function ChartPanels(props: Props) {
       axisGutters(
         view.panels.map((panel) => {
           const ids = new Set(view.selected.filter((id) => panelOf(view, id) === panel.id))
-          return panelContent(channels, ids, colours, panel.normalise !== 'off').axes
+          const normalised = panel.normalise !== 'off'
+          const choiceOf = (id: string) => settingsOf(view, id).axis
+          return panelContent(channels, ids, colours, normalised, choiceOf).axes
         }),
       ),
     [channels, colours, view],

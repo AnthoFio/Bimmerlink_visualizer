@@ -11,6 +11,7 @@ import {
   panelOf,
   removePanel,
   setAxisRange,
+  settingsOf,
   updatePanel,
 } from '../../lib/view.ts'
 import type { Range } from '../../lib/yRange.ts'
@@ -18,6 +19,7 @@ import type { Panel, View } from '../../lib/view.ts'
 import { setWindowOf } from '../../lib/viewport.ts'
 import type { ViewportStore } from '../../lib/viewport.ts'
 import { PanelToolbar } from './PanelToolbar.tsx'
+import { SeriesMenu } from './SeriesMenu.tsx'
 import { TimeSeriesChart } from './TimeSeriesChart.tsx'
 
 interface Props {
@@ -38,6 +40,7 @@ export function PanelCard(props: Props) {
     props
   const [dropping, setDropping] = useState(false)
   const rangeOf = useCallback((key: string) => axisRangeOf(view, panel.id, key), [view, panel.id])
+  const choiceOf = useCallback((id: string) => settingsOf(view, id).axis, [view])
   const setRange = useCallback(
     (key: string, range: Range | null) =>
       onChange((current) => setAxisRange(current, panel.id, key, range)),
@@ -90,6 +93,10 @@ export function PanelCard(props: Props) {
         gutters={gutters}
         number={index + 1}
         rangeOf={rangeOf}
+        choiceOf={choiceOf}
+        renderOptions={(channel) => (
+          <SeriesMenu channel={channel} view={view} onChange={onChange} />
+        )}
         onRange={setRange}
         viewport={viewport}
       />

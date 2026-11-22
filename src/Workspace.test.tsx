@@ -429,3 +429,46 @@ describe('normalised overlay', () => {
     expect(screen.getByRole('combobox', { name: 'Normalise panel 2' })).toHaveValue('off')
   })
 })
+
+describe('moving series', () => {
+  const choose = (what: 'Axis' | 'Panel', value: string) =>
+    fireEvent.change(screen.getByRole('combobox', { name: `${what} of Engine Speed` }), {
+      target: { value },
+    })
+  const open = () => click(screen.getByRole('button', { name: 'Options for Engine Speed' }))
+  const scaleOfSpeed = () =>
+    FakeUplot.instances[0]!.series.find((series) => series.label === 'Engine Speed')!.scale
+
+  it('moves a series to another axis without losing the zoom, and back to automatic', () => {
+    setup()
+    const plot = FakeUplot.last
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    act(() => void fireEvent.wheel(plot.over, { deltaY: -300, clientX: 500 }))
+    const zoomed = { ...plot.x! }
+    const automatic = scaleOfSpeed()
+
+    open()
+    choose('Axis', 'left')
+    expect(scaleOfSpeed()).toBe('a0')
+    expect(plot.x).toEqual(zoomed)
+    expect(FakeUplot.instances).toEqual([plot])
+
+    click(screen.getByRole('button', { name: 'Reset Engine Speed to automatic' }))
+    expect(scaleOfSpeed()).toBe(automatic)
+  })
+
+  it('moves a series to another panel without losing the zoom', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Add panel' }))
+    const [first, second] = FakeUplot.instances
+    first!.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    act(() => void fireEvent.wheel(first!.over, { deltaY: -300, clientX: 500 }))
+    const zoomed = { ...first!.x! }
+
+    open()
+    choose('Panel', 'p2')
+    expect(legendOf(2)[0]).toHaveTextContent('Engine Speed')
+    expect(second!.x).toEqual(zoomed)
+    expect(first!.x).toEqual(zoomed)
+  })
+})

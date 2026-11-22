@@ -9,11 +9,11 @@ interface Props {
 
 /** The axes that do not fit beside the plot, stacked under it. */
 export function FurtherAxes({ axes, ranges }: Props) {
-  if (axes.every((axis) => axis.visible)) return null
+  if (axes.every((axis) => axis.visible || !axis.members.length)) return null
   return (
     <ul className="further-axes" aria-label="Further axes">
       {axes.map((axis, i) =>
-        axis.visible ? null : (
+        axis.visible || !axis.members.length ? null : (
           <li key={axis.key} style={{ borderLeftColor: axis.colour }}>
             {axis.title}: {formatValue(ranges[i]![0])} to {formatValue(ranges[i]![1])}
           </li>

@@ -24,16 +24,18 @@ export function AxisControls({ number, axes, ranges, isManual, onRange }: Props)
         Axes of panel {number}
       </button>
       {open &&
-        axes.map((axis, i) => (
-          <AxisRangeForm
-            key={axis.key}
-            label={`${axis.title} in panel ${number}`}
-            title={axis.title}
-            range={ranges[i]!}
-            manual={isManual(axis.key)}
-            onRange={(range) => onRange(axis.key, range)}
-          />
-        ))}
+        axes.map((axis, i) =>
+          axis.members.length === 0 ? null : (
+            <AxisRangeForm
+              key={axis.key}
+              label={`${axis.title} in panel ${number}`}
+              title={axis.title}
+              range={ranges[i]!}
+              manual={isManual(axis.key)}
+              onRange={(range) => onRange(axis.key, range)}
+            />
+          ),
+        )}
     </div>
   )
 }

@@ -91,7 +91,7 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
     scales[scaleKey(i)] = {
       auto: true,
       range: () => {
-        const range = model().ranges[i]
+        const range = model().axes[i]?.members.length ? model().ranges[i] : undefined
         return range ? [range[0], range[1]] : [null, null]
       },
     }
@@ -232,7 +232,7 @@ export function ChartPanel(props: Props) {
       series.map((line) => [line.id, line.name, line.axis, line.stepped]),
     )
     axisStrips.current.forEach((strip, slot) => {
-      strip.hidden = slot >= axes.length
+      strip.hidden = !axes[slot]?.visible
     })
     // uPlot reads the titles each time it draws.
     for (let i = 0; i < VISIBLE_AXES; i++) chart.axes[i + 1]!.label = axes[i]?.title ?? ''

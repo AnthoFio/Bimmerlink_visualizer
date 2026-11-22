@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { axisGutters, layoutAxes } from './axes.ts'
+import type { AxisChoice } from './axes.ts'
 import { autoRange, extent } from './yRange.ts'
 
 const series = (...units: (string | undefined)[]) =>
@@ -74,5 +75,35 @@ describe('y range', () => {
     const [min, max] = autoRange([[200, 200]])
     expect(min).toBeLessThan(200)
     expect(max).toBeGreaterThan(200)
+  })
+})
+
+describe('chosen axes', () => {
+  const choose = (choices: (AxisChoice | undefined)[], ...units: string[]) =>
+    layoutAxes(series(...units).map((member, i) => ({ ...member, choice: choices[i] })))
+
+  it('joins the main left or right axis', () => {
+    const [left, right] = choose([undefined, undefined, 'left'], 'bar', 'rpm', '%')
+    expect(left).toMatchObject({ members: ['s0', 's2'], title: 'bar / %', side: 'left' })
+    expect(right!.members).toEqual(['s1'])
+
+    expect(choose([undefined, undefined, 'right'], 'bar', 'rpm', '%')[1]!.members).toEqual([
+      's1',
+      's2',
+    ])
+  })
+
+  it('puts a lone series on the right', () => {
+    const shown = choose(['right'], 'rpm').filter((axis) => axis.visible)
+
+    expect(shown).toHaveLength(1)
+    expect(shown[0]).toMatchObject({ side: 'right', members: ['s0'] })
+  })
+
+  it('opens a new axis', () => {
+    const axes = choose([undefined, 'new'], 'rpm', 'rpm')
+
+    expect(axes).toHaveLength(2)
+    expect(axes[1]!.members).toEqual(['s1'])
   })
 })

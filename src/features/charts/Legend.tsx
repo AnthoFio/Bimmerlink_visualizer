@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react'
+import type { ReactNode } from 'react'
 import { ParameterInfo } from '../../components/ParameterInfo.tsx'
+import type { Channel } from '../../lib/channels.ts'
 import { formatValue } from '../../lib/format.ts'
 import type { PanelItem } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
@@ -12,10 +14,11 @@ interface Props {
   items: readonly PanelItem[]
   /** Where the values are read; it outlives the hover, so that the list can be scrolled. */
   cursor: CursorSource
+  renderOptions?: (channel: Channel) => ReactNode
 }
 
 /** The legend, and docked in it the values at the cursor: it never covers the chart. */
-export function Legend({ dataset, items, cursor }: Props) {
+export function Legend({ dataset, items, cursor, renderOptions }: Props) {
   const at = useSyncExternalStore(cursor.subscribe, cursor.get)
   const index = at === null ? undefined : nearestIndex(dataset.time, at)
 
@@ -42,6 +45,7 @@ export function Legend({ dataset, items, cursor }: Props) {
             </span>
             <span className="unit">{unitLabel(channel.unit)}</span>
             <ParameterInfo channel={channel} />
+            {renderOptions?.(channel)}
           </li>
         ))}
       </ul>
