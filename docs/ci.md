@@ -54,3 +54,7 @@ JSON
 ```
 
 Note: for a private repository, GitHub only offers branch protection and rulesets on a paid plan (Pro, Team or Enterprise).
+
+## End-to-end tests
+
+After the build, CI installs Chromium (`npx playwright install --with-deps chromium`) and runs `npm run e2e` headless against the production build. When the run fails, the screenshots and traces are uploaded as the artifact `e2e-failure`. Locally: `npm run build`, then `npm run e2e`.

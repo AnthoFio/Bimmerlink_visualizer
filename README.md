@@ -26,6 +26,7 @@ npm run check         # everything below in one go: lint + format:check + typech
 npm run lint          # ESLint (typescript-eslint, react-hooks, react-refresh); lint:fix applies fixes
 npm run format        # Prettier, write; format:check only verifies (used by check)
 npm run typecheck     # tsc -b (TypeScript 7)
+npm run e2e           # Playwright against the production build (npm run build first)
 npm run test          # Vitest + Testing Library + jsdom, single run; test:watch for watch mode
 ```
 

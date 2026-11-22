@@ -20,25 +20,25 @@ Hard rules:
 
 Node 24 and npm 11 (`.nvmrc`, `engines` in `package.json`). Run everything from the repository root.
 
-| Purpose           | Command                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)      |
-| Dev server        | `npm run dev` (http://localhost:5173)                                   |
-| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch     |
-| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                        |
-| Format            | `npm run format` writes; `npm run format:check` only verifies           |
-| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)           |
-| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)         |
-| Preview build     | `npm run preview` (http://localhost:4173)                               |
-| Full quality gate | `npm run check` = lint + format:check + typecheck + test                |
-| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`) |
-| e2e (Playwright)  | `npm run e2e` (planned, story #10)                                      |
-| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`         |
+| Purpose           | Command                                                                           |
+| ----------------- | --------------------------------------------------------------------------------- |
+| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)                |
+| Dev server        | `npm run dev` (http://localhost:5173)                                             |
+| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch               |
+| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                                  |
+| Format            | `npm run format` writes; `npm run format:check` only verifies                     |
+| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)                     |
+| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)                   |
+| Preview build     | `npm run preview` (http://localhost:4173)                                         |
+| Full quality gate | `npm run check` = lint + format:check + typecheck + test                          |
+| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`)           |
+| e2e (Playwright)  | `npm run e2e` (run `npm run build` first; `npx playwright install chromium` once) |
+| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`                   |
 
-Before every commit/PR run `npm run check` and `npm run build`; both must be green.
+Before every commit/PR run `npm run check`, `npm run build` and `npm run e2e`; all must be green.
 A pre-commit hook (husky + lint-staged) lints and formats staged files. Never bypass it with `--no-verify`.
 
-CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check` and `npm run build` on Node from `.nvmrc`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
+CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check`, `npm run build` and `npm run e2e` on Node from `.nvmrc`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
 
 ### TypeScript 6 / 7 quirk (read this before touching the type setup)
 
@@ -55,6 +55,7 @@ When typescript-eslint supports TS 7, drop the `typescript7` alias and point `ty
 
 ```text
 Example/                   Real BimmerLink logs (byte-exact, never edit, never reformat)
+e2e/                       Playwright specs
 src/
   main.tsx                 App entry point
   App.tsx                  Root component
@@ -104,7 +105,7 @@ Rules:
 - Query the DOM the way a user does (`getByRole`, `getByLabelText`); avoid test ids and implementation details.
 - Tests are deterministic and offline. Use the small fixtures in `tests/fixtures/` for unit tests, loaded with the helpers in `src/test/fixtures.ts` (`loadFixtureBytes`, `loadFixtureText`, `loadExampleBytes`; Node-only, not part of the browser bundle); use the real `Example/` logs only for e2e and performance tests. `src/test/fixtures.test.ts` asserts the documented properties of every fixture byte-exactly.
 - `src/test/agents-md.test.ts` keeps this file honest: every `npm run <script>` and every path written here must exist, unless the line is marked `(planned, story #n)`; and a path or script on a planned line must NOT exist yet, so a stale marker fails the test.
-- e2e with Playwright against the real example logs (planned, story #10). Until it exists, UI behaviour is covered by Testing Library tests.
+- e2e: Playwright specs in `e2e/` run against the production build and the real example logs (config `playwright.config.ts`). Cover there what jsdom cannot: canvas drawing, layout, workers, the network.
 
 ## Log format and catalog facts
 
