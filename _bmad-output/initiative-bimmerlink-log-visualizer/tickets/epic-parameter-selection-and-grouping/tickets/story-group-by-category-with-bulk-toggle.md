@@ -17,15 +17,15 @@ As a BimmerLink user, I want collapsible category groups with group-level toggle
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Groups follow catalog categories (17) plus 'Other'
-- [ ] Group header shows count selected / available and a tri-state checkbox
-- [ ] Collapse state remembered during the session
+- [x] Groups follow catalog categories (17) plus 'Other'
+- [x] Group header shows count selected / available and a tri-state checkbox
+- [x] Collapse state remembered during the session
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

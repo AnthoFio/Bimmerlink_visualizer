@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { useState } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { parameters } from '../../data/catalog.ts'
 import { describeChannels } from '../../lib/channels.ts'
+import { groupByCategory } from '../../lib/groups.ts'
 import { ParameterList } from './ParameterList.tsx'
 
 const channels = describeChannels(
@@ -37,13 +38,18 @@ function setup(initial: string[] = []) {
 }
 
 const listed = () =>
-  within(screen.getByRole('list', { name: 'Parameters' })).getAllByRole('listitem')
+  within(screen.getByRole('group', { name: 'Parameter groups' })).queryAllByRole('listitem')
+// The checkboxes of parameters, without the ones of the group headers.
+const parameterBoxes = () =>
+  screen.queryAllByRole('checkbox', { name: (name) => !name.startsWith('All ') })
+
+beforeEach(() => sessionStorage.clear())
 
 describe('ParameterList', () => {
   it('lists every column with a checkbox, a colour swatch and the unit', () => {
-    const { boxes } = setup()
+    setup()
 
-    expect(boxes()).toHaveLength(3)
+    expect(parameterBoxes()).toHaveLength(3)
     const items = listed()
     expect(items[0]).toHaveTextContent('Engine Speedrpm')
     expect(items[1]).toHaveTextContent('°C')
@@ -77,11 +83,11 @@ describe('ParameterList', () => {
     press('ArrowDown')
     expect(boxes()[1]).toHaveFocus()
     press('End')
-    expect(boxes()[2]).toHaveFocus()
+    expect(boxes().at(-1)).toHaveFocus()
     press('ArrowDown')
-    expect(boxes()[2]).toHaveFocus()
+    expect(boxes().at(-1)).toHaveFocus()
     press('ArrowUp')
-    expect(boxes()[1]).toHaveFocus()
+    expect(boxes().at(-2)).toHaveFocus()
     press('Home')
     expect(boxes()[0]).toHaveFocus()
   })
@@ -136,7 +142,7 @@ describe('search and filters', () => {
     fireEvent.change(screen.getByRole('searchbox', { name: 'Search parameters' }), {
       target: { value },
     })
-  const rows = () => screen.getAllByRole('checkbox')
+  const rows = parameterBoxes
 
   it('narrows the list, and select all applies to what is listed', () => {
     const { changed } = setup()
@@ -166,7 +172,7 @@ describe('search and filters', () => {
     })
     expect(rows()).toHaveLength(1)
     fireEvent.change(screen.getByRole('combobox', { name: 'Unit' }), { target: { value: 'rpm' } })
-    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    expect(rows()).toHaveLength(0)
     expect(screen.getByText('No parameter matches.')).toBeVisible()
     expect(screen.getByRole('combobox', { name: 'Role' })).toBeEnabled()
   })
@@ -179,5 +185,67 @@ describe('search and filters', () => {
     expect(screen.getByText('Showing 1 of 3')).toBeVisible()
     fireEvent.click(screen.getByRole('button', { name: 'Reset filters' }))
     expect(rows()).toHaveLength(3)
+  })
+})
+
+describe('category groups', () => {
+  const groupBox = (category: string) =>
+    screen.getByRole<HTMLInputElement>('checkbox', { name: `All ${category}` })
+
+  it('follows the catalog categories, with Other last', () => {
+    const all = describeChannels(
+      [...parameters.map((parameter) => parameter.label), 'Target Rail Pressure'],
+      parameters,
+    )
+    expect(groupByCategory(all).map(([category]) => category)).toEqual([
+      ...[...new Set(parameters.map((parameter) => parameter.category))].sort(),
+      'Other',
+    ])
+    expect(groupByCategory(all)).toHaveLength(18)
+  })
+
+  it('counts selected of available, with a tri-state checkbox', () => {
+    const misfire = describeChannels(
+      [1, 2, 3].map((n) => `Misfire Detection Counter Cylinder ${n}`),
+      parameters,
+    )
+    const props = { channels: misfire, colours, onSelect: vi.fn() }
+    const { rerender } = render(<ParameterList {...props} selected={new Set()} />)
+    expect(screen.getByRole('button', { name: /^Misfire/ })).toHaveTextContent('0 / 3')
+    expect(groupBox('Misfire')).not.toBeChecked()
+    expect(groupBox('Misfire').indeterminate).toBe(false)
+
+    rerender(<ParameterList {...props} selected={new Set([misfire[0]!.id])} />)
+    expect(screen.getByRole('button', { name: /^Misfire/ })).toHaveTextContent('1 / 3')
+    expect(groupBox('Misfire').indeterminate).toBe(true)
+
+    fireEvent.click(groupBox('Misfire'))
+    expect(props.onSelect).toHaveBeenLastCalledWith(
+      misfire.map((channel) => channel.id),
+      true,
+    )
+
+    rerender(<ParameterList {...props} selected={new Set(misfire.map((c) => c.id))} />)
+    expect(groupBox('Misfire')).toBeChecked()
+    expect(groupBox('Misfire').indeterminate).toBe(false)
+  })
+
+  it('remembers collapsed groups for the session', () => {
+    const { unmount } = render(
+      <ParameterList
+        channels={channels}
+        selected={new Set()}
+        colours={colours}
+        onSelect={vi.fn()}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: /^Oil/ }))
+    expect(screen.queryByRole('checkbox', { name: /Oil Temperature/ })).toBeNull()
+    unmount()
+
+    setup()
+    expect(screen.queryByRole('checkbox', { name: /Oil Temperature/ })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /^Oil/ }))
+    expect(screen.getByRole('checkbox', { name: /Oil Temperature/ })).toBeVisible()
   })
 })

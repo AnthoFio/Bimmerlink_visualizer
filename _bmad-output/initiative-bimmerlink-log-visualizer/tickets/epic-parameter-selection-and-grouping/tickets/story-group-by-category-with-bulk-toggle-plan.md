@@ -1,5 +1,5 @@
 ---
 title: 'Group by category with bulk toggle'
 ticket: 3
-status: in-progress
+status: built
 ---
