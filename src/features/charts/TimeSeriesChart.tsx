@@ -6,6 +6,7 @@ import type { Channel } from '../../lib/channels.ts'
 import { isStepped } from '../../lib/lineStyle.ts'
 import type { Range } from '../../lib/yRange.ts'
 import type { Theme } from '../../lib/palette.ts'
+import { normalisationSpans, PERCENT_RANGE } from '../../lib/normalise.ts'
 import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
 import { nearestIndex } from '../../lib/search.ts'
@@ -96,27 +97,38 @@ export function TimeSeriesChart(props: Props) {
     [viewport, sync],
   )
 
+  const normalised = panel.normalise !== 'off'
   const { items, axes } = useMemo(
-    () => panelContent(channels, selected, colours),
-    [channels, selected, colours],
+    () => panelContent(channels, selected, colours, normalised),
+    [channels, selected, colours, normalised],
   )
+  const spanned = panel.normalise === 'window' ? shown : bounds
+  const spans = useMemo(() => {
+    if (!normalised) return undefined
+    const columns = items.map(({ channel }) => dataset.columns[channel.column]!.values)
+    return normalisationSpans(dataset.time, columns, panel.normalise, spanned)
+  }, [normalised, dataset, items, panel.normalise, spanned])
   const series = useMemo<PlotSeries[]>(
     () =>
-      items.map(({ channel, colour, axis }) => ({
+      items.map(({ channel, colour, axis }, i) => ({
         id: channel.id,
         name: channel.name,
         values: dataset.columns[channel.column]!.values,
         colour,
         axis,
         stepped: isStepped(channel, panel.lines),
+        span: spans?.[i],
       })),
-    [dataset, items, panel.lines],
+    [dataset, items, panel.lines, spans],
   )
   // Fitting all data does not depend on the window, so panning need not compute it again.
   const fitted = panel.fit === 'visible' ? shown : bounds
   const fittedRanges = useMemo(
-    () => panelRanges(dataset.time, series, axes.length, panel.fit, fitted),
-    [dataset.time, series, axes, panel.fit, fitted],
+    () =>
+      normalised
+        ? axes.map(() => PERCENT_RANGE)
+        : panelRanges(dataset.time, series, axes.length, panel.fit, fitted),
+    [dataset.time, series, axes, panel.fit, fitted, normalised],
   )
   const ranges = useMemo(
     () => axes.map((axis, i) => rangeOf(axis.key) ?? fittedRanges[i]!),

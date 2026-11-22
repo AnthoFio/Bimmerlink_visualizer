@@ -10,6 +10,7 @@ import { VISIBLE_AXES } from '../../lib/axes.ts'
 import type { Axis, Gutters } from '../../lib/axes.ts'
 import { formatAxisTime } from '../../lib/format.ts'
 import { downsample } from '../../lib/downsample.ts'
+import { toPercent } from '../../lib/normalise.ts'
 import { CHART_COLOURS } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import type { TimeWindow } from '../../lib/timeWindow.ts'
@@ -32,6 +33,8 @@ export interface PlotSeries {
   /** Index into `axes`. */
   axis: number
   stepped: boolean
+  /** In a normalised panel: the min and max that become 0 and 100%. */
+  span?: Range
 }
 
 interface Props {
@@ -261,7 +264,11 @@ export function ChartPanel(props: Props) {
         shown,
         chart.over.clientWidth || width || FALLBACK_WIDTH,
       )
-      chart.setData([x, ...ys], false)
+      const drawnYs = ys.map((y, i) => {
+        const { span } = series[i]!
+        return span ? toPercent(y, span) : y
+      })
+      chart.setData([x, ...drawnYs], false)
       chart.setScale('x', { min: shown.min, max: shown.max })
     })
   }, [time, series, axes, ranges, capacity, shown, width])

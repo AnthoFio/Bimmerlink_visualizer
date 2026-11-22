@@ -13,12 +13,17 @@ export const FIT_MODES = ['visible', 'all'] as const
 /** What automatic Y ranges fit: the visible window or all data. */
 export type FitMode = (typeof FIT_MODES)[number]
 
+export const NORMALISE_MODES = ['off', 'log', 'window'] as const
+/** Over which data a normalised panel takes the min and max of each series. */
+export type NormaliseMode = (typeof NORMALISE_MODES)[number]
+
 export interface Panel {
   id: string
   /** Pixels. */
   height: number
   lines: LineStyle
   fit: FitMode
+  normalise: NormaliseMode
   /** Shares the time window and the cursor with the other panels. */
   synced: boolean
 }
@@ -49,7 +54,7 @@ export interface View {
 }
 
 export function createPanel(id: string, height: number): Panel {
-  return { id, height, lines: 'auto', fit: 'visible', synced: true }
+  return { id, height, lines: 'auto', fit: 'visible', normalise: 'off', synced: true }
 }
 
 export function defaultView(selected: readonly string[]): View {

@@ -1,5 +1,11 @@
-import { FIT_MODES, LINE_STYLES, PANEL_HEIGHT } from '../../lib/view.ts'
-import type { FitMode, LineStyle, Panel } from '../../lib/view.ts'
+import { FIT_MODES, LINE_STYLES, NORMALISE_MODES, PANEL_HEIGHT } from '../../lib/view.ts'
+import type { FitMode, LineStyle, NormaliseMode, Panel } from '../../lib/view.ts'
+
+const NORMALISE_MODE_NAMES: Record<NormaliseMode, string> = {
+  off: 'Off',
+  log: 'Over the full log',
+  window: 'Over the window',
+}
 
 const FIT_MODE_NAMES: Record<FitMode, string> = { visible: 'Visible window', all: 'All data' }
 
@@ -56,6 +62,20 @@ export function PanelToolbar({ panel, number, count, onUpdate, onMove, onRemove 
           {FIT_MODES.map((mode) => (
             <option key={mode} value={mode}>
               {FIT_MODE_NAMES[mode]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Normalise{' '}
+        <select
+          aria-label={`Normalise panel ${number}`}
+          value={panel.normalise}
+          onChange={(event) => onUpdate({ normalise: event.target.value as NormaliseMode })}
+        >
+          {NORMALISE_MODES.map((mode) => (
+            <option key={mode} value={mode}>
+              {NORMALISE_MODE_NAMES[mode]}
             </option>
           ))}
         </select>

@@ -26,7 +26,7 @@ export function ChartPanels(props: Props) {
       axisGutters(
         view.panels.map((panel) => {
           const ids = new Set(view.selected.filter((id) => panelOf(view, id) === panel.id))
-          return panelContent(channels, ids, colours).axes
+          return panelContent(channels, ids, colours, panel.normalise !== 'off').axes
         }),
       ),
     [channels, colours, view],

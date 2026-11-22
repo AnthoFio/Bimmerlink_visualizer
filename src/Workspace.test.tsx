@@ -384,3 +384,48 @@ describe('manual Y ranges', () => {
     expect(rangeOfAxis(0)).toEqual(auto)
   })
 })
+
+describe('normalised overlay', () => {
+  const normalise = (value: string) =>
+    fireEvent.change(screen.getByRole('combobox', { name: 'Normalise panel 1' }), {
+      target: { value },
+    })
+
+  it('puts the series of the panel on one axis of "% of range"', () => {
+    setup()
+    normalise('log')
+
+    const plot = FakeUplot.last
+    expect(plot.axes[1]!.label).toBe('% of range')
+    expect(new Set(plot.series.slice(1).map((series) => series.scale)).size).toBe(1)
+    for (const column of plot.data.slice(1)) {
+      for (const value of Array.from(column as ArrayLike<number | null>)) {
+        if (value === null) continue
+        expect(value).toBeGreaterThanOrEqual(0)
+        expect(value).toBeLessThanOrEqual(100)
+      }
+    }
+  })
+
+  it('still reads the real values and units', () => {
+    setup()
+    normalise('window')
+    const plot = FakeUplot.last
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    act(() => void fireEvent.mouseMove(plot.over, { clientX: 1000 }))
+
+    const speed = within(screen.getByRole('list', { name: 'Legend' }))
+      .getByText('Engine Speed')
+      .closest('li')!
+    const value = result.dataset.columns.find((c) => c.name === 'Engine Speed')!.values.at(-1)
+    expect(speed).toHaveTextContent(`${formatValue(value)}rpm`)
+  })
+
+  it('is a toggle per panel', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Add panel' }))
+    normalise('log')
+
+    expect(screen.getByRole('combobox', { name: 'Normalise panel 2' })).toHaveValue('off')
+  })
+})
