@@ -1,0 +1,52 @@
+# Stories of epic-chart-exploration-interactions, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Zoom and pan on the time axis"
+description = "As a BimmerLink user, I want mouse-wheel / drag zoom and drag pan with a reset so that I can inspect short events in a 25-minute log."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Synchronised zoom and cursor across panels"
+description = "As a BimmerLink user, I want all stacked panels to share the time window and cursor so that I can correlate a pedal input with boost and ignition angle."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.2", 1]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Hover tooltip with all visible values"
+description = "As a BimmerLink user, I want a tooltip showing every visible series' value at the cursor time so that I can read exact values."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1"]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Range selection with statistics"
+description = "As a BimmerLink user, I want to select a time range and see min, max, mean and delta per series so that I can quantify a pull or an event."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "Overview minimap with brush"
+description = "As a BimmerLink user, I want a small overview of the whole log with a draggable window so that I always know where I am in the log."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1]
+hitl = false
+

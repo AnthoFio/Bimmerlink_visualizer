@@ -14,7 +14,7 @@ Hard rules:
 - Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics on log content.
 - Spec-driven: every story has acceptance criteria that become tests first; CI and the local gate are the judge.
 - Performance target: 50k rows x 13 channels interactive in under 1 s after parse.
-- The epic (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`) holds the vision, scope and guardrails; read it before starting any story.
+- The initiative (`_bmad-output/initiative-bimmerlink-log-visualizer/initiative-bimmerlink-log-visualizer.md`) holds the vision, requirements and guardrails; read it before starting any story.
 
 ## Commands
 
@@ -63,7 +63,9 @@ src/
   data/                    Static data bundled with the app (e.g. the parameter catalog)
   test/                    Shared test setup (setup.ts) and repo-level tests
 public/                    Static assets copied as-is
-docs/                      Process docs (ci.md, process/labels-and-board.md), local backlog (backlog/)
+docs/                      Process docs (ci.md, process/labels-and-board.md)
+_bmad/                     BMad setup: scripts and config (the render cache and the personal user config are git-ignored)
+_bmad-output/              The ticket tree (initiative, epics, stories) and other BMad artifacts
 scripts/                   Small helper scripts (set-project-status.ps1)
 .github/                   CI workflow, issue forms and the pull request template
 docs/adr/                  Architecture decision records (0001: charting library)
@@ -104,7 +106,7 @@ Rules:
 
 ## Log format and catalog facts
 
-Source of truth for these facts is the epic plus the files in `Example/`; verify against them rather than assuming.
+Source of truth for these facts is the initiative plus the files in `Example/`; verify against them rather than assuming.
 
 BimmerLink log (CSV):
 
@@ -127,11 +129,13 @@ Fixtures: committed test inputs live in `tests/fixtures/` (a README documents ev
 
 ## Story workflow
 
-Work is tracked as Markdown files in `docs/backlog/` (index in `docs/backlog/README.md`): one folder per feature, one file per story, each with a YAML front matter (`id`, `type`, `parent`, `status`, `area`, `mvp`, `labels`, `children`). Hierarchy: epic E01 > features F<nn> > stories S<nn>. The numbers (`S10`, story #10) are the original GitHub issue numbers. The GitHub issues were closed on 2026-11-22 and the backlog files are the single source of truth; do not reopen or create issues.
+Work is tracked in the BMad ticket tree `_bmad-output/initiative-bimmerlink-log-visualizer/`: the initiative file, a breakdown table of the epics in build order, one folder per epic with its own breakdown table of stories, and one `story-*.md` file per story. The tree was migrated from the former GitHub issues (closed on 2026-11-22; do not reopen or create issues). The original issue numbers survive as `S<nn>` in the story notes, and the `story #n` in "(planned, story #n)" markers is that number. A story is addressed by its ref `<epic>.<entry>` (for example `2.2` is S14), its file name, or a unique title phrase.
 
-1. Read the story file and the epic file (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`). Acceptance criteria and the Definition of done are the spec.
-2. Branch from the latest origin/main: `story/<n>-<short-slug>`. When several agents work at once, use your own git worktree (`git worktree add -b story/<n>-<slug> ../wt-<n> origin/main`, then `npm ci`) and never switch branches in the main checkout.
-3. First commit of the branch: set `status: 'In progress'` in the story's front matter and in its row of `docs/backlog/README.md`.
+The tree's tool is `.claude/skills/bmad-agent-po/scripts/tickets.py`; run it from the repository root as `uv run .claude/skills/bmad-agent-po/scripts/tickets.py --project-root . <command>` with `next` (what can start), `status` (every ticket) or `find <ref>`. It needs the active initiative: set `active_initiative = "initiative-bimmerlink-log-visualizer"` under `[core]` in the personal, git-ignored user config of `_bmad/custom/` (a `.user.toml` file there), or pass the initiative folder as an argument.
+
+1. Pick a story from `ready_to_start` of `tickets.py next`: all its `after` prerequisites are done or in review. Parallel agents each take a different ready story. Read the story file, its epic file and the initiative. Acceptance criteria and the Definition of done are the spec.
+2. Branch from the latest origin/main: `story/<nn>-<short-slug>` (`<nn>` is the story's original number). When several agents work at once, use your own git worktree (`git worktree add -b story/<nn>-<slug> ../wt-<nn> origin/main`, then `npm ci`) and never switch branches in the main checkout.
+3. Build with `bmad-build` (interactive) or `bmad-build-auto` (unattended); they follow steps 4 to 6 and write the story's plan file. Working by hand, first commit `tickets.py mark <epic folder> <entry> in-progress` (the plan file `story-*-plan.md`; never edit a status in the story file).
 4. Turn each acceptance criterion into a failing test first (Vitest; Playwright for e2e once it exists).
 5. Implement the smallest change that makes the tests pass. Keep it scoped to the story: no other story's work, no silent scope growth; if something is missing, add the smallest stub and say so in the PR. Tick the acceptance criteria checkboxes in the story file as they are met.
 6. Run `npm run check` and `npm run build`; both green. Update this file and the README if conventions changed.
@@ -141,15 +145,17 @@ Work is tracked as Markdown files in `docs/backlog/` (index in `docs/backlog/REA
    - commit messages end with the `Co-Authored-By: ...` trailer and PR bodies with the `Generated with Claude Code` line that your harness specifies.
 8. Never force-push `main`; only QA merges (squash, delete branch).
 
+Scope, slicing, order and `after` change only through the product owner (`bmad-agent-po`, Sofia): an agent never edits another story's file, an epic's breakdown table or the initiative to suit its own work; it asks for a replan instead.
+
 ### Status flow and who moves it
 
-The front matter field `status` is `Backlog` > `Ready` > `In progress` > `In review` > `Done`. Whoever takes over or hands on a story edits the status in the same PR and keeps the README index row in sync.
+A story's status lives in its plan file (`story-*-plan.md`, next to the story file), written by the BMad builds or by `tickets.py mark`: `draft`, `ready-for-dev`, `in-progress`, `in-review`, `built`, `done`, `blocked`, `dropped`. `tickets.py` reports it as the board state `backlog`, `in-progress`, `review` or `done`. Whoever takes over or hands on a story marks it in the same PR.
 
 | Role      | Moves the story                                                                                   |
 | --------- | ------------------------------------------------------------------------------------------------- |
-| Developer | Start of work: `In progress`. PR open and the local gate green: `In review`.                      |
-| Reviewer  | Approves: leaves `In review`. Requests changes: `In progress` (developer sets `In review` again). |
-| QA        | Validates every acceptance criterion, merges, sets `Done`. Fails: `In progress`, no merge.        |
+| Developer | Start of work: `in-progress`. PR open and the local gate green: `in-review`.                      |
+| Reviewer  | Approves: leaves `in-review`. Requests changes: `in-progress` (developer sets `in-review` again). |
+| QA        | Validates every acceptance criterion, merges, marks `done`. Fails: `in-progress`, no merge.       |
 
 The reviewer is a different agent than the developer and is read-only on code; reviews are posted on the PR with a first line `VERDICT: APPROVED` or `VERDICT: CHANGES REQUESTED`.
 Do not touch stories other than your own.
@@ -172,20 +178,20 @@ Engineering skills (source Jeffallan/claude-skills):
 
 Planning and delivery skills (BMAD method, source bmad-code-org/BMAD-METHOD). Start with `bmad` when unsure what to run next.
 
-| Skill                                                                                                      | Use it for in this repo                                                                   |
-| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `bmad`                                                                                                     | Help, next-step recommendation, installation status.                                      |
-| `bmad-agent-po`                                                                                            | Product owner: slice epics into stories, refine and validate the `docs/backlog/` tickets. |
-| `bmad-agent-pm`, `bmad-agent-analyst`, `bmad-agent-architect`, `bmad-agent-ux-designer`, `bmad-agent-dev`  | Persona agents: product manager, analyst, architect, UX designer, developer.              |
-| `bmad-build`, `bmad-build-auto`                                                                            | Implement a story end to end (interactive, or unattended for an orchestrator).            |
-| `bmad-code-review`, `bmad-review`, `bmad-walkthrough`                                                      | Parallel code review, review lenses on a diff or document, guided human walkthrough.      |
-| `bmad-architecture`, `bmad-ux`, `bmad-project-context`                                                     | Architecture document, DESIGN.md / EXPERIENCE.md, maintain the agent instructions.        |
-| `bmad-qa-generate-e2e-tests`, `bmad-retrospective`                                                         | e2e tests for working features, epic retrospective.                                       |
-| `bmad-advanced-elicitation`, `bmad-brainstorming`, `bmad-forge-idea`, `bmad-party-mode`, `bmad-facilitate` | Ideation and document-coaching helpers.                                                   |
-| `bmad-deep-recon`, `bmad-ingest`, `bmad-shard-pro`, `bmad-customize`                                       | Research, notes from transcripts, shard long docs, customize BMAD skills.                 |
-| `bmod-core-tools`, `bmod-method`                                                                           | Required BMAD metadata. Never invoke.                                                     |
+| Skill                                                                                                      | Use it for in this repo                                                                              |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `bmad`                                                                                                     | Help, next-step recommendation, installation status.                                                 |
+| `bmad-agent-po`                                                                                            | Product owner: slice epics into stories, refine, validate and replan the tickets in `_bmad-output/`. |
+| `bmad-agent-pm`, `bmad-agent-analyst`, `bmad-agent-architect`, `bmad-agent-ux-designer`, `bmad-agent-dev`  | Persona agents: product manager, analyst, architect, UX designer, developer.                         |
+| `bmad-build`, `bmad-build-auto`                                                                            | Implement a story end to end (interactive, or unattended for an orchestrator).                       |
+| `bmad-code-review`, `bmad-review`, `bmad-walkthrough`                                                      | Parallel code review, review lenses on a diff or document, guided human walkthrough.                 |
+| `bmad-architecture`, `bmad-ux`, `bmad-project-context`                                                     | Architecture document, DESIGN.md / EXPERIENCE.md, maintain the agent instructions.                   |
+| `bmad-qa-generate-e2e-tests`, `bmad-retrospective`                                                         | e2e tests for working features, epic retrospective.                                                  |
+| `bmad-advanced-elicitation`, `bmad-brainstorming`, `bmad-forge-idea`, `bmad-party-mode`, `bmad-facilitate` | Ideation and document-coaching helpers.                                                              |
+| `bmad-deep-recon`, `bmad-ingest`, `bmad-shard-pro`, `bmad-customize`                                       | Research, notes from transcripts, shard long docs, customize BMAD skills.                            |
+| `bmod-core-tools`, `bmod-method`                                                                           | Required BMAD metadata. Never invoke.                                                                |
 
-BMAD skills assume a ticket tree: here it is `docs/backlog/`, not an external tracker. The `fastapi-expert` skill was removed (no backend).
+BMAD skills work on the ticket tree in `_bmad-output/` (repo store, no external tracker), set up by `_bmad/`; see Story workflow. The `fastapi-expert` skill was removed (no backend).
 
 ## Documentation conventions
 

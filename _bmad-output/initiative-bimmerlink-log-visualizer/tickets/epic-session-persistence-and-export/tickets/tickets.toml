@@ -1,0 +1,42 @@
+# Stories of epic-session-persistence-and-export, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Persist view configuration locally"
+description = "As a BimmerLink user, I want my selection, panels, scales and colours remembered so that re-opening a similar log restores my view."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["5.1"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Export chart as PNG/SVG"
+description = "As a BimmerLink user, I want to export the current view as an image so that I can share it in a forum or a report."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1", "4.2", "5.4"]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Export and import view configuration as JSON"
+description = "As a BimmerLink user, I want to save my view to a file and load it on another log so that I can reuse an analysis setup or share it."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Export visible data range as CSV"
+description = "As a BimmerLink user, I want to download the selected parameters over the current window as CSV so that I can post-process them in a spreadsheet."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["5.1", "6.1"]
+hitl = false
+

@@ -1,0 +1,92 @@
+# Stories of epic-foundation-and-aidd-workflow, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Scaffold React + TypeScript + Vite app"
+description = "As a developer, I want a working app skeleton on the latest stable React so that every following story starts from a runnable base."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Spike: choose the charting library (ADR)"
+description = "As the maintainer, I want an evidence-based choice of charting library so that we can render 50k+ points x many series with zoom and multi-axis without rewriting later."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Write AGENTS.md / CLAUDE.md agent context"
+description = "As a developer working with AI agents, I want a single, accurate context file for agents so that they build, test and contribute consistently without re-asking."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Quality gates: lint, format, typecheck, unit tests"
+description = "As a developer, I want automated local quality checks so that regressions are caught before review."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "CI pipeline on GitHub Actions"
+description = "As the maintainer, I want CI that runs on every PR so that merging is gated by objective checks."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 6
+type = "story"
+title = "Issue and PR templates plus label taxonomy"
+description = "As the maintainer, I want templates that encode the story format and definition of done so that agent-authored PRs are consistent and traceable to a story."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 7
+type = "story"
+title = "Test fixtures derived from the example logs"
+description = "As a developer, I want small, committed fixtures covering the real format quirks so that parser and UI tests are fast and deterministic."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 8
+type = "story"
+title = "E2E smoke test with Playwright"
+description = "As a developer or agent, I want a browser-level smoke test so that an agent can self-verify a change end to end."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["2.1", "2.2", "4.1"]
+hitl = false
+
+[[entry]]
+id = 9
+type = "story"
+title = "Static deployment (GitHub Pages) with PR previews"
+description = "As a user, I want a public URL to use the tool so that I can use it without cloning the repo."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+

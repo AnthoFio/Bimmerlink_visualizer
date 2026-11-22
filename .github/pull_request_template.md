@@ -1,4 +1,4 @@
-Closes #<issue-number>
+Story S<nn>: `_bmad-output/<initiative>/tickets/<epic>/tickets/<story file>.md`
 
 ## Summary
 

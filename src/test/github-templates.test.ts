@@ -153,8 +153,10 @@ describe('issue forms', () => {
 })
 
 describe('pull request template', () => {
-  it('links the story with Closes #n', () => {
-    expect(prTemplate).toMatch(/^Closes #/m)
+  it('names the story and its ticket file (the tickets live in _bmad-output, not on GitHub)', () => {
+    expect(prTemplate).toMatch(/^Story S<nn>/m)
+    expect(prTemplate).toContain('_bmad-output/')
+    expect(prTemplate).not.toMatch(/Closes #/)
   })
 
   it('asks for test evidence, screenshots and the definition of done', () => {

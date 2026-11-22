@@ -1,0 +1,52 @@
+# Stories of epic-parameter-selection-and-grouping, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Parameter list with show/hide toggles"
+description = "As a BimmerLink user, I want a checklist of all parameters in the log so that I can select and unselect what I want to see."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["2.2", "4.1"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Search and filter parameters"
+description = "As a BimmerLink user, I want to search by name and filter by category, unit or role so that I find a channel among 200+ quickly."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["3.2", 1]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Group by category with bulk toggle"
+description = "As a BimmerLink user, I want collapsible category groups with group-level toggles so that I can enable all misfire or all knock channels at once."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["3.2", 1]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Series colours and legend"
+description = "As a BimmerLink user, I want distinct, editable colours and an interactive legend so that I can tell series apart and emphasise one."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1", 1]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "Presets from the catalog"
+description = "As a BimmerLink user, I want one-click presets (BimmerLink log presets, 'Core only', 'Knock', 'Misfire', 'Fuel & lambda') so that I get to a typical analysis view instantly."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["3.2", 1]
+hitl = false
+

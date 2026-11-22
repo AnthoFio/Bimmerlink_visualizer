@@ -1,0 +1,62 @@
+# Stories of epic-csv-upload-and-parsing, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Landing page inviting a CSV upload"
+description = "As a BimmerLink user, I want a clear drop zone and file picker on first load so that I know immediately what to do."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Parse CSV into a column-oriented dataset"
+description = "As the app, I want to parse a log using its header row so that any BimmerLink log works without hard-coded columns."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = []
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Parse in a Web Worker with progress"
+description = "As a BimmerLink user, I want the UI to stay responsive while a large log loads so that I get feedback instead of a frozen tab."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [2]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Validation and friendly error messages"
+description = "As a BimmerLink user, I want specific errors when a file cannot be used so that I can fix the problem instead of guessing."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [2]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "File summary and loading another file"
+description = "As a BimmerLink user, I want a summary of the loaded log and a way to load a different one so that I can confirm it is the right file and switch quickly."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [1, 2]
+hitl = false
+
+[[entry]]
+id = 6
+type = "story"
+title = "Handle logs' ramp-up artefacts"
+description = "As a BimmerLink user, I want initial zero values before a channel reports to be recognised so that charts do not show misleading spikes at t=0."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = [2]
+hitl = false
+

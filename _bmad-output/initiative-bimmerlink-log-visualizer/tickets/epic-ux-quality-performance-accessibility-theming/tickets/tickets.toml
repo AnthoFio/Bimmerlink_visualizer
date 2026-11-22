@@ -1,0 +1,52 @@
+# Stories of epic-ux-quality-performance-accessibility-theming, migrated from docs/backlog; story ids S<nn> are the original GitHub issue numbers.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Performance budget and automated measurement"
+description = "As the maintainer, I want performance budgets enforced by tests so that regressions in load or interaction speed are caught early."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["1.8", "2.3", "4.4"]
+hitl = false
+
+[[entry]]
+id = 2
+type = "story"
+title = "Light and dark theme"
+description = "As a BimmerLink user, I want the app to follow my system theme with a manual override so that it is comfortable in a garage or in daylight."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["4.1"]
+hitl = false
+
+[[entry]]
+id = 3
+type = "story"
+title = "Accessibility baseline (WCAG 2.2 AA)"
+description = "As a keyboard or screen-reader user, I want a usable interface so that I am not blocked by the tool."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["1.8", "4.1", "5.1"]
+hitl = false
+
+[[entry]]
+id = 4
+type = "story"
+title = "Responsive layout"
+description = "As a BimmerLink user, I want the app to work on laptop and tablet widths so that I can review logs next to the car."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["1.8", "4.1", "5.1"]
+hitl = false
+
+[[entry]]
+id = 5
+type = "story"
+title = "Privacy by design: no data leaves the browser"
+description = "As a BimmerLink user, I want certainty that my log stays on my machine so that I can load logs from my own car without concern."
+verify = "Every acceptance criterion of the story file holds."
+covers = []
+after = ["1.8", "2.1"]
+hitl = false
+

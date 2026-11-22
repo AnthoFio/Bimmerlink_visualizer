@@ -19,3 +19,6 @@ skills-lock.json
 
 # Throwaway spikes: isolated mini-projects with their own tooling (see spikes/README.md)
 spikes/
+
+# BMad setup (generated scripts, config and render cache)
+_bmad/
