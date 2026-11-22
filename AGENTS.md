@@ -81,8 +81,8 @@ Rules:
 
 - `src/lib/` has no React and no DOM imports; it takes plain values in and returns plain values out. Put logic there so it is trivially unit-testable.
 - `src/features/<name>/` owns its components, hooks and local state. Features may import from `src/lib/` and `src/data/`; `src/lib/` never imports from `src/features/`. Features do not import from each other: lift shared code into `src/lib/` or a shared component folder.
-- Heavy work (CSV parsing of 50k rows) belongs in a Web Worker so the UI stays responsive (planned, story #15).
-- Keep `src/lib/` functions worker-safe, so that move is cheap.
+- Heavy work stays off the main thread: `src/features/upload/parse.worker.ts` parses and validates, then transfers the typed arrays. Keep `src/lib/` functions worker-safe.
+- jsdom has no Worker: UI tests pass `src/test/directLoader.ts` to `App`.
 - Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). `readLog` in `src/lib/readLog.ts` validates on top of it: user-facing errors, warnings for what is tolerated, and a finite, non-decreasing time axis.
 - Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
 - Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).

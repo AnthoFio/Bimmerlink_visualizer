@@ -77,12 +77,12 @@ function takeRows({ time, columns }: LogDataset, rows: readonly number[]): LogDa
 }
 
 /** Parses and validates the text of a log. */
-export function readLog(text: string): ReadResult {
+export function readLog(text: string, onProgress?: (share: number) => void): ReadResult {
   if (!looksLikeCsv(text)) throw new LogLoadError('not-csv')
 
   let dataset: LogDataset
   try {
-    dataset = parseLogText(text)
+    dataset = parseLogText(text, onProgress)
   } catch (error) {
     if (error instanceof LogParseError) throw new LogLoadError(error.code)
     throw error

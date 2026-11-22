@@ -103,8 +103,13 @@ function countLines(text: string): number {
   return count
 }
 
-/** Parses the text of a BimmerLink log. Throws `LogParseError` if there is no usable header. */
-export function parseLogText(input: string): LogDataset {
+const PROGRESS_EVERY_ROWS = 4096
+
+/**
+ * Parses the text of a BimmerLink log. Throws `LogParseError` if there is no usable header.
+ * `onProgress` gets the share of the text read so far (0 to 1) every few thousand rows.
+ */
+export function parseLogText(input: string, onProgress?: (share: number) => void): LogDataset {
   let text = input.startsWith(BOM) ? input.slice(BOM.length) : input
   if (!text.includes('\n') && text.includes('\r')) text = text.split('\r').join('\n')
   const capacity = countLines(text)
@@ -141,6 +146,7 @@ export function parseLogText(input: string): LogDataset {
     time[rows] = toNumber(cells[0])
     for (let c = 0; c < values.length; c++) values[c]![rows] = toNumber(cells[c + 1])
     rows++
+    if (onProgress && rows % PROGRESS_EVERY_ROWS === 0) onProgress(Math.min(1, start / text.length))
   }
 
   if (!header) throw new LogParseError('empty', 'The file is empty: no header row was found.')
