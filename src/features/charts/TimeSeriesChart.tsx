@@ -1,11 +1,15 @@
 import { useMemo } from 'react'
+import { axisGutters } from '../../lib/axes.ts'
+import type { Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import type { Theme } from '../../lib/palette.ts'
+import { panelContent } from '../../lib/panelContent.ts'
 import type { LogDataset } from '../../lib/parseLog.ts'
-import { unitLabel } from '../../lib/units.ts'
 import { PANEL_HEIGHT } from '../../lib/view.ts'
+import { autoRange, extent } from '../../lib/yRange.ts'
 import { ChartPanel } from './ChartPanel.tsx'
 import type { PlotSeries } from './ChartPanel.tsx'
+import { FurtherAxes } from './FurtherAxes.tsx'
 import { Legend } from './Legend.tsx'
 
 interface Props {
@@ -15,6 +19,8 @@ interface Props {
   colours: ReadonlyMap<string, string>
   theme: Theme
   height?: number
+  /** Shared by all panels; left out, the chart only makes room for its own axes. */
+  gutters?: Gutters
 }
 
 export function TimeSeriesChart({
@@ -24,25 +30,28 @@ export function TimeSeriesChart({
   colours,
   theme,
   height = PANEL_HEIGHT.initial,
+  gutters,
 }: Props) {
-  const items = useMemo(
-    () =>
-      channels
-        .filter((channel) => selected.has(channel.id))
-        .map((channel) => ({ channel, colour: colours.get(channel.id) ?? 'gray' })),
+  const { items, axes } = useMemo(
+    () => panelContent(channels, selected, colours),
     [channels, selected, colours],
   )
   const series = useMemo<PlotSeries[]>(
     () =>
-      items.map(({ channel, colour }) => ({
+      items.map(({ channel, colour, axis }) => ({
         id: channel.id,
         name: channel.name,
         values: dataset.columns[channel.column]!.values,
         colour,
+        axis,
       })),
     [dataset, items],
   )
-  const axisTitle = [...new Set(items.map(({ channel }) => unitLabel(channel.unit)))].join(' / ')
+  const ranges = useMemo(() => {
+    const extents = series.map((line) => extent(line.values))
+    return axes.map((_, axis) => autoRange(extents.filter((_, i) => series[i]!.axis === axis)))
+  }, [axes, series])
+  const own = useMemo(() => axisGutters([axes]), [axes])
 
   return (
     <>
@@ -50,7 +59,10 @@ export function TimeSeriesChart({
         <ChartPanel
           time={dataset.time}
           series={series}
-          axisTitle={axisTitle}
+          axes={axes}
+          ranges={ranges}
+          gutters={gutters ?? own}
+          capacity={channels.length}
           theme={theme}
           height={height}
         />
@@ -60,6 +72,7 @@ export function TimeSeriesChart({
           </p>
         )}
       </div>
+      <FurtherAxes axes={axes} ranges={ranges} />
       <Legend items={items} />
     </>
   )

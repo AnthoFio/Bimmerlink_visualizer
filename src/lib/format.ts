@@ -31,3 +31,13 @@ export function formatAxisTime(seconds: number, duration: number, increment: num
   const rest = (rounded - minutes * 60).toFixed(decimals)
   return `${String(minutes).padStart(2, '0')}:${rest.padStart(decimals ? 3 + decimals : 2, '0')}`
 }
+
+const VALUE_FORMAT = new Intl.NumberFormat('en-US', {
+  maximumSignificantDigits: 6,
+  maximumFractionDigits: 3,
+})
+
+/** A measured value, for reading. */
+export function formatValue(value: number | undefined): string {
+  return value === undefined || Number.isNaN(value) ? '–' : VALUE_FORMAT.format(value)
+}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import type { Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { PARAMETER_DRAG_TYPE } from '../../lib/dragParameter.ts'
 import type { Theme } from '../../lib/palette.ts'
@@ -11,6 +12,7 @@ import { TimeSeriesChart } from './TimeSeriesChart.tsx'
 interface Props {
   panel: Panel
   index: number
+  gutters: Gutters
   dataset: LogDataset
   channels: readonly Channel[]
   view: View
@@ -20,7 +22,7 @@ interface Props {
 }
 
 export function PanelCard(props: Props) {
-  const { panel, index, dataset, channels, view, onChange, colours, theme } = props
+  const { panel, index, gutters, dataset, channels, view, onChange, colours, theme } = props
   const [dropping, setDropping] = useState(false)
   const selected = useMemo(
     () => new Set(view.selected.filter((id) => panelOf(view, id) === panel.id)),
@@ -60,6 +62,7 @@ export function PanelCard(props: Props) {
         colours={colours}
         theme={theme}
         height={panel.height}
+        gutters={gutters}
       />
     </section>
   )

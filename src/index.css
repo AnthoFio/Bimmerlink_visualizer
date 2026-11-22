@@ -400,3 +400,18 @@ button.info-button {
   align-items: center;
   margin-left: auto;
 }
+
+.further-axes {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0.2rem 0.6rem;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.further-axes li {
+  padding-left: 0.4rem;
+  border-left: 3px solid var(--control-line);
+}

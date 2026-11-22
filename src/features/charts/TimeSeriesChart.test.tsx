@@ -131,9 +131,25 @@ describe('units', () => {
     render(chart([ids[9]!]))
     expect(FakeUplot.last.axes[1]!.label).toBe('rpm')
   })
+})
 
-  it('names every unit when several share the axis', () => {
-    render(chart([ids[8]!, ids[9]!]))
-    expect(FakeUplot.last.axes[1]!.label).toBe('°C / rpm')
+describe('axes by unit', () => {
+  const plotted = () => FakeUplot.last.series.slice(1).map((series) => series.scale)
+
+  it('puts channels with different units on their own axes', () => {
+    render(chart([ids[0]!, ids[1]!, ids[8]!, ids[9]!]))
+
+    const [count1, count2, celsius, rpm] = plotted()
+    expect(count1).toBe(count2)
+    expect(new Set([count1, celsius, rpm]).size).toBe(3)
+    const { axes } = FakeUplot.last
+    expect(axes.slice(1, 4).map((axis) => axis.label)).toEqual(['count', '°C', 'rpm'])
+    expect(axes.slice(1, 5).map((axis) => axis.side)).toEqual([3, 1, 3, 1])
+  })
+
+  it('lists the axes that do not fit under the chart', () => {
+    render(chart([ids[0]!, ids[6]!, ids[7]!, ids[8]!, ids[9]!]))
+
+    expect(screen.getByRole('list', { name: 'Further axes' })).toHaveTextContent('rpm')
   })
 })
