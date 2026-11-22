@@ -14,7 +14,7 @@ Hard rules:
 - Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics on log content.
 - Spec-driven: every story has acceptance criteria that become tests first; CI and the local gate are the judge.
 - Performance target: 50k rows x 13 channels interactive in under 1 s after parse.
-- Epic #1 holds the vision, scope and guardrails; read it before starting any story.
+- The epic (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`) holds the vision, scope and guardrails; read it before starting any story.
 
 ## Commands
 
@@ -63,7 +63,7 @@ src/
   data/                    Static data bundled with the app (e.g. the parameter catalog)
   test/                    Shared test setup (setup.ts) and repo-level tests
 public/                    Static assets copied as-is
-docs/                      Process docs (ci.md, process/labels-and-board.md)
+docs/                      Process docs (ci.md, process/labels-and-board.md), local backlog (backlog/)
 scripts/                   Small helper scripts (set-project-status.ps1)
 .github/                   CI workflow, issue forms and the pull request template
 docs/adr/                  Architecture decision records (0001: charting library)
@@ -104,7 +104,7 @@ Rules:
 
 ## Log format and catalog facts
 
-Source of truth for these facts is epic #1 plus the files in `Example/`; verify against them rather than assuming.
+Source of truth for these facts is the epic plus the files in `Example/`; verify against them rather than assuming.
 
 BimmerLink log (CSV):
 
@@ -127,53 +127,65 @@ Fixtures: committed test inputs live in `tests/fixtures/` (a README documents ev
 
 ## Story workflow
 
-Work is tracked as GitHub issues in AnthoFio/Bimmerlink_visualizer on project board 7 (owner `AnthoFio`). Epic #1 > features > stories.
+Work is tracked as Markdown files in `docs/backlog/` (index in `docs/backlog/README.md`): one folder per feature, one file per story, each with a YAML front matter (`id`, `type`, `parent`, `status`, `area`, `mvp`, `labels`, `children`). Hierarchy: epic E01 > features F<nn> > stories S<nn>. The numbers (`S10`, story #10) are the original GitHub issue numbers. The GitHub issues were closed on 2026-11-22 and the backlog files are the single source of truth; do not reopen or create issues.
 
-1. Read the issue (`gh issue view <n>`) and epic #1. Acceptance criteria and the Definition of done are the spec.
+1. Read the story file and the epic file (`docs/backlog/E01-bimmerlink-log-visualizer/epic.md`). Acceptance criteria and the Definition of done are the spec.
 2. Branch from the latest origin/main: `story/<n>-<short-slug>`. When several agents work at once, use your own git worktree (`git worktree add -b story/<n>-<slug> ../wt-<n> origin/main`, then `npm ci`) and never switch branches in the main checkout.
-3. Turn each acceptance criterion into a failing test first (Vitest; Playwright for e2e once it exists).
-4. Implement the smallest change that makes the tests pass. Keep it scoped to the ticket: no other story's work, no silent scope growth; if something is missing, add the smallest stub and say so in the PR.
-5. Run `npm run check` and `npm run build`; both green. Update this file and the README if conventions changed.
-6. Commit (never `--no-verify`), push, open a PR into `main`:
-   - title `<imperative summary> (#<n>)`;
-   - body starts with `Closes #<n>`, then summary, how each acceptance criterion is met (checklist), test evidence (commands and results), screenshots if UI;
+3. First commit of the branch: set `status: 'In progress'` in the story's front matter and in its row of `docs/backlog/README.md`.
+4. Turn each acceptance criterion into a failing test first (Vitest; Playwright for e2e once it exists).
+5. Implement the smallest change that makes the tests pass. Keep it scoped to the story: no other story's work, no silent scope growth; if something is missing, add the smallest stub and say so in the PR. Tick the acceptance criteria checkboxes in the story file as they are met.
+6. Run `npm run check` and `npm run build`; both green. Update this file and the README if conventions changed.
+7. Commit (never `--no-verify`), push, open a PR into `main`:
+   - title `<imperative summary> (S<nn>)`;
+   - body starts with `Story S<nn>` and the path of the story file, then summary, how each acceptance criterion is met (checklist), test evidence (commands and results), screenshots if UI;
    - commit messages end with the `Co-Authored-By: ...` trailer and PR bodies with the `Generated with Claude Code` line that your harness specifies.
-7. Never force-push `main`; only QA merges (squash, delete branch).
+8. Never force-push `main`; only QA merges (squash, delete branch).
 
 ### Status flow and who moves it
 
-The project board field `Status` is `Backlog` > `Ready` > `In progress` > `In review` > `Done`. Whoever takes over or hands on a ticket sets the Status themselves.
+The front matter field `status` is `Backlog` > `Ready` > `In progress` > `In review` > `Done`. Whoever takes over or hands on a story edits the status in the same PR and keeps the README index row in sync.
 
-| Role      | Moves the ticket                                                                                  |
+| Role      | Moves the story                                                                                   |
 | --------- | ------------------------------------------------------------------------------------------------- |
 | Developer | Start of work: `In progress`. PR open and the local gate green: `In review`.                      |
 | Reviewer  | Approves: leaves `In review`. Requests changes: `In progress` (developer sets `In review` again). |
 | QA        | Validates every acceptance criterion, merges, sets `Done`. Fails: `In progress`, no merge.        |
 
 The reviewer is a different agent than the developer and is read-only on code; reviews are posted on the PR with a first line `VERDICT: APPROVED` or `VERDICT: CHANGES REQUESTED`.
-Do not touch tickets other than your own.
+Do not touch stories other than your own.
 
-Set the Status with the helper `scripts/set-project-status.ps1` (PowerShell, from the repository root):
-
-```text
-powershell -File scripts/set-project-status.ps1 -Issue <n> -Status "In progress"
-```
-
-`-Status` is one of `Backlog`, `Ready`, `In progress`, `In review`, `Done`; `-Issue` takes several numbers (`-Issue 5,8`). It edits project 7 of owner `AnthoFio` through the GitHub CLI, so `gh` must be signed in with the `project` scope (`gh auth refresh -s project`) and the issue must already be on the board.
-
-Issues are created from the forms in `.github/ISSUE_TEMPLATE/`, pull requests use `.github/pull_request_template.md`, and `docs/process/labels-and-board.md` defines the label taxonomy (type + `area:*` + optional `mvp`) and the full Status flow.
+Pull requests use `.github/pull_request_template.md`. `docs/process/labels-and-board.md` describes the former GitHub board flow and is kept for history only. The legacy helper `scripts/set-project-status.ps1` (`-Issue <n> -Status "<column>"`, needs `gh` signed in with the `project` scope) edited that board; do not use it for new work.
 
 ## Agent skills
 
-Skills are third-party bundles (source Jeffallan/claude-skills on GitHub, pinned by commit in `skills-lock.json`), installed twice with identical content: `.claude/skills/` is read by Claude Code, `.agents/skills/` by other agents that follow the `.agents` convention. Do not hand-edit them (they are excluded from ESLint via `globalIgnores` in `eslint.config.js` and from Prettier via `.prettierignore`); update them by reinstalling and keep both folders in sync.
-Each skill is a folder with a SKILL.md file (when to use it) and a references folder with detail files that are loaded on demand.
+Skills are third-party bundles pinned by commit in `skills-lock.json`, installed twice with identical content: `.claude/skills/` is read by Claude Code, `.agents/skills/` by other agents that follow the `.agents` convention. Do not hand-edit them (they are excluded from ESLint via `globalIgnores` in `eslint.config.js` and from Prettier via `.prettierignore`); update them by reinstalling and keep both folders in sync.
+Each skill is a folder with a SKILL.md file (when to use it), often with a references folder with detail files that are loaded on demand.
 
-| Skill             | Use it for in this repo                                                                                                                    |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `react-expert`    | Building React 19 components, hooks, state management, performance work. Ignore its Next.js / Server Components parts: this is a Vite SPA. |
-| `code-reviewer`   | Structured PR / diff review (correctness, security, performance, maintainability); the reviewer agent's checklist. Read-only tools.        |
-| `code-documenter` | JSDoc/TSDoc, user guides and README/doc work. Ignore the OpenAPI and Python parts.                                                         |
-| `fastapi-expert`  | Python FastAPI backends. Not applicable: the app has no backend. Do not use it.                                                            |
+Engineering skills (source Jeffallan/claude-skills):
+
+| Skill               | Use it for in this repo                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `react-expert`      | Building React 19 components, hooks, state management, performance work. Ignore its Next.js / Server Components parts: this is a Vite SPA. |
+| `code-reviewer`     | Structured PR / diff review (correctness, security, performance, maintainability); the reviewer agent's checklist. Read-only tools.        |
+| `code-documenter`   | JSDoc/TSDoc, user guides and README/doc work. Ignore the OpenAPI and Python parts.                                                         |
+| `security-reviewer` | Security review of a diff or the dependency tree. Client-side only app: focus on XSS, dependencies and the no-upload guarantee.            |
+
+Planning and delivery skills (BMAD method, source bmad-code-org/BMAD-METHOD). Start with `bmad` when unsure what to run next.
+
+| Skill                                                                                                      | Use it for in this repo                                                                   |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `bmad`                                                                                                     | Help, next-step recommendation, installation status.                                      |
+| `bmad-agent-po`                                                                                            | Product owner: slice epics into stories, refine and validate the `docs/backlog/` tickets. |
+| `bmad-agent-pm`, `bmad-agent-analyst`, `bmad-agent-architect`, `bmad-agent-ux-designer`, `bmad-agent-dev`  | Persona agents: product manager, analyst, architect, UX designer, developer.              |
+| `bmad-build`, `bmad-build-auto`                                                                            | Implement a story end to end (interactive, or unattended for an orchestrator).            |
+| `bmad-code-review`, `bmad-review`, `bmad-walkthrough`                                                      | Parallel code review, review lenses on a diff or document, guided human walkthrough.      |
+| `bmad-architecture`, `bmad-ux`, `bmad-project-context`                                                     | Architecture document, DESIGN.md / EXPERIENCE.md, maintain the agent instructions.        |
+| `bmad-qa-generate-e2e-tests`, `bmad-retrospective`                                                         | e2e tests for working features, epic retrospective.                                       |
+| `bmad-advanced-elicitation`, `bmad-brainstorming`, `bmad-forge-idea`, `bmad-party-mode`, `bmad-facilitate` | Ideation and document-coaching helpers.                                                   |
+| `bmad-deep-recon`, `bmad-ingest`, `bmad-shard-pro`, `bmad-customize`                                       | Research, notes from transcripts, shard long docs, customize BMAD skills.                 |
+| `bmod-core-tools`, `bmod-method`                                                                           | Required BMAD metadata. Never invoke.                                                     |
+
+BMAD skills assume a ticket tree: here it is `docs/backlog/`, not an external tracker. The `fastapi-expert` skill was removed (no backend).
 
 ## Documentation conventions
 
