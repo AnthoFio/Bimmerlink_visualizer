@@ -18,14 +18,14 @@ As a user, I want a public URL to use the tool so that I can use it without clon
 Verify: Every acceptance criterion below holds.
 
 - [ ] Production build deployed from `main` to GitHub Pages (base path configured)
-- [ ] Deployment status badge in README
+- [x] Deployment status badge in README
 - [ ] Preview build artifact per PR (or documented alternative)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
@@ -34,3 +34,4 @@ Verify: Every acceptance criterion below holds.
 ## Notes
 
 - Decision: 2026-11-22 — migrated from docs/backlog story S11 (GitHub issue #11), area foundation; text and checkbox state kept.
+- Open question: the deploy and preview-artifact criteria are covered by tests of the workflow file and by the base-path build, but only a real run proves them: the first push to `main` (needs Settings > Pages > Source set to GitHub Actions) and the first pull request run. Tick them after those runs.
