@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { parse } from 'yaml'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -87,6 +88,14 @@ describe('deploy workflow', () => {
 describe('README', () => {
   it('shows a badge for the deploy workflow', () => {
     expect(readme).toContain('actions/workflows/deploy.yml/badge.svg')
+  })
+
+  it('shows a screenshot of the app, and every local image it links exists', () => {
+    const images = [...readme.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)]
+      .map((m) => m[1] ?? '')
+      .filter((src) => !/^https?:/.test(src))
+    expect(images).toContain('docs/images/app.png')
+    for (const src of images) expect(existsSync(src), src).toBe(true)
   })
 })
 

@@ -8,6 +8,8 @@ Drop a BimmerLink datalog (CSV) onto the page and it turns into dynamic, explora
 Everything runs in the browser, so your logs never leave your machine: no backend, no analytics, and a strict Content-Security-Policy that lets the page connect nowhere (see `docs/privacy.md`).
 Stack: React 19, TypeScript (strict) and Vite.
 
+![The visualizer with a 25-minute example log loaded: parameter picker on the left, a multi-axis chart panel on the right](docs/images/app.png)
+
 ## Getting started
 
 Requires Node 24 (see `.nvmrc`; `nvm use` picks it up).
