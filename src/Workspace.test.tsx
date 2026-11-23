@@ -718,3 +718,56 @@ describe('accessibility', () => {
     expect(new Set(dashes()).size).toBe(6)
   })
 })
+
+describe('side panel drawer', () => {
+  const toggle = () => screen.getByRole('button', { name: 'Parameters' })
+  const sidebar = () => screen.getByRole('complementary', { name: 'Parameters' })
+
+  it('is a labelled toggle that controls the parameter panel', () => {
+    setup()
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle()).toHaveAttribute('aria-controls', sidebar().id)
+    expect(sidebar()).not.toHaveClass('is-open')
+
+    click(toggle())
+    expect(toggle()).toHaveAttribute('aria-expanded', 'true')
+    expect(sidebar()).toHaveClass('is-open')
+    expect(within(sidebar()).getByRole('button', { name: 'Close parameters' })).toHaveFocus()
+
+    click(within(sidebar()).getByRole('button', { name: 'Close parameters' }))
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle()).toHaveFocus()
+  })
+
+  it('closes with Escape and gives the focus back to the toggle', () => {
+    setup()
+    click(toggle())
+    act(
+      () =>
+        void fireEvent.keyDown(within(sidebar()).getAllByRole('checkbox')[0]!, { key: 'Escape' }),
+    )
+
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    expect(sidebar()).not.toHaveClass('is-open')
+    expect(toggle()).toHaveFocus()
+  })
+
+  it('keeps the selection, the panels and the zoom while it opens and closes', () => {
+    setup()
+    click(screen.getByRole('button', { name: 'Add panel' }))
+    const plot = FakeUplot.instances[0]!
+    plot.over.getBoundingClientRect = () => ({ left: 0, width: 1000 }) as DOMRect
+    act(() => void fireEvent.wheel(plot.over, { deltaY: -300, clientX: 500 }))
+    const zoomed = { ...plot.x! }
+    const count = FakeUplot.instances.length
+
+    click(toggle())
+    click(within(sidebar()).getByRole('checkbox', { name: /Engine Speed/ }))
+    act(() => void fireEvent.keyDown(sidebar(), { key: 'Escape' }))
+
+    expect(panel(2)).toBeVisible()
+    expect(legendOf(1)).toHaveLength(5)
+    expect(FakeUplot.instances).toHaveLength(count)
+    expect(FakeUplot.instances[0]!.x).toEqual(zoomed)
+  })
+})

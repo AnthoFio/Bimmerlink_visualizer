@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ThemePicker } from './components/ThemePicker.tsx'
 import { useTheme } from './components/useTheme.ts'
@@ -61,6 +61,20 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   const [ids] = useState(() => channels.map((channel) => channel.id))
   const { view, setView, reset, restored } = usePersistedView(ids, initial, onUnsavedChange)
   const [viewport] = useState(createViewport)
+  // Below 900 px the side panel is a drawer (index.css); wider, these have no effect.
+  const sidebarId = useId()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const drawerToggle = useRef<HTMLButtonElement>(null)
+  const drawerClose = useRef<HTMLButtonElement>(null)
+  // The drawer is only shown once React has rendered it open.
+  useEffect(() => {
+    if (drawerOpen) drawerClose.current?.focus()
+  }, [drawerOpen])
+  const openDrawer = () => setDrawerOpen(true)
+  const closeDrawer = () => {
+    setDrawerOpen(false)
+    drawerToggle.current?.focus()
+  }
 
   const dataset = useMemo(
     () => (view.trim ? trimLeadingRows(log.dataset, log.rampUp.rows) : log.dataset),
@@ -141,10 +155,33 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
       }}
     >
       <FileHeader fileName={log.fileName} summary={summary} unmatched={unmatched} onFiles={onFiles}>
+        <button
+          ref={drawerToggle}
+          type="button"
+          className="drawer-toggle"
+          aria-expanded={drawerOpen}
+          aria-controls={sidebarId}
+          onClick={() => (drawerOpen ? closeDrawer() : openDrawer())}
+        >
+          Parameters
+        </button>
         <ThemePicker />
       </FileHeader>
       <div className="workspace-body">
-        <aside className="sidebar" aria-label="Parameters">
+        <aside
+          id={sidebarId}
+          className={drawerOpen ? 'sidebar is-open' : 'sidebar'}
+          aria-label="Parameters"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape' && drawerOpen) {
+              event.stopPropagation()
+              closeDrawer()
+            }
+          }}
+        >
+          <button ref={drawerClose} type="button" className="drawer-close" onClick={closeDrawer}>
+            Close parameters
+          </button>
           <PresetPicker
             channels={channels}
             onApply={applyPresetIds}

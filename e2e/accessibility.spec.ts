@@ -32,6 +32,15 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await page.locator('.u-over').first().hover()
       expect(await violations(page)).toEqual([])
     })
+
+    test('the narrow layout passes axe, with the drawer closed and open', async ({ page }) => {
+      await page.setViewportSize({ width: 768, height: 900 })
+      await openLog(page)
+      expect(await violations(page)).toEqual([])
+      await page.getByRole('button', { name: 'Parameters' }).click()
+      await expect(page.getByRole('complementary', { name: 'Parameters' })).toBeVisible()
+      expect(await violations(page)).toEqual([])
+    })
   })
 }
 
