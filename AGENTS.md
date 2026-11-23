@@ -118,13 +118,13 @@ BimmerLink log (CSV):
 - Header-driven: the first column is `Time` (unquoted, seconds, 3 decimals, starts at 0.000); every other column header is a double-quoted parameter label. Which columns exist, and in what order, differs per log: always read the header, never assume positions.
 - Comma separated, `.` decimal point, LF line endings, no BOM, trailing newline, values unquoted. Be tolerant anyway (CRLF, BOM, empty/short files) and fail with friendly errors; those edge cases get fixtures in story #9.
 - Sampling is irregular, about 30 ms between rows. Do not assume a fixed step.
-- Label casing differs between logs (`Engine speed` vs `Engine Speed`), so label matching must be case-insensitive. Some labels are not in the catalog at all (for example `Target Rail Pressure`): unmatched columns must still work as plain series.
+- Label casing differs between logs (`Engine speed` vs `Engine Speed`), so label matching must be case-insensitive. A label that is not in the catalog must still work as a plain series. `Target Rail Pressure` was such a label until it got catalog entry 211 (not in the all-parameters export, it appears in the later logs).
 - Most channels start at `0` until their first sample arrives (staggered ramp-up) and are sample-and-hold afterwards, so leading zeros are mostly artefacts, not data (handling: `docs/ramp-up.md`; a placeholder is the text `0`, a sampled zero is `0.00`). A few channels already start with a non-zero value in row 0: the lambda adaptation factor `1.03` in `Example/2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in both `2026-10-24_12-29-08` logs. Never assume the first sample is zero.
 - Units are heterogeneous (rpm, bar, deg, lambda, degC, counters...), so multi-axis and normalisation are first-class needs.
 
 Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV; the CSV starts with a UTF-8 BOM):
 
-- 210 parameters for a BMW X4 M40i F26 (N55), in 17 categories (for example `Boost`, `Fuel / lambda`, `Ignition / knock`).
+- 211 parameters for a BMW X4 M40i F26 (N55), in 17 categories (for example `Boost`, `Fuel / lambda`, `Ignition / knock`).
 - Fields: `index`, `label`, `key` (snake_case, duplicates suffixed `_2`), `category`, `description`, `unit`, `role`, `confidence` (`high`/`medium`/`low`), `presets` (`1`..`6`, `1b`), `note`. The JSON has a `meta` block that documents the fields and a `parameters` array.
 - `role` is one of `core`, `standard`, `flag`, `counter`, `raw`, `redundant`, `static`, `broken`. `core` are the primary analysis channels, `redundant`/`static`/`broken` are usually hidden by default.
 - `src/lib/channels.ts` does the matching; the rules and the expected split per example log are in `docs/catalog-matching.md`.

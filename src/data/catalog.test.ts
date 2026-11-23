@@ -10,7 +10,7 @@ const source = JSON.parse(root('bimmerlink_n55_parameter_catalog.json')) as unkn
 describe('bundled catalog', () => {
   it('passes the runtime schema', () => {
     expect(validateCatalog(catalog)).toEqual([])
-    expect(parameters).toHaveLength(210)
+    expect(parameters).toHaveLength(211)
   })
 
   it('has a schema that rejects broken data', () => {

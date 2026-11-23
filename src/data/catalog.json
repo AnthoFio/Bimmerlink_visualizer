@@ -1,7 +1,7 @@
 {
   "meta": {
     "vehicle": "BMW X4 M40i F26 (N55), DME via BimmerLink over ENET",
-    "source": "Header of BimmerLink all-parameters CSV 2026-08-09_15-12-47.csv (210 columns, CSV order)",
+    "source": "Header of BimmerLink all-parameters CSV 2026-08-09_15-12-47.csv (210 columns, CSV order); plus index 211, a label that later logs carry and the all-parameters CSV does not",
     "fields": {
       "index": "1-based column position in the all-parameters CSV (labels may be reordered in smaller logs: match on label)",
       "label": "Exact BimmerLink column label",
@@ -2663,6 +2663,18 @@
         "5"
       ],
       "note": ""
+    },
+    {
+      "index": 211,
+      "label": "Target Rail Pressure",
+      "key": "target_rail_pressure",
+      "category": "Fuel / injection",
+      "description": "High-pressure rail pressure setpoint commanded by the DME. Compare with the filtered actual value.",
+      "unit": "bar",
+      "role": "standard",
+      "confidence": "medium",
+      "presets": [],
+      "note": "Not in the all-parameters CSV; seen in logs from 2026-10-24 on."
     }
   ]
 }

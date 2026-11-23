@@ -69,7 +69,7 @@ public/           Static assets copied as-is
 docs/adr/         Architecture decision records (ADR 0001: charting library)
 spikes/           Throwaway, isolated mini-projects that back an ADR (own package.json; see spikes/README.md)
 tests/fixtures/   Byte-exact test inputs derived from Example/ (see tests/fixtures/README.md)
-bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (210 parameters)
+bimmerlink_n55_parameter_catalog.(csv|json)   Source parameter catalog (211 parameters)
 ```
 
 Spikes under `spikes/` are excluded from ESLint, Prettier, `tsc -b` and Vitest, so `npm run check` and `npm run build` never touch them.

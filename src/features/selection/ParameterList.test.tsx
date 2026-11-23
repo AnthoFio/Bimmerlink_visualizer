@@ -6,10 +6,7 @@ import { describeChannels } from '../../lib/channels.ts'
 import { groupByCategory } from '../../lib/groups.ts'
 import { ParameterList } from './ParameterList.tsx'
 
-const channels = describeChannels(
-  ['Engine Speed', 'Oil Temperature', 'Target Rail Pressure'],
-  parameters,
-)
+const channels = describeChannels(['Engine Speed', 'Oil Temperature', 'Custom Sensor'], parameters)
 const colours = new Map(channels.map((channel, i) => [channel.id, `rgb(${i + 1}, 2, 3)`]))
 
 function setup(initial: string[] = []) {
@@ -194,7 +191,7 @@ describe('category groups', () => {
 
   it('follows the catalog categories, with Other last', () => {
     const all = describeChannels(
-      [...parameters.map((parameter) => parameter.label), 'Target Rail Pressure'],
+      [...parameters.map((parameter) => parameter.label), 'Custom Sensor'],
       parameters,
     )
     expect(groupByCategory(all).map(([category]) => category)).toEqual([

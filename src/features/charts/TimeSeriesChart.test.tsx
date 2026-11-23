@@ -150,9 +150,10 @@ describe('axes by unit', () => {
   })
 
   it('lists the axes that do not fit under the chart', () => {
-    render(chart([ids[0]!, ids[6]!, ids[7]!, ids[8]!, ids[9]!]))
+    render(chart([ids[0]!, ids[6]!, ids[8]!, ids[9]!, ids[10]!]))
 
-    expect(screen.getByRole('list', { name: 'Further axes' })).toHaveTextContent('rpm')
+    // Five units: count, bar, °C, rpm, %; the fifth does not fit.
+    expect(screen.getByRole('list', { name: 'Further axes' })).toHaveTextContent('%')
   })
 })
 
