@@ -10,6 +10,7 @@ import { VISIBLE_AXES } from '../../lib/axes.ts'
 import type { Axis, Gutters } from '../../lib/axes.ts'
 import { formatAxisTime } from '../../lib/format.ts'
 import { downsample } from '../../lib/downsample.ts'
+import { chartDrawn } from '../../lib/perfMarks.ts'
 import { toPercent } from '../../lib/normalise.ts'
 import { CHART_COLOURS } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
@@ -121,7 +122,14 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
     width,
     height,
     padding: [EDGE, padding('right'), 0, padding('left')],
-    hooks: { draw: [(chart) => placeStrips(chart)] },
+    hooks: {
+      draw: [
+        (chart) => {
+          placeStrips(chart)
+          if (chart.series.length > 1) chartDrawn()
+        },
+      ],
+    },
     legend: { show: false },
     cursor: {
       show: false,

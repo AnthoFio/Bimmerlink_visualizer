@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { logParsed, logReceived } from '../../lib/perfMarks.ts'
 import { describeLoadFailure } from '../../lib/readLog.ts'
 import type { ReadResult } from '../../lib/readLog.ts'
 import type { LoadLog } from './loadLog.ts'
@@ -33,6 +34,7 @@ export function useLogLoader(load: LoadLog) {
       const { signal } = controller
       setError(undefined)
       setPending({ name: file.name, size: file.size, progress: 0 })
+      const received = logReceived()
       try {
         const result = await load(file, {
           signal,
@@ -40,7 +42,10 @@ export function useLogLoader(load: LoadLog) {
             if (!signal.aborted) setPending({ name: file.name, size: file.size, progress })
           },
         })
-        if (!signal.aborted) setLog({ ...result, id: ++loads.current, fileName: file.name })
+        if (!signal.aborted) {
+          logParsed(received)
+          setLog({ ...result, id: ++loads.current, fileName: file.name })
+        }
       } catch (cause) {
         if (!signal.aborted) {
           setError(cause instanceof Error ? cause.message : describeLoadFailure(cause))

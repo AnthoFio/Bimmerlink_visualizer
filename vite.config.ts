@@ -40,6 +40,15 @@ export default defineConfig({
   // Served at / locally; the deploy workflow sets BASE_PATH (e.g. /Bimmerlink_visualizer/).
   base: process.env.BASE_PATH || '/',
   plugins: [themeInit(), csp(), react()],
+  build: {
+    rolldownOptions: {
+      output: {
+        // The chart library in a chunk of its own, so that the bundle budget can leave it out
+        // (docs/performance.md) and an app update does not invalidate it in the cache.
+        codeSplitting: { groups: [{ name: 'uplot', test: /[\\/]node_modules[\\/]uplot[\\/]/ }] },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

@@ -58,3 +58,7 @@ Note: for a private repository, GitHub only offers branch protection and ruleset
 ## End-to-end tests
 
 After the build, CI installs Chromium (`npx playwright install --with-deps chromium`) and runs `npm run e2e` headless against the production build. When the run fails, the screenshots and traces are uploaded as the artifact `e2e-failure`. Locally: `npm run build`, then `npm run e2e`.
+
+## Performance budgets (non-blocking)
+
+A second job, `perf` (shown as `Performance budgets`), builds, installs Chromium and runs `npm run e2e:perf` (see `docs/performance.md`). It has `continue-on-error: true`, so a slow runner never blocks a merge, and it is not the required check `CI`. Every perf test writes its numbers to a `perf.json`, which the job uploads as the artifact `perf-results`, also when a budget fails.

@@ -1,4 +1,5 @@
 import { readdirSync } from 'node:fs'
+import { basename } from 'node:path'
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { widenLog } from './wideLog.ts'
@@ -45,6 +46,15 @@ export async function openLogText(page: Page, name: string, text: string) {
   await expect(page.getByRole('heading', { level: 2, name, exact: true })).toBeVisible({
     timeout: 30_000,
   })
+}
+
+/** Opens a log from disk: Playwright passes at most 50 MB from memory. */
+export async function openLogFile(page: Page, path: string) {
+  await page.goto('./')
+  await page.getByLabel('BimmerLink CSV file').setInputFiles(path)
+  await expect(
+    page.getByRole('heading', { level: 2, name: basename(path), exact: true }),
+  ).toBeVisible({ timeout: 30_000 })
 }
 
 /**
