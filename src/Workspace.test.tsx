@@ -6,6 +6,11 @@ import { readLog } from './lib/readLog.ts'
 import { defaultView } from './lib/view.ts'
 import { layoutKey } from './lib/viewSchema.ts'
 import { loadFixtureText } from './test/fixtures.ts'
+
+// These tests render the whole app. On their own they take 0.2 to 0.4 s; when the full suite
+// runs about 11 jsdom workers in parallel, contention stretched single tests to 3 to 9 s
+// (measured 2026-11-23), past the default 5 s. They are slow there, not hanging.
+vi.setConfig({ testTimeout: 20_000 })
 import { FakeUplot } from './test/fakeUplot.ts'
 import { Workspace } from './Workspace.tsx'
 
@@ -698,11 +703,12 @@ describe('CSV export', () => {
 })
 
 describe('accessibility', () => {
-  it('has a data table as text alternative of the charts', () => {
+  it('has a data table as text alternative of the charts', async () => {
     setup()
     click(screen.getByText('Data table'))
 
-    const table = screen.getByRole('table', {
+    // The toggle event of <details> fires as a task of its own, so the table comes a little later.
+    const table = await screen.findByRole('table', {
       name: /samples, evenly spread over the visible window/,
     })
     expect(within(table).getAllByRole('row').length).toBeGreaterThan(10)

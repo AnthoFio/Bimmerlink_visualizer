@@ -4,6 +4,11 @@ import App from './App.tsx'
 import { directLoader } from './test/directLoader.ts'
 import { loadFixtureText } from './test/fixtures.ts'
 
+// These tests render the whole app. On their own they take 0.2 to 0.4 s; when the full suite
+// runs about 11 jsdom workers in parallel, contention stretched single tests to 3 to 9 s
+// (measured 2026-11-23), past the default 5 s. They are slow there, not hanging.
+vi.setConfig({ testTimeout: 20_000 })
+
 const LOG = 'trimmed_2026-10-25_09-33-22.csv'
 
 const pick = (name: string, text: string) =>

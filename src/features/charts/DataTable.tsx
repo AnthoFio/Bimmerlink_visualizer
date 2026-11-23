@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../../components/useStore.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { formatValue } from '../../lib/format.ts'
@@ -22,7 +22,8 @@ interface Props {
  * The text alternative of the canvas charts: a summary and a table of samples, over the
  * selected range, or over the visible window when nothing is selected.
  */
-export function DataTable({ dataset, channels, viewport }: Props) {
+/** Rendered only while open: closed, it would still follow every frame of a pan. */
+function DataTableBody({ dataset, channels, viewport }: Props) {
   const selection = useStore(viewport, (state) => state.selection)
   const window = useStore(viewport, (state) => state.window)
   const range = selection ?? resolveWindow(window, logExtent(dataset.time))
@@ -40,8 +41,7 @@ export function DataTable({ dataset, channels, viewport }: Props) {
   const scope = selection ? 'the selected range' : 'the visible window'
 
   return (
-    <details className="data-table">
-      <summary>Data table</summary>
+    <>
       <p>
         {channels.length === 0
           ? 'No series is visible.'
@@ -84,6 +84,17 @@ export function DataTable({ dataset, channels, viewport }: Props) {
           </table>
         </div>
       )}
+    </>
+  )
+}
+
+export function DataTable(props: Props) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <details className="data-table" onToggle={(event) => setOpen(event.currentTarget.open)}>
+      <summary>Data table</summary>
+      {open && <DataTableBody {...props} />}
     </details>
   )
 }
