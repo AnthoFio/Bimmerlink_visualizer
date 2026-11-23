@@ -8,10 +8,10 @@ import { parseLogText } from './parseLog.ts'
 const EXPECTED: [file: string, matched: number, unmatched: string[]][] = [
   ['2026-09-06_09-23-14.csv', 12, []],
   ['2026-09-06_10-09-49.csv', 12, []],
-  ['2026-10-24_12-29-08 2.csv', 8, ['Target Rail Pressure']],
-  ['2026-10-24_12-29-08.csv', 8, ['Target Rail Pressure']],
-  ['2026-10-25_09-33-22.csv', 10, ['Target Rail Pressure']],
-  ['2026-11-14_10-12-17.csv', 12, ['Target Rail Pressure']],
+  ['2026-10-24_12-29-08 2.csv', 9, []],
+  ['2026-10-24_12-29-08.csv', 9, []],
+  ['2026-10-25_09-33-22.csv', 11, []],
+  ['2026-11-14_10-12-17.csv', 13, []],
 ]
 
 const describeNames = (...names: string[]) => describeChannels(names, parameters)
@@ -52,7 +52,7 @@ describe('describeChannels', () => {
   })
 
   it('gives an unmatched column the category Other and no unit', () => {
-    expect(describeNames('Target Rail Pressure')[0]).toMatchObject({
+    expect(describeNames('Custom Sensor')[0]).toMatchObject({
       matched: false,
       category: 'Other',
       unit: undefined,

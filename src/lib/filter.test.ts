@@ -4,7 +4,7 @@ import { describeChannels } from './channels.ts'
 import { filterChannels, isFiltering, NO_FILTER } from './filter.ts'
 
 const channels = describeChannels(
-  [...parameters.map((parameter) => parameter.label), 'Target Rail Pressure'],
+  [...parameters.map((parameter) => parameter.label), 'Custom Sensor'],
   parameters,
 )
 const find = (change: Partial<typeof NO_FILTER>) =>
@@ -33,7 +33,7 @@ describe('filterChannels', () => {
     expect(find({ category: 'Boost' })).toHaveLength(9)
     expect(find({ unit: 'rpm' })).toHaveLength(7)
     expect(find({ role: 'core' })).toHaveLength(49)
-    expect(find({ unit: 'unit unknown' }).map((c) => c.name)).toEqual(['Target Rail Pressure'])
+    expect(find({ unit: 'unit unknown' }).map((c) => c.name)).toEqual(['Custom Sensor'])
   })
 
   it('combines the filters with AND', () => {

@@ -209,3 +209,4 @@
 208,Voltage PWG potentiometer 1,voltage_pwg_potentiometer_1,Engine status,"Raw voltage, accelerator pedal sensor 1 (PWG).",V,raw,high,,
 209,Voltage PWG potentiometer 2,voltage_pwg_potentiometer_2,Engine status,"Raw voltage, accelerator pedal sensor 2 (PWG).",V,raw,high,,
 210,Voltage behind VVT / motor relay,voltage_behind_vvt_motor_relay,Electrical / charging,Supply voltage after the Valvetronic/engine relay. Good proxy for system voltage.,V,standard,high,5,
+211,Target Rail Pressure,target_rail_pressure,Fuel / injection,High-pressure rail pressure setpoint commanded by the DME. Compare with the filtered actual value.,bar,standard,medium,,Not in the all-parameters CSV; seen in logs from 2026-10-24 on.

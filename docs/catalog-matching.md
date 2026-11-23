@@ -9,13 +9,13 @@
 
 ## Expected split of the example logs
 
-| Log (`Example/`)            | Columns | Matched | Unmatched              |
-| --------------------------- | ------- | ------- | ---------------------- |
-| `2026-09-06_09-23-14.csv`   | 12      | 12      | none                   |
-| `2026-09-06_10-09-49.csv`   | 12      | 12      | none                   |
-| `2026-10-24_12-29-08.csv`   | 9       | 8       | `Target Rail Pressure` |
-| `2026-10-24_12-29-08 2.csv` | 9       | 8       | `Target Rail Pressure` |
-| `2026-10-25_09-33-22.csv`   | 11      | 10      | `Target Rail Pressure` |
-| `2026-11-14_10-12-17.csv`   | 13      | 12      | `Target Rail Pressure` |
+| Log (`Example/`)            | Columns | Matched | Unmatched |
+| --------------------------- | ------- | ------- | --------- |
+| `2026-09-06_09-23-14.csv`   | 12      | 12      | none      |
+| `2026-09-06_10-09-49.csv`   | 12      | 12      | none      |
+| `2026-10-24_12-29-08.csv`   | 9       | 9       | none      |
+| `2026-10-24_12-29-08 2.csv` | 9       | 9       | none      |
+| `2026-10-25_09-33-22.csv`   | 11      | 11      | none      |
+| `2026-11-14_10-12-17.csv`   | 13      | 13      | none      |
 
 `src/lib/channels.test.ts` holds the same table and fails when the split changes.

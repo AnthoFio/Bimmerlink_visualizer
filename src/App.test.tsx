@@ -154,7 +154,9 @@ describe('opening another file', () => {
 
 describe('catalog matching in the summary', () => {
   it('reports the number of unmatched columns', async () => {
-    const header = await openLog()
+    render(<App loadLog={directLoader} />)
+    pick('log.csv', 'Time,"Engine Speed","Custom Sensor"\n0.000,800.00,1.00\n0.030,810.00,2.00\n')
+    const header = await loaded('log.csv')
 
     expect(header.getByText('Not in catalog').nextElementSibling).toHaveTextContent('1')
   })

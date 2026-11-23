@@ -31,7 +31,7 @@ describe('ParameterInfo', () => {
   })
 
   it('works for a column that is not in the catalog', () => {
-    const { tooltip } = show('Target Rail Pressure')
+    const { tooltip } = show('Custom Sensor')
 
     expect(tooltip).toHaveTextContent('Not in the parameter catalog')
     expect(tooltip).toHaveTextContent('Other')
