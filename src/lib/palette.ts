@@ -62,7 +62,8 @@ export function extendSlots(
   shown: readonly string[],
   count = 8,
 ): Map<string, number> {
-  const next = new Map(slots)
+  // Only shown series hold a slot: a kept slot of a hidden one could be given away and collide.
+  const next = new Map([...slots].filter(([id]) => shown.includes(id)))
   const used = new Array<number>(count).fill(0)
   for (const id of shown) {
     const slot = next.get(id)

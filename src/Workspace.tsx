@@ -193,12 +193,6 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
           id={sidebarId}
           className={drawerOpen ? 'sidebar is-open' : 'sidebar'}
           aria-label="Parameters"
-          onKeyDown={(event) => {
-            if (event.key === 'Escape' && drawerOpen) {
-              event.stopPropagation()
-              closeDrawer()
-            }
-          }}
         >
           <button ref={drawerClose} type="button" className="drawer-close" onClick={closeDrawer}>
             Close parameters
@@ -262,9 +256,10 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
                   view,
                   windowOf: (panel) => resolveWindow(windowOf(viewport.get(), panel), extent),
                 })
-                const text = chartSvg(model, { title: logTitle(log.fileName), theme, width })
-                const height = Number(/height="(\d+)"/.exec(text)?.[1] ?? 0)
-                return { text, width, height }
+                return {
+                  ...chartSvg(model, { title: logTitle(log.fileName), theme, width }),
+                  width,
+                }
               }}
             />
             <ViewFileActions

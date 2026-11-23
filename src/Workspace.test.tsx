@@ -693,6 +693,15 @@ describe('view files', () => {
     })
     expect(await screen.findByRole('alert')).toHaveTextContent('not a view file')
   })
+
+  it('says so when the file cannot be read', async () => {
+    setup()
+    const file = new File(['{}'], 'view.json')
+    file.text = () => Promise.reject(new DOMException('Gone', 'NotReadableError'))
+
+    fireEvent.change(screen.getByLabelText('View file'), { target: { files: [file] } })
+    expect(await screen.findByRole('alert')).toHaveTextContent('could not be read')
+  })
 })
 
 describe('CSV export', () => {

@@ -1,8 +1,7 @@
 // Parses a BimmerLink datalog (CSV) into a column-oriented dataset: one shared
 // time axis plus one Float64Array per parameter column.
 //
-// Pure and worker-safe: no React, no DOM imports, plain values in and out
-// (`Blob` is only used as a type and through `Blob.text()`, both available in workers).
+// Pure and worker-safe: no React, no DOM imports, plain values in and out.
 //
 // Why a purpose-built parser instead of PapaParse: the format is tiny and fixed
 // (comma separated, `.` decimal point, optional BOM and CRLF, quoted header labels,
@@ -155,9 +154,4 @@ export function parseLogText(input: string, onProgress?: (share: number) => void
     time: time.slice(0, rows),
     columns: header.slice(1).map((name, c) => ({ name, values: values[c]!.slice(0, rows) })),
   }
-}
-
-/** Parses a log given as text or as a `File`/`Blob` (decoded as UTF-8). */
-export async function parseLog(input: string | Blob): Promise<LogDataset> {
-  return parseLogText(typeof input === 'string' ? input : await input.text())
 }

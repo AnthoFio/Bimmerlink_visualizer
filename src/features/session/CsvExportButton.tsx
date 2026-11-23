@@ -16,9 +16,11 @@ interface Props {
 
 export function CsvExportButton({ fileName, dataset, channels, window }: Props) {
   const [busy, setBusy] = useState(false)
+  const [problem, setProblem] = useState<string>()
 
   const run = async () => {
     setBusy(true)
+    setProblem(undefined)
     try {
       const columns = channels.map((channel) => ({
         name: channel.label,
@@ -26,14 +28,23 @@ export function CsvExportButton({ fileName, dataset, channels, window }: Props) 
       }))
       const parts = await exportCsv(dataset.time, columns, window())
       saveFile(`${baseName(fileName)}.selection.csv`, new Blob(parts, { type: 'text/csv' }))
+    } catch {
+      setProblem('The CSV could not be made. Try a shorter window.')
     } finally {
       setBusy(false)
     }
   }
 
   return (
-    <button type="button" disabled={busy || channels.length === 0} onClick={() => void run()}>
-      {busy ? 'Exporting…' : 'Export CSV'}
-    </button>
+    <>
+      <button type="button" disabled={busy || channels.length === 0} onClick={() => void run()}>
+        {busy ? 'Exporting…' : 'Export CSV'}
+      </button>
+      {problem && (
+        <span role="alert" className="inline-error">
+          {problem}
+        </span>
+      )}
+    </>
   )
 }

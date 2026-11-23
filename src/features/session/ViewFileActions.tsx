@@ -18,7 +18,14 @@ export function ViewFileActions({ fileName, ids, current, onImport }: Props) {
   const [message, setMessage] = useState<{ text: string; error: boolean }>()
 
   const importFile = async (file: File) => {
-    const result = parseViewFile(await file.text(), ids)
+    let text: string
+    try {
+      text = await file.text()
+    } catch {
+      setMessage({ text: 'The file could not be read. Choose it again.', error: true })
+      return
+    }
+    const result = parseViewFile(text, ids)
     if ('error' in result) {
       setMessage({ text: result.error, error: true })
       return

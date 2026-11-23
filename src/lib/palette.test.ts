@@ -22,10 +22,19 @@ describe('extendSlots', () => {
     const first = extendSlots(new Map(), eleven.slice(0, 6))
     const later = extendSlots(first, [...eleven.slice(0, 3), ...eleven.slice(6, 11)])
 
-    for (const id of eleven.slice(0, 6)) expect(later.get(id)).toBe(first.get(id))
+    for (const id of eleven.slice(0, 3)) expect(later.get(id)).toBe(first.get(id))
     // The three that stay and the five that join share the eight slots.
     const shown = [...eleven.slice(0, 3), ...eleven.slice(6, 11)].map((id) => later.get(id))
     expect(new Set(shown).size).toBe(8)
+  })
+
+  it('gives no two shown series one slot after a series is hidden and shown again', () => {
+    // Both prefer slot 4 by their hash.
+    const shown = extendSlots(new Map(), ['engine speed'])
+    const swapped = extendSlots(shown, ['ignition timing'])
+    const both = extendSlots(swapped, ['engine speed', 'ignition timing'])
+
+    expect(both.get('engine speed')).not.toBe(both.get('ignition timing'))
   })
 
   it('spreads more than eight shown series evenly', () => {
