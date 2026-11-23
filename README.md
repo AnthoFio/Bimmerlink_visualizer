@@ -5,7 +5,7 @@
 Live: https://anthofio.github.io/Bimmerlink_visualizer/ (setup and previews: `docs/deploy.md`)
 
 Drop a BimmerLink datalog (CSV) onto the page and it turns into dynamic, explorable charts: pick the parameters to show, group them, change scales and zoom into events.
-Everything runs in the browser, so your logs never leave your machine.
+Everything runs in the browser, so your logs never leave your machine: no backend, no analytics, and a strict Content-Security-Policy that lets the page connect nowhere (see `docs/privacy.md`).
 Stack: React 19, TypeScript (strict) and Vite.
 
 ## Getting started

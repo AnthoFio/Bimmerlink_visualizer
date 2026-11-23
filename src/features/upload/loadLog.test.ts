@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { loadFixtureText } from '../../test/fixtures.ts'
 import { handleParseRequest } from './parseJob.ts'
 import type { ParseMessage } from './parseJob.ts'
-import { loadLogInWorker } from './loadLog.ts'
+import { loadLogInWorker, startParseWorker } from './loadLog.ts'
 import type { ParseWorker } from './loadLog.ts'
 
 const LOG = loadFixtureText('trimmed_2026-11-14_10-12-17.csv')
@@ -116,5 +116,75 @@ describe('loadLogInWorker (page side)', () => {
     })
 
     await expect(loading).rejects.toThrow(/could not be read/)
+  })
+})
+
+describe('the parse worker started with the page', () => {
+  const result = {
+    dataset: { time: new Float64Array(1), columns: [] },
+    warnings: [],
+    rampUp: { channelRows: [], rows: 0 },
+  }
+
+  // A cancelled load takes the started worker, if any, and stops it: each test starts clean.
+  beforeEach(async () => {
+    const controller = new AbortController()
+    controller.abort()
+    await loadLogInWorker(new File([''], 'x.csv'), { signal: controller.signal }).catch(() => {})
+  })
+
+  it('serves log after log without starting another worker, so no network is needed', async () => {
+    const { worker, send } = fakeWorker()
+    const create = vi.fn(() => worker)
+    startParseWorker(create)
+    startParseWorker(create)
+    expect(create).toHaveBeenCalledOnce()
+
+    const first = loadLogInWorker(new File([LOG], 'a.csv'), {})
+    send({ type: 'done', result })
+    await expect(first).resolves.toBe(result)
+
+    const second = loadLogInWorker(new File([LOG], 'b.csv'), {})
+    send({ type: 'error', message: 'The file is empty.' })
+    await expect(second).rejects.toThrow('The file is empty.')
+
+    expect(worker.postMessage).toHaveBeenCalledTimes(2)
+    expect(worker.terminate).not.toHaveBeenCalled()
+    expect(create).toHaveBeenCalledOnce()
+
+    // Cancelling stops it for good; the next start makes a new one.
+    const controller = new AbortController()
+    const third = loadLogInWorker(new File([LOG], 'c.csv'), { signal: controller.signal })
+    controller.abort()
+    await expect(third).rejects.toMatchObject({ name: 'AbortError' })
+    expect(worker.terminate).toHaveBeenCalledOnce()
+    const next = fakeWorker()
+    startParseWorker(() => next.worker)
+    const fourth = loadLogInWorker(new File([LOG], 'd.csv'), {})
+    expect(next.worker.postMessage).toHaveBeenCalledOnce()
+    next.send({ type: 'done', result })
+    await expect(fourth).resolves.toBe(result)
+  })
+
+  it('drops a worker that fails before its first log', async () => {
+    const { worker } = fakeWorker()
+    startParseWorker(() => worker)
+    worker.onerror?.({} as ErrorEvent)
+    expect(worker.terminate).toHaveBeenCalledOnce()
+
+    const next = fakeWorker()
+    startParseWorker(() => next.worker)
+    const loading = loadLogInWorker(new File([LOG], 'a.csv'), {})
+    expect(worker.postMessage).not.toHaveBeenCalled()
+    next.send({ type: 'done', result })
+    await expect(loading).resolves.toBe(result)
+  })
+
+  it('starts nothing when workers are unavailable', () => {
+    expect(() =>
+      startParseWorker(() => {
+        throw new Error('blocked')
+      }),
+    ).not.toThrow()
   })
 })

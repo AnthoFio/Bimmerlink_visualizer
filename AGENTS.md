@@ -11,7 +11,7 @@ The user drops a BimmerLink datalog (CSV) onto the page and gets dynamic, explor
 
 Hard rules:
 
-- Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics on log content.
+- Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics or telemetry, no third-party origins. The production build carries a strict Content-Security-Policy (`connect-src 'none'`); guarantees, policy and tests are in `docs/privacy.md`. A new inline script needs its hash in that policy.
 - Spec-driven: every story has acceptance criteria that become tests first; CI and the local gate are the judge.
 - Performance target: 50k rows x 13 channels interactive in under 1 s after parse.
 - The initiative (`_bmad-output/initiative-bimmerlink-log-visualizer/initiative-bimmerlink-log-visualizer.md`) holds the vision, requirements and guardrails; read it before starting any story.
@@ -67,7 +67,7 @@ src/
   data/                    Static data bundled with the app (e.g. the parameter catalog)
   test/                    Shared test setup (setup.ts) and repo-level tests
 public/                    Static assets copied as-is
-docs/                      Process docs (ci.md, deploy.md, process/labels-and-board.md)
+docs/                      Process docs (ci.md, deploy.md, privacy.md, process/labels-and-board.md)
 _bmad/                     BMad setup: scripts and config (the render cache and the personal user config are git-ignored)
 _bmad-output/              The ticket tree (initiative, epics, stories) and other BMad artifacts
 scripts/                   Small helper scripts (set-project-status.ps1)
@@ -83,7 +83,7 @@ Rules:
 
 - `src/lib/` has no React and no DOM imports; it takes plain values in and returns plain values out. Put logic there so it is trivially unit-testable.
 - `src/features/<name>/` owns its components, hooks and local state. Features may import from `src/lib/` and `src/data/`; `src/lib/` never imports from `src/features/`. Features do not import from each other: lift shared code into `src/lib/` or a shared component folder.
-- Heavy work stays off the main thread: `src/features/upload/parse.worker.ts` parses and validates, then transfers the typed arrays. Keep `src/lib/` functions worker-safe.
+- Heavy work stays off the main thread: `src/features/upload/parse.worker.ts` parses and validates, then transfers the typed arrays. Keep `src/lib/` functions worker-safe. `src/main.tsx` starts the worker with the page and `loadLogInWorker` keeps it after each log, so opening a log needs no network after load.
 - jsdom has no Worker: UI tests pass `src/test/directLoader.ts` to `App`.
 - Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). `readLog` in `src/lib/readLog.ts` validates on top of it: user-facing errors, warnings for what is tolerated, and a finite, non-decreasing time axis.
 - Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
