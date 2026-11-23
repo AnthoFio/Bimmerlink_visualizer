@@ -10,7 +10,7 @@ interface Props {
 export function LoadStatus({ name, size, progress, onCancel }: Props) {
   return (
     <div className="load-status">
-      <span role="status">Reading {name}…</span>
+      <span>Reading {name}…</span>
       {size > PROGRESS_FROM_BYTES && (
         <progress aria-label={`Reading ${name}`} max={1} value={progress} />
       )}

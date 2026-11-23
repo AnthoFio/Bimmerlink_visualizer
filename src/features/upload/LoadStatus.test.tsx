@@ -18,7 +18,7 @@ describe('LoadStatus', () => {
     render(<LoadStatus name="small.csv" size={MB} progress={0} onCancel={vi.fn()} />)
 
     expect(screen.queryByRole('progressbar')).toBeNull()
-    expect(screen.getByRole('status')).toHaveTextContent('Reading small.csv')
+    expect(screen.getByText(/Reading small.csv/)).toBeVisible()
   })
 
   it('can be cancelled', () => {

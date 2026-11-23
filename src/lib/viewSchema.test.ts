@@ -3,6 +3,7 @@ import {
   addPanel,
   assignPanel,
   defaultView,
+  PANEL_HEIGHT,
   setAxisRange,
   updatePanel,
   updateSeries,
@@ -83,5 +84,13 @@ describe('layoutKey', () => {
     expect(layoutKey(['b', 'a'])).toBe(layoutKey(['a', 'b']))
     expect(layoutKey(['a', 'b'])).not.toBe(layoutKey(['a', 'c']))
     expect(layoutKey(['a'])).toMatch(/^blv:view:v1:[0-9a-f]{8}$/)
+  })
+})
+
+describe('panel height', () => {
+  it.each([null, '', false, true, 'tall'])('uses the default height for %j', (height) => {
+    const odd = { ...custom, panels: [{ ...custom.panels[0]!, height }] }
+
+    expect(readView(odd, ids)!.view.panels[0]!.height).toBe(PANEL_HEIGHT.initial)
   })
 })

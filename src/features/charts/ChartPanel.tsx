@@ -12,7 +12,7 @@ import { formatAxisTime } from '../../lib/format.ts'
 import { downsample } from '../../lib/downsample.ts'
 import { chartDrawn } from '../../lib/perfMarks.ts'
 import { toPercent } from '../../lib/normalise.ts'
-import { CHART_COLOURS } from '../../lib/palette.ts'
+import { CHART_COLOURS, dimmed } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import type { TimeWindow } from '../../lib/timeWindow.ts'
 import type { Range } from '../../lib/yRange.ts'
@@ -45,6 +45,8 @@ interface Props {
   gestures: GestureTarget
   onRange: (key: string, range: Range | null) => void
   cursor: CursorSource
+  /** The series highlighted from the legend; the others are dimmed. Only a redraw. */
+  focus: string | null
   selection: TimeWindow | null
   series: readonly PlotSeries[]
   axes: readonly Axis[]
@@ -84,7 +86,13 @@ function placeStrips(chart: uPlot) {
   })
 }
 
-function chartOptions(model: () => Model, width: number, height: number): uPlot.Options {
+function chartOptions(
+  model: () => Model,
+  width: number,
+  height: number,
+  /** Ranges shown during an axis drag, ahead of the view. */
+  previews: readonly (Range | undefined)[],
+): uPlot.Options {
   const ink = () => CHART_COLOURS[model().theme].ink
   const grid = () => CHART_COLOURS[model().theme].grid
 
@@ -93,7 +101,9 @@ function chartOptions(model: () => Model, width: number, height: number): uPlot.
     scales[scaleKey(i)] = {
       auto: true,
       range: () => {
-        const range = model().axes[i]?.members.length ? model().ranges[i] : undefined
+        const range = model().axes[i]?.members.length
+          ? (previews[i] ?? model().ranges[i])
+          : undefined
         return range ? [range[0], range[1]] : [null, null]
       },
     }
@@ -184,9 +194,10 @@ export function ChartPanel(props: Props) {
   useLayoutEffect(() => {
     const target = host.current!
     const model = () => latest.current
+    const previews: (Range | undefined)[] = []
     const width = target.clientWidth || FALLBACK_WIDTH
     const chart = new uPlot(
-      chartOptions(model, width, model().height),
+      chartOptions(model, width, model().height, previews),
       [new Float64Array()],
       target,
     )
@@ -210,7 +221,13 @@ export function ChartPanel(props: Props) {
     observer.observe(target)
     const { strips, destroy } = createAxisStrips(VISIBLE_AXES, {
       range: (slot) => model().ranges[slot],
-      setRange: (slot, range) => {
+      // Setting x again makes uPlot ask every scale for its range, the previews included.
+      preview: (slot, range) => {
+        previews[slot] = range
+        chart.setScale('x', { min: model().window.min, max: model().window.max })
+      },
+      commit: (slot, range) => {
+        previews.length = 0
         const axis = model().axes[slot]
         if (axis) model().onRange(axis.key, range)
       },
@@ -261,7 +278,11 @@ export function ChartPanel(props: Props) {
               points: { show: false },
               // align 1 holds each sample until the next one.
               paths: line.stepped ? uPlot.paths.stepped?.({ align: 1 }) : undefined,
-              stroke: () => latest.current.series[i]?.colour ?? line.colour,
+              stroke: () => {
+                const { series: now, focus } = latest.current
+                const colour = now[i]?.colour ?? line.colour
+                return focus && focus !== now[i]?.id ? dimmed(colour) : colour
+              },
             },
             i + 1,
           )
@@ -313,7 +334,7 @@ export function ChartPanel(props: Props) {
 
   useLayoutEffect(() => {
     plot.current?.redraw()
-  }, [theme])
+  }, [theme, props.focus])
 
   return <div ref={host} className="chart-host" />
 }

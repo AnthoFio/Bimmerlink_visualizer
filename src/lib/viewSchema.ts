@@ -15,7 +15,8 @@ const COLOUR = /^#[0-9a-f]{6}$/i
 
 function readPanel(value: unknown): Panel | undefined {
   if (!isRecord(value) || typeof value.id !== 'string' || !value.id) return undefined
-  const height = Number(value.height)
+  // Number() would read null, '' and false as 0.
+  const height = typeof value.height === 'number' ? value.height : NaN
   return {
     id: value.id,
     height: Number.isFinite(height)

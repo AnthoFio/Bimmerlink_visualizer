@@ -383,13 +383,23 @@ describe('manual Y ranges', () => {
     const auto = rangeOfAxis(0)
     const strip = FakeUplot.last.root.querySelector<HTMLElement>('.axis-drag')!
 
+    const setItem = vi.spyOn(Storage.prototype, 'setItem')
     act(() => {
       fireEvent.pointerDown(strip, { clientY: 200, button: 0 })
+      fireEvent.pointerMove(window, { clientY: 160 })
       fireEvent.pointerMove(window, { clientY: 120 })
-      fireEvent.pointerUp(window)
     })
+    // While dragging, the chart follows, but the view is neither changed nor saved.
+    const [dragMin, dragMax] = rangeOfAxis(0)
+    expect(dragMax! - dragMin!).toBeLessThan(auto[1]! - auto[0]!)
+    expect(setItem).not.toHaveBeenCalled()
+    expect(screen.getByRole('checkbox', { name: 'Auto range of rpm in panel 1' })).toBeChecked()
+
+    act(() => void fireEvent.pointerUp(window))
+    expect(setItem).toHaveBeenCalledOnce()
+    setItem.mockRestore()
     const [min, max] = rangeOfAxis(0)
-    expect(max! - min!).toBeLessThan(auto[1]! - auto[0]!)
+    expect([min, max]).toEqual([dragMin, dragMax])
 
     act(() => void fireEvent.dblClick(strip))
     expect(rangeOfAxis(0)).toEqual(auto)
@@ -508,8 +518,13 @@ describe('colours and legend', () => {
   it('highlights the hovered series and dims the others', () => {
     setup()
     const normal = strokeOf('Oil Temperature')
+    const data = FakeUplot.last.data
+    const redraws = FakeUplot.last.redraws
 
     act(() => void fireEvent.mouseEnter(legendButton('Engine Speed')))
+    // Only the colours change: a redraw, without sampling the data again.
+    expect(FakeUplot.last.data).toBe(data)
+    expect(FakeUplot.last.redraws).toBeGreaterThan(redraws)
     expect(strokeOf('Oil Temperature')).toMatch(/^rgba\(.*0\.22\)$/)
     expect(strokeOf('Engine Speed')).not.toMatch(/rgba/)
 
@@ -775,5 +790,39 @@ describe('side panel drawer', () => {
     expect(legendOf(1)).toHaveLength(5)
     expect(FakeUplot.instances).toHaveLength(count)
     expect(FakeUplot.instances[0]!.x).toEqual(zoomed)
+  })
+})
+
+describe('drawer, closing', () => {
+  const toggle = () => screen.getByRole('button', { name: 'Parameters' })
+
+  it('closes with Escape wherever the focus is', () => {
+    setup()
+    click(toggle())
+    expect(toggle()).toHaveAttribute('aria-expanded', 'true')
+
+    const chart = screen.getAllByRole('group', { name: /Time-series chart/ })[0]!
+    chart.focus()
+    act(() => void fireEvent.keyDown(chart, { key: 'Escape' }))
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('does not reopen by itself after the window grew past 900 px', () => {
+    const listeners = new Set<() => void>()
+    const wide = { matches: false }
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      get matches() {
+        return query.includes('min-width: 900px') && wide.matches
+      },
+      addEventListener: (_type: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_type: string, listener: () => void) => listeners.delete(listener),
+    }))
+    setup()
+    click(toggle())
+
+    wide.matches = true
+    act(() => listeners.forEach((listener) => listener()))
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    vi.unstubAllGlobals()
   })
 })

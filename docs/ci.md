@@ -11,6 +11,9 @@ It runs on every pull request and on every push to `main`, on `ubuntu-latest`:
 3. `npm ci`
 4. `npm run check`: ESLint, Prettier check, TypeScript typecheck and Vitest unit tests
 5. `npm run build`: typecheck plus production build
+6. `npx playwright install --with-deps chromium`, then `npm run e2e`: the browser tests against the production build; on a failure the screenshots and traces are uploaded as `e2e-failure`
+
+A second job, `perf` ("Performance budgets"), builds and runs `npm run e2e:perf` with `continue-on-error: true`, so it never fails the required check `CI`; it uploads its measurements as `perf-results` (see `docs/performance.md`).
 
 The same commands run locally, so a failing CI step is reproduced with the same `npm run ...`.
 
@@ -19,7 +22,7 @@ Design choices:
 - No interactive steps; `CI=true` and `NO_COLOR=1` keep the logs plain text, and each step has its own name, so the failing step and its output are easy to find for people and agents (`gh run view <id> --log-failed`).
 - `permissions: contents: read` (least privilege); the workflow has no secrets and no write access.
 - A `concurrency` group per PR/branch cancels superseded runs.
-- Third-party actions are pinned to a major version tag (`@v7`).
+- Actions are pinned to a major version tag (`@v7` for checkout and setup-node, `@v4` for the artifact and Pages actions).
 - `HUSKY=0` skips git hook installation during `npm ci`.
 
 ## Branch protection on `main` (documented, not enabled)

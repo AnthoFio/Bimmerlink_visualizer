@@ -20,7 +20,19 @@ export function UploadPanel({ onFile, children }: Props) {
   }
 
   return (
-    <div className="landing">
+    <div
+      className="landing"
+      // A file dropped anywhere on the page opens, instead of the browser navigating to it.
+      onDragOver={(event) => {
+        if (event.dataTransfer.types.includes('Files')) event.preventDefault()
+      }}
+      onDrop={(event) => {
+        if (!event.dataTransfer.types.includes('Files')) return
+        event.preventDefault()
+        setDragging(false)
+        open(Array.from(event.dataTransfer.files))
+      }}
+    >
       <h1>BimmerLink Log Visualizer</h1>
       <p className="lead">
         Open a datalog and it turns into charts: choose the channels, zoom into an event and read
@@ -37,11 +49,6 @@ export function UploadPanel({ onFile, children }: Props) {
         onDragLeave={(event) => {
           // dragleave also fires when the pointer moves onto a child of the zone.
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false)
-        }}
-        onDrop={(event) => {
-          event.preventDefault()
-          setDragging(false)
-          open(Array.from(event.dataTransfer.files))
         }}
       >
         <p className="drop-title">

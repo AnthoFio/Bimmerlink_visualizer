@@ -70,6 +70,27 @@ export function Workspace({ log, onFiles, onUnsavedChange, children }: Props) {
   useEffect(() => {
     if (drawerOpen) drawerClose.current?.focus()
   }, [drawerOpen])
+  // While open: Escape closes it wherever the focus is, and so does a window that grows
+  // past the drawer width, so that narrowing it again does not reopen it by itself.
+  useEffect(() => {
+    if (!drawerOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setDrawerOpen(false)
+      drawerToggle.current?.focus()
+    }
+    const wide =
+      typeof window.matchMedia === 'function' ? window.matchMedia('(min-width: 900px)') : null
+    const onWide = () => {
+      if (wide?.matches) setDrawerOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    wide?.addEventListener('change', onWide)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      wide?.removeEventListener('change', onWide)
+    }
+  }, [drawerOpen])
   const openDrawer = () => setDrawerOpen(true)
   const closeDrawer = () => {
     setDrawerOpen(false)

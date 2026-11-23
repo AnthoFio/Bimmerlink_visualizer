@@ -71,6 +71,10 @@ export function exportModel({
           (id) => panelOf(view, id) === panel.id && !settingsOf(view, id).hidden,
         ),
       )
+      // Dashes follow the legend, which also lists the hidden series, as on screen.
+      const listed = channels
+        .filter((c) => view.selected.includes(c.id) && panelOf(view, c.id) === panel.id)
+        .map((c) => c.id)
       const normalised = panel.normalise !== 'off'
       const { items, axes } = panelContent(
         channels,
@@ -107,7 +111,7 @@ export function exportModel({
           y: spans ? toPercent(ys[i]!, spans[i]!) : ys[i]!,
           stepped: isStepped(channel, panel.lines),
           axis,
-          dash: dashOf(i, panel.patterns),
+          dash: dashOf(listed.indexOf(channel.id), panel.patterns),
         })),
         legend: items.map(({ channel, colour }) => ({
           name: `${channel.name} (${unitLabel(channel.unit)})`,
@@ -137,11 +141,15 @@ export function niceTicks(min: number, max: number, count: number): number[] {
   return ticks
 }
 
+/** XML text: markup characters escaped, and the control characters XML forbids dropped. */
 const escape = (text: string) =>
-  text.replace(
-    /[<>&"]/g,
-    (char) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[char]!,
-  )
+  text
+    // eslint-disable-next-line no-control-regex -- removing them is the point
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '')
+    .replace(
+      /[<>&"]/g,
+      (char) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[char]!,
+    )
 
 const tickText = (value: number) => String(Number(value.toPrecision(6)))
 

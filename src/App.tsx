@@ -42,7 +42,10 @@ export default function App({ loadLog = loadLogInWorker }: Props) {
           }}
         />
       )}
-      {pending && <LoadStatus {...pending} onCancel={cancel} />}
+      {/* Mounted before a load starts, so that screen readers announce its text. */}
+      <div role="status" aria-label="Loading">
+        {pending && <LoadStatus {...pending} onCancel={cancel} />}
+      </div>
       {problem && (
         <p role="alert" className="message message-error">
           {problem}

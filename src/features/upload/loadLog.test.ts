@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { loadFixtureText } from '../../test/fixtures.ts'
 import { handleParseRequest } from './parseJob.ts'
 import type { ParseMessage } from './parseJob.ts'
-import { loadLogInWorker, startParseWorker } from './loadLog.ts'
+import { loadLogInWorker, startParseWorker, stopParseWorker } from './loadLog.ts'
 import type { ParseWorker } from './loadLog.ts'
 
 const LOG = loadFixtureText('trimmed_2026-11-14_10-12-17.csv')
@@ -126,12 +126,8 @@ describe('the parse worker started with the page', () => {
     rampUp: { channelRows: [], rows: 0 },
   }
 
-  // A cancelled load takes the started worker, if any, and stops it: each test starts clean.
-  beforeEach(async () => {
-    const controller = new AbortController()
-    controller.abort()
-    await loadLogInWorker(new File([''], 'x.csv'), { signal: controller.signal }).catch(() => {})
-  })
+  // Each test starts without a started worker.
+  beforeEach(() => stopParseWorker())
 
   it('serves log after log without starting another worker, so no network is needed', async () => {
     const { worker, send } = fakeWorker()
@@ -152,18 +148,39 @@ describe('the parse worker started with the page', () => {
     expect(worker.terminate).not.toHaveBeenCalled()
     expect(create).toHaveBeenCalledOnce()
 
-    // Cancelling stops it for good; the next start makes a new one.
+    // Cancelling stops that worker, and a new one is started at once, while still online.
+    const next = fakeWorker()
+    create.mockImplementation(() => next.worker)
     const controller = new AbortController()
     const third = loadLogInWorker(new File([LOG], 'c.csv'), { signal: controller.signal })
     controller.abort()
     await expect(third).rejects.toMatchObject({ name: 'AbortError' })
     expect(worker.terminate).toHaveBeenCalledOnce()
-    const next = fakeWorker()
-    startParseWorker(() => next.worker)
+    expect(create).toHaveBeenCalledTimes(2)
+
     const fourth = loadLogInWorker(new File([LOG], 'd.csv'), {})
     expect(next.worker.postMessage).toHaveBeenCalledOnce()
     next.send({ type: 'done', result })
     await expect(fourth).resolves.toBe(result)
+    expect(create).toHaveBeenCalledTimes(2)
+  })
+
+  it('replaces a worker that crashes during a load', async () => {
+    const first = fakeWorker()
+    const next = fakeWorker()
+    const create = vi.fn(() => first.worker)
+    startParseWorker(create)
+    create.mockImplementation(() => next.worker)
+
+    const loading = loadLogInWorker(new File([LOG], 'a.csv'), {})
+    first.worker.onerror?.({} as ErrorEvent)
+    await expect(loading).rejects.toThrow(/could not be read/)
+    expect(create).toHaveBeenCalledTimes(2)
+
+    const again = loadLogInWorker(new File([LOG], 'b.csv'), {})
+    expect(next.worker.postMessage).toHaveBeenCalledOnce()
+    next.send({ type: 'done', result })
+    await expect(again).resolves.toBe(result)
   })
 
   it('drops a worker that fails before its first log', async () => {

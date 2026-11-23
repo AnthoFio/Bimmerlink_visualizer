@@ -6,7 +6,6 @@ import type { AxisChoice, Gutters } from '../../lib/axes.ts'
 import type { Channel } from '../../lib/channels.ts'
 import { dashOf, isStepped } from '../../lib/lineStyle.ts'
 import type { Range } from '../../lib/yRange.ts'
-import { dimmed } from '../../lib/palette.ts'
 import type { Theme } from '../../lib/palette.ts'
 import { normalisationSpans, PERCENT_RANGE } from '../../lib/normalise.ts'
 import { panelContent } from '../../lib/panelContent.ts'
@@ -140,14 +139,14 @@ export function TimeSeriesChart(props: Props) {
         id: channel.id,
         name: channel.name,
         values: dataset.columns[channel.column]!.values,
-        colour: focus && focus !== channel.id ? dimmed(colour) : colour,
+        colour,
         axis,
         stepped: isStepped(channel, panel.lines),
         // The dash of the legend entry, which also lists the hidden series.
         dash: legendItems.find((item) => item.channel.id === channel.id)?.dash ?? [],
         span: spans?.[i],
       })),
-    [dataset, items, panel.lines, spans, focus, legendItems],
+    [dataset, items, panel.lines, spans, legendItems],
   )
   // Fitting all data does not depend on the window, so panning need not compute it again.
   const fitted = panel.fit === 'visible' ? shown : bounds
@@ -188,6 +187,7 @@ export function TimeSeriesChart(props: Props) {
           window={shown}
           gestures={gestures}
           cursor={cursor}
+          focus={focus}
           selection={selection}
           series={series}
           axes={axes}

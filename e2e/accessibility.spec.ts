@@ -31,6 +31,14 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await page.getByText('Data table').click()
       await page.locator('.u-over').first().hover()
       expect(await violations(page)).toEqual([])
+
+      // With a tooltip open, its text and confidence badge are checked too.
+      await page
+        .getByRole('button', { name: /^About / })
+        .first()
+        .focus()
+      await expect(page.getByRole('tooltip')).toBeVisible()
+      expect(await violations(page)).toEqual([])
     })
 
     test('the narrow layout passes axe, with the drawer closed and open', async ({ page }) => {

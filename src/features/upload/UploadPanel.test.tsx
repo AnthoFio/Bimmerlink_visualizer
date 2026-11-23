@@ -93,3 +93,16 @@ describe('UploadPanel', () => {
     expect(screen.getByText(/processed locally.*never uploaded/i)).toBeVisible()
   })
 })
+
+describe('dropping outside the drop zone', () => {
+  it('still opens the file instead of letting the browser navigate to it', () => {
+    const { onFile } = setup()
+    const heading = screen.getByRole('heading', { level: 1 })
+    const file = new File(['Time'], 'log.csv')
+
+    const over = fireEvent.dragOver(heading, { dataTransfer: { types: ['Files'] } })
+    expect(over).toBe(false)
+    fireEvent.drop(heading, { dataTransfer: { files: [file], types: ['Files'] } })
+    expect(onFile).toHaveBeenCalledWith(file)
+  })
+})

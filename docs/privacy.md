@@ -6,7 +6,7 @@ This page lists what keeps that promise and which test proves each part (story S
 ## Guarantees
 
 - **Everything runs in the page.** The log is read with the File API and parsed in a Web Worker (`src/features/upload/parse.worker.ts`). There is no backend: the site is static files on GitHub Pages (`docs/deploy.md`).
-- **No network after load.** The page fetches its own files once. The parse worker is started with the page (`startParseWorker` in `src/features/upload/loadLog.ts`) and kept after each log, so opening a log needs no network. Exports (PNG, SVG, CSV, view JSON) are made in memory and handed to the browser's download as `blob:` URLs; importing a view reads a local file.
+- **No network after load.** The page fetches its own files once. The parse worker is started with the page (`startParseWorker` in `src/features/upload/loadLog.ts`) and kept after each log; after a cancelled or crashed load it is replaced at once, so opening a log needs no network. Exports (PNG, SVG, CSV, view JSON) are made in memory and handed to the browser's download as `blob:` URLs; importing a view reads a local file.
 - **No third parties.** The page loads only same-origin files: no CDN, web fonts, analytics, telemetry or error reporting. The only run-time dependencies are React and uPlot.
 - **Stated on the landing page.** The upload panel says that files are processed locally and never uploaded.
 

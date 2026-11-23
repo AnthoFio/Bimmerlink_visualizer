@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { parameters } from '../data/catalog.ts'
 import { describeChannels } from '../lib/channels.ts'
 import { ParameterInfo } from './ParameterInfo.tsx'
@@ -54,5 +54,35 @@ describe('ParameterInfo', () => {
 
     fireEvent.pointerEnter(screen.getByRole('button'))
     expect(screen.getByRole('tooltip')).toBeVisible()
+  })
+})
+
+describe('ParameterInfo, hover', () => {
+  const open = () => {
+    render(<ParameterInfo channel={describeChannels(['Engine speed'], parameters)[0]!} />)
+    const button = screen.getByRole('button')
+    fireEvent.pointerEnter(button)
+    return { button, tooltip: screen.getByRole('tooltip') }
+  }
+
+  it('stays open while the pointer moves onto it (WCAG 1.4.13)', () => {
+    vi.useFakeTimers()
+    const { button, tooltip } = open()
+
+    fireEvent.pointerLeave(button)
+    fireEvent.pointerEnter(tooltip)
+    act(() => void vi.advanceTimersByTime(1000))
+    expect(screen.getByRole('tooltip')).toBeVisible()
+
+    fireEvent.pointerLeave(tooltip)
+    act(() => void vi.advanceTimersByTime(1000))
+    expect(screen.queryByRole('tooltip')).toBeNull()
+    vi.useRealTimers()
+  })
+
+  it('closes when the page scrolls, so it never floats away from its button', () => {
+    open()
+    fireEvent.scroll(window)
+    expect(screen.queryByRole('tooltip')).toBeNull()
   })
 })

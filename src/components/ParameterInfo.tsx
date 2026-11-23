@@ -1,8 +1,9 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { Channel } from '../lib/channels.ts'
 import { unitLabel } from '../lib/units.ts'
 
 const WIDTH = 288
+const CLOSE_DELAY_MS = 300
 const MARGIN = 8
 
 interface Position {
@@ -23,7 +24,27 @@ function place(button: HTMLElement): Position {
 export function ParameterInfo({ channel }: { channel: Channel }) {
   const id = useId()
   const [position, setPosition] = useState<Position>()
-  const close = () => setPosition(undefined)
+  const leaving = useRef<number>(undefined)
+  const close = () => {
+    window.clearTimeout(leaving.current)
+    setPosition(undefined)
+  }
+  // Leaving the button closes it a moment later, so the pointer can move onto the tooltip.
+  const closeSoon = () => {
+    window.clearTimeout(leaving.current)
+    leaving.current = window.setTimeout(() => setPosition(undefined), CLOSE_DELAY_MS)
+  }
+  const stay = () => window.clearTimeout(leaving.current)
+
+  // A fixed tooltip would float away from its button when anything scrolls.
+  const open = position !== undefined
+  useEffect(() => {
+    if (!open) return
+    const onScroll = () => setPosition(undefined)
+    window.addEventListener('scroll', onScroll, { capture: true, passive: true })
+    return () => window.removeEventListener('scroll', onScroll, { capture: true })
+  }, [open])
+  useEffect(() => () => window.clearTimeout(leaving.current), [])
 
   return (
     <>
@@ -33,9 +54,12 @@ export function ParameterInfo({ channel }: { channel: Channel }) {
         aria-label={`About ${channel.name}`}
         aria-describedby={position ? id : undefined}
         onFocus={(event) => setPosition(place(event.currentTarget))}
-        onPointerEnter={(event) => setPosition(place(event.currentTarget))}
+        onPointerEnter={(event) => {
+          stay()
+          setPosition(place(event.currentTarget))
+        }}
         onClick={(event) => setPosition(place(event.currentTarget))}
-        onPointerLeave={close}
+        onPointerLeave={closeSoon}
         onBlur={close}
         onKeyDown={(event) => {
           if (event.key === 'Escape') close()
@@ -44,7 +68,14 @@ export function ParameterInfo({ channel }: { channel: Channel }) {
         {channel.confidence === 'low' ? '!' : 'i'}
       </button>
       {position && (
-        <span id={id} role="tooltip" className="tooltip" style={position}>
+        <span
+          id={id}
+          role="tooltip"
+          className="tooltip"
+          style={position}
+          onPointerEnter={stay}
+          onPointerLeave={closeSoon}
+        >
           <span>{channel.description ?? 'Not in the parameter catalog.'}</span>
           <span className="tooltip-facts">
             {channel.category}

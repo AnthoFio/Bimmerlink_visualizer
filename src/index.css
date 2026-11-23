@@ -355,7 +355,7 @@ button.info-button {
   background: var(--surface);
   color: var(--ink);
   font-size: 0.85rem;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .tooltip-facts {

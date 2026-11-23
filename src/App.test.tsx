@@ -170,3 +170,14 @@ describe('a saved view', () => {
     await loaded('other.csv')
   })
 })
+
+describe('loading announcements', () => {
+  it('has the live region in place before a load starts, so the start is announced', async () => {
+    render(<App loadLog={(_file, { signal }) => never(signal)} />)
+    const region = screen.getByRole('status', { name: 'Loading' })
+    expect(region).toBeEmptyDOMElement()
+
+    pick('slow.csv', 'Time,"A"\n0,1\n')
+    expect(await within(region).findByText(/Reading slow\.csv/)).toBeVisible()
+  })
+})

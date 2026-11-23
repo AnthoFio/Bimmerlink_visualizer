@@ -4,7 +4,15 @@ import { loadFixtureText } from '../test/fixtures.ts'
 import { describeChannels } from './channels.ts'
 import { chartSvg, exportModel, logTitle, niceTicks } from './chartSvg.ts'
 import { parseLogText } from './parseLog.ts'
-import { addPanel, assignPanel, defaultView, setAxisRange } from './view.ts'
+import {
+  addPanel,
+  assignPanel,
+  defaultView,
+  setAxisRange,
+  updatePanel,
+  updateSeries,
+} from './view.ts'
+import { DASHES } from './lineStyle.ts'
 
 const dataset = parseLogText(loadFixtureText('trimmed_2026-10-25_09-33-22.csv'))
 const channels = describeChannels(
@@ -72,5 +80,33 @@ describe('niceTicks', () => {
     [0.95, 1.05, [0.96, 0.98, 1, 1.02, 1.04]],
   ])('gives round ticks from %s to %s', (min, max, ticks) => {
     expect(niceTicks(min, max, 6).map((tick) => Number(tick.toFixed(6)))).toEqual(ticks)
+  })
+})
+
+describe('line styles in the export', () => {
+  it('give each series the dash it has on screen, also when one is hidden', () => {
+    let view = defaultView(['engine speed', 'oil temperature', 'target rail pressure'])
+    view = updatePanel(view, view.panels[0]!.id, { patterns: true })
+    // In this log the order is Target Rail Pressure, Oil Temperature, Engine Speed.
+    view = updateSeries(view, 'target rail pressure', { hidden: true })
+    const svg = chartSvg(
+      exportModel({ dataset, channels, colours, view, windowOf: () => ({ min: 1, max: 3 }) }),
+      { title: 'x', theme: 'light', width: 800 },
+    )
+
+    // Index 0 (hidden) would be solid; the two shown series keep dashes 1 and 2.
+    const dashes = [...svg.matchAll(/stroke-dasharray="([^"]+)"/g)].map((match) => match[1])
+    expect(dashes).toEqual([DASHES[1]!.join(' '), DASHES[2]!.join(' ')])
+  })
+})
+
+describe('text in the export', () => {
+  it('drops control characters that XML does not allow', () => {
+    const svg = chartSvg(
+      { panels: [] },
+      { title: 'a\u0001b\u001fc\td', theme: 'light', width: 400 },
+    )
+
+    expect(svg).toContain('>abc\td<')
   })
 })

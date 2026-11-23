@@ -40,8 +40,12 @@ function keepIdle(worker: ParseWorker) {
   idle = worker
 }
 
+/** How started workers are made; tests replace it through `startParseWorker`. */
+let factory: () => ParseWorker = createParseWorker
+
 /** Starts the parse worker ahead of the first log; does nothing if one is ready. */
 export function startParseWorker(create = createParseWorker): void {
+  factory = create
   if (idle) return
   try {
     keepIdle(create())
@@ -50,8 +54,14 @@ export function startParseWorker(create = createParseWorker): void {
   }
 }
 
+/** Stops the started worker without making another. */
+export function stopParseWorker(): void {
+  idle?.terminate()
+  idle = undefined
+}
+
 function takeParseWorker(): ParseWorker {
-  const worker = idle ?? createParseWorker()
+  const worker = idle ?? factory()
   idle = undefined
   return worker
 }
@@ -87,12 +97,20 @@ export function loadLogInWorker(
       signal?.removeEventListener('abort', cancel)
       keepIdle(worker)
     }
+    // A stopped pooled worker is replaced at once, while the page is surely still online, so
+    // that the next log needs no network either. A worker that fails while idle is not
+    // replaced: that could loop when the worker script cannot load at all.
+    const replace = () => {
+      if (!createWorker) startParseWorker(factory)
+    }
     const cancel = () => {
       stop()
+      replace()
       reject(new DOMException('Loading was cancelled.', 'AbortError'))
     }
     const crash = () => {
       stop()
+      replace()
       reject(unexpected())
     }
 

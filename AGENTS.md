@@ -20,26 +20,26 @@ Hard rules:
 
 Node 24 and npm 11 (`.nvmrc`, `engines` in `package.json`). Run everything from the repository root.
 
-| Purpose           | Command                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)                   |
-| Dev server        | `npm run dev` (http://localhost:5173)                                                |
-| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch                  |
-| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                                     |
-| Format            | `npm run format` writes; `npm run format:check` only verifies                        |
-| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)                        |
-| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)                      |
-| Preview build     | `npm run preview` (http://localhost:4173)                                            |
-| Full quality gate | `npm run check` = lint + format:check + typecheck + test                             |
-| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`)              |
-| e2e (Playwright)  | `npm run e2e` (run `npm run build` first; `npx playwright install chromium` once)    |
-| Performance       | `npm run e2e:perf` (after a build; one worker, quiet machine; `docs/performance.md`) |
-| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`                      |
+| Purpose           | Command                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)                                    |
+| Dev server        | `npm run dev` (http://localhost:5173)                                                                 |
+| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch                                   |
+| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                                                      |
+| Format            | `npm run format` writes; `npm run format:check` only verifies                                         |
+| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)                                         |
+| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)                                       |
+| Preview build     | `npm run preview` (http://localhost:4173)                                                             |
+| Full quality gate | `npm run check` = lint + format:check + typecheck + test                                              |
+| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`)                               |
+| e2e (Playwright)  | `npm run e2e` (run `npm run build` first; `npx playwright install chromium` once)                     |
+| Performance       | `npm run e2e:perf` (after a build; one worker, quiet machine; `docs/performance.md`)                  |
+| CI                | `.github/workflows/ci.yml` runs check, build and e2e (plus a non-blocking perf job), see `docs/ci.md` |
 
 Before every commit/PR run `npm run check`, `npm run build` and `npm run e2e`; all must be green.
 A pre-commit hook (husky + lint-staged) lints and formats staged files. Never bypass it with `--no-verify`.
 
-CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check`, `npm run build` and `npm run e2e` on Node from `.nvmrc`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
+CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check`, `npm run build` and `npm run e2e` on Node from `.nvmrc`; a separate, non-blocking job `perf` runs `npm run e2e:perf`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
 
 ### TypeScript 6 / 7 quirk (read this before touching the type setup)
 
