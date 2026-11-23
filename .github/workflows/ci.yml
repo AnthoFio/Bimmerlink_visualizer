@@ -23,7 +23,7 @@ jobs:
   # The job name is what branch protection matches on: require the check named `CI`.
   ci:
     name: CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Check out the repository
@@ -63,7 +63,7 @@ jobs:
   # slow run shows up in the log and the artifact without failing the required check `CI`.
   perf:
     name: Performance budgets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     continue-on-error: true
     steps:

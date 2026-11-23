@@ -4,7 +4,7 @@ The workflow in `.github/workflows/ci.yml` (named `CI`) is the objective gate fo
 
 ## What it does
 
-It runs on every pull request and on every push to `main`, on `ubuntu-latest`:
+It runs on every pull request and on every push to `main`, on `ubuntu-24.04` (pinned: Playwright 1.59 cannot install Chromium on Ubuntu 26.04, which `ubuntu-latest` now points to):
 
 1. `actions/checkout`
 2. `actions/setup-node`: Node version read from `.nvmrc`, npm cache enabled (keyed on `package-lock.json`)
