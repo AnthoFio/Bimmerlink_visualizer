@@ -165,7 +165,10 @@ interface Options {
   width: number
 }
 
-export function chartSvg(model: ExportModel, { title, theme, width }: Options): string {
+export function chartSvg(
+  model: ExportModel,
+  { title, theme, width }: Options,
+): { text: string; height: number } {
   const { surface, ink, grid } = CHART_COLOURS[theme]
   const most = (side: 'left' | 'right') =>
     Math.max(
@@ -241,10 +244,10 @@ export function chartSvg(model: ExportModel, { title, theme, width }: Options): 
   })
 
   const height = Math.round(top)
-  return (
+  const text =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="system-ui, sans-serif" font-size="12" fill="${ink}">` +
     `<rect width="100%" height="100%" fill="${surface}"/>` +
     `<text x="${left}" y="26" font-size="16" font-weight="600">${escape(title)}</text>` +
     `${parts.join('')}</svg>`
-  )
+  return { text, height }
 }

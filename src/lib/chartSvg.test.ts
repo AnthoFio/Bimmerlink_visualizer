@@ -31,7 +31,7 @@ const svgOf = (window = { min: 1, max: 3 }) =>
     title: logTitle('2026-10-25_09-33-22.csv'),
     theme: 'light',
     width: 1000,
-  })
+  }).text
 
 describe('chart export', () => {
   it('has every panel with its series, legend and axis titles', () => {
@@ -61,9 +61,9 @@ describe('chart export', () => {
   })
 
   it('escapes text', () => {
-    expect(chartSvg({ panels: [] }, { title: '<script>&', theme: 'dark', width: 400 })).toContain(
-      '&lt;script&gt;&amp;',
-    )
+    expect(
+      chartSvg({ panels: [] }, { title: '<script>&', theme: 'dark', width: 400 }).text,
+    ).toContain('&lt;script&gt;&amp;')
   })
 
   it('is a standalone SVG document', () => {
@@ -92,7 +92,7 @@ describe('line styles in the export', () => {
     const svg = chartSvg(
       exportModel({ dataset, channels, colours, view, windowOf: () => ({ min: 1, max: 3 }) }),
       { title: 'x', theme: 'light', width: 800 },
-    )
+    ).text
 
     // Index 0 (hidden) would be solid; the two shown series keep dashes 1 and 2.
     const dashes = [...svg.matchAll(/stroke-dasharray="([^"]+)"/g)].map((match) => match[1])
@@ -105,7 +105,7 @@ describe('text in the export', () => {
     const svg = chartSvg(
       { panels: [] },
       { title: 'a\u0001b\u001fc\td', theme: 'light', width: 400 },
-    )
+    ).text
 
     expect(svg).toContain('>abc\td<')
   })

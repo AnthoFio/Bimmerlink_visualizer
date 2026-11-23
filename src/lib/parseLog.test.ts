@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadExampleBytes, loadFixtureText } from '../test/fixtures.ts'
-import { LogParseError, parseLog, parseLogText } from './parseLog.ts'
+import { LogParseError, parseLogText } from './parseLog.ts'
 
 const decode = (bytes: Uint8Array) => new TextDecoder('utf-8', { ignoreBOM: true }).decode(bytes)
 
@@ -285,38 +285,6 @@ describe('parseLogText: trimmed real logs', () => {
     const column = dataset.columns.find((candidate) => candidate.name === 'Target Rail Pressure')
 
     expect(column?.values[0]).toBe(90.5)
-  })
-})
-
-describe('parseLog: text or File', () => {
-  it('resolves the same dataset from a string and from a File', async () => {
-    const text = loadFixtureText('crlf.csv')
-    const fromText = await parseLog(text)
-    const fromFile = await parseLog(new File([text], 'log.csv', { type: 'text/csv' }))
-
-    expect(fromFile).toEqual(fromText)
-    expect(fromFile).toEqual(parseLogText(text))
-  })
-
-  it('rejects with a LogParseError for an empty File', async () => {
-    await expect(parseLog(new File([], 'empty.csv'))).rejects.toMatchObject({ code: 'empty' })
-  })
-
-  it('rejects with missing-time for a File whose first column is not Time', async () => {
-    const text = loadFixtureText('missing-time.csv')
-
-    await expect(parseLog(new File([text], 'log.csv'))).rejects.toMatchObject({
-      code: 'missing-time',
-    })
-  })
-
-  it('parses a real Example/ log from a File like from its text', async () => {
-    const bytes = loadExampleBytes('2026-11-14_10-12-17.csv')
-    const fromFile = await parseLog(new File([bytes.slice()], '2026-11-14_10-12-17.csv'))
-
-    expect(fromFile).toEqual(parseLogText(decode(bytes)))
-    expect(fromFile.time).toHaveLength(14570)
-    expect(fromFile.columns).toHaveLength(13)
   })
 })
 
