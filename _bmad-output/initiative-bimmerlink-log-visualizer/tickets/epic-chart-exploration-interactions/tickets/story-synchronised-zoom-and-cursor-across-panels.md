@@ -17,15 +17,15 @@ As a BimmerLink user, I want all stacked panels to share the time window and cur
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Zoom/pan in one panel applies to all
-- [ ] A vertical cursor line follows the mouse in every panel
-- [ ] Can be disabled per panel (advanced)
+- [x] Zoom/pan in one panel applies to all
+- [x] A vertical cursor line follows the mouse in every panel
+- [x] Can be disabled per panel (advanced)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

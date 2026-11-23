@@ -5,7 +5,7 @@
 Live: https://anthofio.github.io/Bimmerlink_visualizer/ (setup and previews: `docs/deploy.md`)
 
 Drop a BimmerLink datalog (CSV) onto the page and it turns into dynamic, explorable charts: pick the parameters to show, group them, change scales and zoom into events.
-Everything runs in the browser, so your logs never leave your machine.
+Everything runs in the browser, so your logs never leave your machine: no backend, no analytics, and a strict Content-Security-Policy that lets the page connect nowhere (see `docs/privacy.md`).
 Stack: React 19, TypeScript (strict) and Vite.
 
 ## Getting started
@@ -26,6 +26,8 @@ npm run check         # everything below in one go: lint + format:check + typech
 npm run lint          # ESLint (typescript-eslint, react-hooks, react-refresh); lint:fix applies fixes
 npm run format        # Prettier, write; format:check only verifies (used by check)
 npm run typecheck     # tsc -b (TypeScript 7)
+npm run e2e           # Playwright against the production build (npm run build first)
+npm run e2e:perf      # performance budgets (docs/performance.md), run alone after a build
 npm run test          # Vitest + Testing Library + jsdom, single run; test:watch for watch mode
 ```
 
@@ -57,7 +59,7 @@ Once typescript-eslint supports TypeScript 7, drop the `typescript7` alias and p
 Example/          Sample BimmerLink logs (byte-exact, never edit)
 src/
   main.tsx        App entry point
-  App.tsx         Root component (placeholder page)
+  App.tsx         Root component (composes the features)
   features/       One folder per user-facing feature (upload, charts, selection...);
                   each owns its components, hooks and local state
   lib/            Pure, framework-independent logic (CSV parsing, downsampling...);

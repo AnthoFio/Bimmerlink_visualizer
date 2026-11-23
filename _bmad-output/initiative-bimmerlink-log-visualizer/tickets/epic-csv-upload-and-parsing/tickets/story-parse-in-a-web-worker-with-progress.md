@@ -17,16 +17,16 @@ As a BimmerLink user, I want the UI to stay responsive while a large log loads s
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Parsing runs in a Web Worker; typed arrays transferred, not copied
-- [ ] Progress indicator shown for files > 1 MB
-- [ ] Parsing can be cancelled
-- [ ] 50k rows x 13 columns parsed in under 1 s on a mid-range laptop
+- [x] Parsing runs in a Web Worker; typed arrays transferred, not copied
+- [x] Progress indicator shown for files > 1 MB
+- [x] Parsing can be cancelled
+- [x] 50k rows x 13 columns parsed in under 1 s on a mid-range laptop
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

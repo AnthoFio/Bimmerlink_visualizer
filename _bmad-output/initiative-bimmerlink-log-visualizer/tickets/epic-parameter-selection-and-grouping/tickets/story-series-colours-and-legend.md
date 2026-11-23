@@ -17,15 +17,15 @@ As a BimmerLink user, I want distinct, editable colours and an interactive legen
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Auto-assigned colourblind-safe palette, stable per parameter across reloads
-- [ ] Colour picker per series
-- [ ] Legend click toggles visibility; hover highlights series, dims the others
+- [x] Auto-assigned colourblind-safe palette, stable per parameter across reloads
+- [x] Colour picker per series
+- [x] Legend click toggles visibility; hover highlights series, dims the others
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

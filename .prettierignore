@@ -4,6 +4,8 @@ tests/fixtures/
 bimmerlink_n55_parameter_catalog.csv
 bimmerlink_n55_parameter_catalog.json
 
+src/data/catalog.json
+
 # Generated / vendored / lock files
 package-lock.json
 dist/

@@ -17,16 +17,16 @@ As a BimmerLink user, I want to search by name and filter by category, unit or r
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Case-insensitive substring search across label and key
-- [ ] Filters: category, unit, role; combined with AND
-- [ ] Selected parameters always remain visible in a 'Selected' section
-- [ ] Filter state shown with a clear 'reset' control
+- [x] Case-insensitive substring search across label and key
+- [x] Filters: category, unit, role; combined with AND
+- [x] Selected parameters always remain visible in a 'Selected' section
+- [x] Filter state shown with a clear 'reset' control
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

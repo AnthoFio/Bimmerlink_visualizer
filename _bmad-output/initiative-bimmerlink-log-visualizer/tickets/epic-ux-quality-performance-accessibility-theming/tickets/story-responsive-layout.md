@@ -17,15 +17,15 @@ As a BimmerLink user, I want the app to work on laptop and tablet widths so that
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Side panel collapses to a drawer below 900 px
-- [ ] Charts resize without losing state
-- [ ] Verified at 1440, 1024 and 768 px in e2e screenshots
+- [x] Side panel collapses to a drawer below 900 px
+- [x] Charts resize without losing state
+- [x] Verified at 1440, 1024 and 768 px in e2e screenshots
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

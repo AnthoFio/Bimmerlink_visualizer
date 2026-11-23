@@ -17,15 +17,15 @@ As a BimmerLink user, I want to choose which axis or panel each series uses so t
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Per-series menu: axis (left/right/new) and panel
-- [ ] Moves update the chart without losing zoom
-- [ ] Reset to automatic assignment available
+- [x] Per-series menu: axis (left/right/new) and panel
+- [x] Moves update the chart without losing zoom
+- [x] Reset to automatic assignment available
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

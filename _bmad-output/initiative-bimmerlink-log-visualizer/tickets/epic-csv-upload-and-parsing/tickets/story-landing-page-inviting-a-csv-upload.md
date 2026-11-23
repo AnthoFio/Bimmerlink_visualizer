@@ -17,16 +17,16 @@ As a BimmerLink user, I want a clear drop zone and file picker on first load so 
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Empty state shows title, short explanation, drag-and-drop zone and a Browse button
-- [ ] Drag-over state is visually distinct; keyboard users can activate the picker
-- [ ] Accepts `.csv` (and `text/csv`), rejects other types with a message
-- [ ] States that files are processed locally and never uploaded
+- [x] Empty state shows title, short explanation, drag-and-drop zone and a Browse button
+- [x] Drag-over state is visually distinct; keyboard users can activate the picker
+- [x] Accepts `.csv` (and `text/csv`), rejects other types with a message
+- [x] States that files are processed locally and never uploaded
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

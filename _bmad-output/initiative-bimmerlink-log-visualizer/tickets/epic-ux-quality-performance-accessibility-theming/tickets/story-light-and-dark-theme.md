@@ -17,15 +17,15 @@ As a BimmerLink user, I want the app to follow my system theme with a manual ove
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] `prefers-color-scheme` honoured; manual toggle persisted
-- [ ] Chart palettes tuned for both themes with sufficient contrast
-- [ ] No flash of wrong theme on load
+- [x] `prefers-color-scheme` honoured; manual toggle persisted
+- [x] Chart palettes tuned for both themes with sufficient contrast
+- [x] No flash of wrong theme on load
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

@@ -34,8 +34,8 @@ export default defineConfig([
     },
   },
   {
-    // Node-side tooling files (vite/vitest config).
-    files: ['vite.config.ts'],
+    // Node-side tooling files (vite/vitest and Playwright config, e2e tests).
+    files: ['vite.config.ts', 'playwright.config.ts', 'e2e/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
   // Must stay last: switches off every stylistic rule that Prettier owns.

@@ -17,16 +17,16 @@ As a keyboard or screen-reader user, I want a usable interface so that I am not 
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] All controls reachable and operable by keyboard with visible focus
-- [ ] Colour is never the only differentiator (line styles/markers option)
-- [ ] axe checks pass in Playwright on the main screens
-- [ ] Chart has a text alternative: summary and data-table fallback for the selected range
+- [x] All controls reachable and operable by keyboard with visible focus
+- [x] Colour is never the only differentiator (line styles/markers option)
+- [x] axe checks pass in Playwright on the main screens
+- [x] Chart has a text alternative: summary and data-table fallback for the selected range
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

@@ -17,15 +17,15 @@ As a BimmerLink user, I want 'fit all data' vs 'fit visible window' auto-scaling
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Per-chart switch: fit all / fit visible
-- [ ] Default fit visible
-- [ ] Padding of ~5% applied
+- [x] Per-chart switch: fit all / fit visible
+- [x] Default fit visible
+- [x] Padding of ~5% applied
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

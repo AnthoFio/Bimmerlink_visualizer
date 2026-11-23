@@ -3,7 +3,7 @@ title: 'Static deployment (GitHub Pages) with PR previews'
 type: chore
 ticket: 9
 created: '2026-11-22'
-status: built
+status: done
 baseline_revision: '49599ffa1c30d566b32485775370fd18d4946e02'
 route: full
 route_source: auto

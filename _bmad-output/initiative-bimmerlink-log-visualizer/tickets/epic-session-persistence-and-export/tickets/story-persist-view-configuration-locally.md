@@ -17,16 +17,16 @@ As a BimmerLink user, I want my selection, panels, scales and colours remembered
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] View state serialised to localStorage, keyed by a hash of the sorted column labels
-- [ ] Restores only parameters present in the log; reports what was skipped
-- [ ] 'Reset view' clears the saved state
-- [ ] Persistence failures (quota, disabled storage) are silent and non-blocking
+- [x] View state serialised to localStorage, keyed by a hash of the sorted column labels
+- [x] Restores only parameters present in the log; reports what was skipped
+- [x] 'Reset view' clears the saved state
+- [x] Persistence failures (quota, disabled storage) are silent and non-blocking
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

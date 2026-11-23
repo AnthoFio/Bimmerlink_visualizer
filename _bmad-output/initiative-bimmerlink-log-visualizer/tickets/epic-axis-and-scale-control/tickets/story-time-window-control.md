@@ -17,15 +17,15 @@ As a BimmerLink user, I want to enter an exact start and end time for the X axis
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Start/end inputs in seconds or mm:ss
-- [ ] Clamped to the log duration; 'Full log' reset
-- [ ] Updates and is updated by zoom/pan interactions (single source of truth)
+- [x] Start/end inputs in seconds or mm:ss
+- [x] Clamped to the log duration; 'Full log' reset
+- [x] Updates and is updated by zoom/pan interactions (single source of truth)
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

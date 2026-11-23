@@ -17,16 +17,16 @@ As a BimmerLink user, I want mouse-wheel / drag zoom and drag pan with a reset s
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Wheel zoom centred on cursor, drag to pan, double-click to reset
-- [ ] Touch: pinch and two-finger pan
-- [ ] Keyboard: +/- and arrow keys when chart focused
-- [ ] Zoom is bounded to the log extent
+- [x] Wheel zoom centred on cursor, drag to pan, double-click to reset
+- [x] Touch: pinch and two-finger pan
+- [x] Keyboard: +/- and arrow keys when chart focused
+- [x] Zoom is bounded to the log extent
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

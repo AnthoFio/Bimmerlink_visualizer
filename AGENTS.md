@@ -11,7 +11,7 @@ The user drops a BimmerLink datalog (CSV) onto the page and gets dynamic, explor
 
 Hard rules:
 
-- Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics on log content.
+- Client-side only. Logs never leave the browser: no network calls with user data, no backend, no analytics or telemetry, no third-party origins. The production build carries a strict Content-Security-Policy (`connect-src 'none'`); guarantees, policy and tests are in `docs/privacy.md`. A new inline script needs its hash in that policy.
 - Spec-driven: every story has acceptance criteria that become tests first; CI and the local gate are the judge.
 - Performance target: 50k rows x 13 channels interactive in under 1 s after parse.
 - The initiative (`_bmad-output/initiative-bimmerlink-log-visualizer/initiative-bimmerlink-log-visualizer.md`) holds the vision, requirements and guardrails; read it before starting any story.
@@ -20,24 +20,26 @@ Hard rules:
 
 Node 24 and npm 11 (`.nvmrc`, `engines` in `package.json`). Run everything from the repository root.
 
-| Purpose           | Command                                                             |
-| ----------------- | ------------------------------------------------------------------- |
-| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)  |
-| Dev server        | `npm run dev` (http://localhost:5173)                               |
-| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch |
-| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                    |
-| Format            | `npm run format` writes; `npm run format:check` only verifies       |
-| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)       |
-| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)     |
-| Preview build     | `npm run preview` (http://localhost:4173)                           |
-| Full quality gate | `npm run check` = lint + format:check + typecheck + test            |
-| e2e (Playwright)  | `npm run e2e` (planned, story #10)                                  |
-| CI                | `.github/workflows/ci.yml` runs check + build, see `docs/ci.md`     |
+| Purpose           | Command                                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| Install           | `npm ci` (exact versions from `package-lock.json`; installs husky)                                    |
+| Dev server        | `npm run dev` (http://localhost:5173)                                                                 |
+| Unit tests        | `npm run test` (Vitest, single run); `npm run test:watch` for watch                                   |
+| Lint              | `npm run lint`; `npm run lint:fix` applies fixes                                                      |
+| Format            | `npm run format` writes; `npm run format:check` only verifies                                         |
+| Typecheck         | `npm run typecheck` (`tsc -b` with the TypeScript 7 compiler)                                         |
+| Build             | `npm run build` (runs typecheck, then `vite build` into `dist`)                                       |
+| Preview build     | `npm run preview` (http://localhost:4173)                                                             |
+| Full quality gate | `npm run check` = lint + format:check + typecheck + test                                              |
+| Sync the catalog  | `npm run catalog:sync` (root catalog JSON into `src/data/catalog.json`)                               |
+| e2e (Playwright)  | `npm run e2e` (run `npm run build` first; `npx playwright install chromium` once)                     |
+| Performance       | `npm run e2e:perf` (after a build; one worker, quiet machine; `docs/performance.md`)                  |
+| CI                | `.github/workflows/ci.yml` runs check, build and e2e (plus a non-blocking perf job), see `docs/ci.md` |
 
-Before every commit/PR run `npm run check` and `npm run build`; both must be green.
+Before every commit/PR run `npm run check`, `npm run build` and `npm run e2e`; all must be green.
 A pre-commit hook (husky + lint-staged) lints and formats staged files. Never bypass it with `--no-verify`.
 
-CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check` and `npm run build` on Node from `.nvmrc`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
+CI is the workflow `CI` in `.github/workflows/ci.yml`: on every pull request and every push to `main` it runs `npm ci`, `npm run check`, `npm run build` and `npm run e2e` on Node from `.nvmrc`; a separate, non-blocking job `perf` runs `npm run e2e:perf`. A failing step is reproduced locally with the same npm script (`gh run view <id> --log-failed` shows the log). `docs/ci.md` explains the design choices and the documented branch protection (required check `CI`).
 
 ### TypeScript 6 / 7 quirk (read this before touching the type setup)
 
@@ -54,16 +56,18 @@ When typescript-eslint supports TS 7, drop the `typescript7` alias and point `ty
 
 ```text
 Example/                   Real BimmerLink logs (byte-exact, never edit, never reformat)
+e2e/                       Playwright specs
 src/
   main.tsx                 App entry point
   App.tsx                  Root component
   index.css                Global styles
   features/                One folder per user-facing feature (upload, charts, selection...)
+  components/              UI shared by several features
   lib/                     Pure, framework-independent logic (CSV parsing, matching, downsampling...)
   data/                    Static data bundled with the app (e.g. the parameter catalog)
   test/                    Shared test setup (setup.ts) and repo-level tests
 public/                    Static assets copied as-is
-docs/                      Process docs (ci.md, deploy.md, process/labels-and-board.md)
+docs/                      Process docs (ci.md, deploy.md, privacy.md, process/labels-and-board.md)
 _bmad/                     BMad setup: scripts and config (the render cache and the personal user config are git-ignored)
 _bmad-output/              The ticket tree (initiative, epics, stories) and other BMad artifacts
 scripts/                   Small helper scripts (set-project-status.ps1)
@@ -71,7 +75,7 @@ scripts/                   Small helper scripts (set-project-status.ps1)
 docs/adr/                  Architecture decision records (0001: charting library)
 spikes/                    Throwaway, isolated mini-projects that back an ADR (own package.json)
 bimmerlink_n55_parameter_catalog.csv   Source parameter catalog (CSV)
-bimmerlink_n55_parameter_catalog.json  Same catalog as JSON (prefer this one in code)
+bimmerlink_n55_parameter_catalog.json  Same catalog as JSON (the source; code imports `src/data/catalog.ts`)
 tests/fixtures/            Small, committed, byte-exact test inputs (README inside)
 ```
 
@@ -79,11 +83,11 @@ Rules:
 
 - `src/lib/` has no React and no DOM imports; it takes plain values in and returns plain values out. Put logic there so it is trivially unit-testable.
 - `src/features/<name>/` owns its components, hooks and local state. Features may import from `src/lib/` and `src/data/`; `src/lib/` never imports from `src/features/`. Features do not import from each other: lift shared code into `src/lib/` or a shared component folder.
-- Heavy work (CSV parsing of 50k rows) belongs in a Web Worker so the UI stays responsive (planned, story #15).
-- Keep `src/lib/` functions worker-safe, so that move is cheap.
-- Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). Friendly messages and warnings are story #16.
+- Heavy work stays off the main thread: `src/features/upload/parse.worker.ts` parses and validates, then transfers the typed arrays. Keep `src/lib/` functions worker-safe. `src/main.tsx` starts the worker with the page and `loadLogInWorker` keeps it after each log, so opening a log needs no network after load.
+- jsdom has no Worker: UI tests pass `src/test/directLoader.ts` to `App`.
+- Data model: column-oriented `LogDataset` (`time: Float64Array` plus `columns: { name, values: Float64Array }[]`), produced by `parseLog` / `parseLogText` in `src/lib/parseLog.ts`. The parser is purpose-built (no PapaParse), header-driven, and maps bad cells to `NaN`; only a missing header or `Time` column throws a `LogParseError` (codes `empty`, `missing-time`). `readLog` in `src/lib/readLog.ts` validates on top of it: user-facing errors, warnings for what is tolerated, and a finite, non-decreasing time axis.
 - Charting library: uPlot, decided in `docs/adr/0001-charting-library.md` (fallback: Apache ECharts). Do not add another chart library without a new ADR.
-- Chart wiring (planned, story #25): `uplot` becomes a dependency in the first chart story (#25, pinned exact version) and is imported only by one thin chart-panel component; the x window, axis ranges and cursor live in an app-level store, the min/max downsampling is a pure function (see the lib rule above).
+- Chart wiring: `uplot` (pinned exact version) is imported only by `src/features/charts/ChartPanel.tsx`, a test enforces it. Panels are functions of app state and never set each other. In jsdom `src/test/setup.ts` replaces uPlot with `src/test/fakeUplot.ts`, so real drawing is verified in a browser.
 - `spikes/` holds throwaway evidence projects with their own `package.json` and `node_modules`; ESLint, Prettier, `tsc -b`, Vitest and the app build ignore them, and the app never depends on them. Decisions that are expensive to reverse get an ADR in `docs/adr/`; `src/docs/adr.test.ts` asserts the ADR structure.
 
 ## Naming and code conventions
@@ -102,7 +106,7 @@ Rules:
 - Query the DOM the way a user does (`getByRole`, `getByLabelText`); avoid test ids and implementation details.
 - Tests are deterministic and offline. Use the small fixtures in `tests/fixtures/` for unit tests, loaded with the helpers in `src/test/fixtures.ts` (`loadFixtureBytes`, `loadFixtureText`, `loadExampleBytes`; Node-only, not part of the browser bundle); use the real `Example/` logs only for e2e and performance tests. `src/test/fixtures.test.ts` asserts the documented properties of every fixture byte-exactly.
 - `src/test/agents-md.test.ts` keeps this file honest: every `npm run <script>` and every path written here must exist, unless the line is marked `(planned, story #n)`; and a path or script on a planned line must NOT exist yet, so a stale marker fails the test.
-- e2e with Playwright against the real example logs (planned, story #10). Until it exists, UI behaviour is covered by Testing Library tests.
+- e2e: Playwright specs in `e2e/` run against the production build and the real example logs (config `playwright.config.ts`). Cover there what jsdom cannot: canvas drawing, layout, workers, the network.
 
 ## Log format and catalog facts
 
@@ -115,7 +119,7 @@ BimmerLink log (CSV):
 - Comma separated, `.` decimal point, LF line endings, no BOM, trailing newline, values unquoted. Be tolerant anyway (CRLF, BOM, empty/short files) and fail with friendly errors; those edge cases get fixtures in story #9.
 - Sampling is irregular, about 30 ms between rows. Do not assume a fixed step.
 - Label casing differs between logs (`Engine speed` vs `Engine Speed`), so label matching must be case-insensitive. Some labels are not in the catalog at all (for example `Target Rail Pressure`): unmatched columns must still work as plain series.
-- Most channels start at `0` until their first sample arrives (staggered ramp-up) and are sample-and-hold afterwards, so leading zeros are mostly artefacts, not data (handling: story #18). A few channels already start with a non-zero value in row 0: the lambda adaptation factor `1.03` in `Example/2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in both `2026-10-24_12-29-08` logs. Never assume the first sample is zero.
+- Most channels start at `0` until their first sample arrives (staggered ramp-up) and are sample-and-hold afterwards, so leading zeros are mostly artefacts, not data (handling: `docs/ramp-up.md`; a placeholder is the text `0`, a sampled zero is `0.00`). A few channels already start with a non-zero value in row 0: the lambda adaptation factor `1.03` in `Example/2026-09-06_10-09-49.csv` and `Target Rail Pressure` `90.50` in both `2026-10-24_12-29-08` logs. Never assume the first sample is zero.
 - Units are heterogeneous (rpm, bar, deg, lambda, degC, counters...), so multi-axis and normalisation are first-class needs.
 
 Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV; the CSV starts with a UTF-8 BOM):
@@ -123,7 +127,10 @@ Parameter catalog (`bimmerlink_n55_parameter_catalog.json`, mirrored in the CSV;
 - 210 parameters for a BMW X4 M40i F26 (N55), in 17 categories (for example `Boost`, `Fuel / lambda`, `Ignition / knock`).
 - Fields: `index`, `label`, `key` (snake_case, duplicates suffixed `_2`), `category`, `description`, `unit`, `role`, `confidence` (`high`/`medium`/`low`), `presets` (`1`..`6`, `1b`), `note`. The JSON has a `meta` block that documents the fields and a `parameters` array.
 - `role` is one of `core`, `standard`, `flag`, `counter`, `raw`, `redundant`, `static`, `broken`. `core` are the primary analysis channels, `redundant`/`static`/`broken` are usually hidden by default.
+- `src/lib/channels.ts` does the matching; the rules and the expected split per example log are in `docs/catalog-matching.md`.
 - Match log columns to catalog entries by label, case-insensitively, not by `index` (log columns are a subset in another order). One label occurs twice in the catalog, so matching must tolerate duplicates.
+
+Code imports the catalog from `src/data/catalog.ts`. Its JSON is a generated copy: edit the root files, run `npm run catalog:sync`, and `src/data/catalog.test.ts` fails while they differ.
 
 Fixtures: committed test inputs live in `tests/fixtures/` (a README documents every file): the first 150 rows of each distinct example log (`trimmed_*.csv`) plus edge cases (BOM, CRLF line endings, empty file, header only, missing `Time` column, non-numeric cell, duplicate columns). Load them in tests with `src/test/fixtures.ts`. The full `Example/` logs stay available for e2e and performance tests.
 

@@ -17,15 +17,15 @@ As a BimmerLink user, I want to plot selected series normalised (0 to 100 % of t
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Toggle per panel; legend/tooltip still show the real values and unit
-- [ ] Normalisation is computed over the full log (or visible window - selectable)
-- [ ] Axis labelled '% of range'
+- [x] Toggle per panel; legend/tooltip still show the real values and unit
+- [x] Normalisation is computed over the full log (or visible window - selectable)
+- [x] Axis labelled '% of range'
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

@@ -17,16 +17,16 @@ As a BimmerLink user, I want certainty that my log stays on my machine so that I
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] No network requests carry log data (verified by an e2e test that blocks the network after load)
-- [ ] Strict Content-Security-Policy in the deployed build
-- [ ] Privacy statement visible on the landing page
-- [ ] No third-party analytics by default
+- [x] No network requests carry log data (verified by an e2e test that blocks the network after load)
+- [x] Strict Content-Security-Policy in the deployed build
+- [x] Privacy statement visible on the landing page
+- [x] No third-party analytics by default
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

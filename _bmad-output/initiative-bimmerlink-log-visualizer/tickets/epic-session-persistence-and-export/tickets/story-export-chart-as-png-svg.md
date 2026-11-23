@@ -17,15 +17,15 @@ As a BimmerLink user, I want to export the current view as an image so that I ca
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Exports all panels with legend, axis titles and the log file name/date
-- [ ] PNG at 2x resolution, SVG when the library supports it
-- [ ] Export reflects current zoom and scales
+- [x] Exports all panels with legend, axis titles and the log file name/date
+- [x] PNG at 2x resolution, SVG when the library supports it
+- [x] Export reflects current zoom and scales
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 

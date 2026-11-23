@@ -17,15 +17,15 @@ As the app, I want to link each column header to a catalog parameter so that uni
 
 Verify: Every acceptance criterion below holds.
 
-- [ ] Matching normalises case, whitespace and punctuation (`Engine speed` = `Engine Speed`)
-- [ ] Unmatched columns get `category: Other`, unit unknown; count reported in the file summary
-- [ ] Match results are unit-tested against all 6 example files with the expected matched/unmatched split documented
+- [x] Matching normalises case, whitespace and punctuation (`Engine speed` = `Engine Speed`)
+- [x] Unmatched columns get `category: Other`, unit unknown; count reported in the file summary
+- [x] Match results are unit-tested against all 6 example files with the expected matched/unmatched split documented
 
 ## Definition of done
 
-- [ ] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
+- [x] Tests added/updated (unit and, where relevant, e2e on the `Example/` logs)
 - [ ] Lint, typecheck, tests and build pass in CI
-- [ ] Docs / AGENTS.md updated if conventions changed
+- [x] Docs / AGENTS.md updated if conventions changed
 
 ## References
 
